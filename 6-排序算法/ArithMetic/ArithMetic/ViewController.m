@@ -16,8 +16,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-//    NSMutableArray *arr = @[@2,@10,@6,@5,@3,@1,@4,@2,@9].mutableCopy;
-    NSMutableArray *arr = @[@2,@10,@6,@5,].mutableCopy;
+    NSMutableArray *arr = @[@2,@10,@6,@5,@3,@1,@4,@2,@9].mutableCopy;
+//    NSMutableArray *arr = @[@2,@10,@6,@5,].mutableCopy;
 //    [self josephCircleWithTotalNum:10 start:3 count:5];
     
 //    [self bubblingSort:@[@1,@2,@10,@6,@5,@3,@4,@2].mutableCopy];
@@ -192,7 +192,7 @@
     // 2.重新排序数列，所有元素比基准值小的摆放在基准前面，所有元素比基准值大的摆在基准的后面（相同的数可以到任一边）。在这个分区退出之后，该基准就处于数列的中间位置。这个称为分区（partition）操作。
     // 3.递归地（recursive）把小于基准值元素的子数列和大于基准值元素的子数列排序。
     
-    NSLog(@"quick 开始：%@ 左边:%ld 右边:%ld",array, left, right);
+    NSLog(@"新一轮开始：%@ 左边:%ld 右边:%ld", [self printArrayInline:array], left, right);
     
     if (left > right) {
         
@@ -204,40 +204,37 @@
     NSInteger i = left;
     NSInteger j = right;
     
-    
-    
-    NSLog(@"quick 基数:%@ i:%ld", array[i], i);
+    NSLog(@"基数:%@", array[i]);
     // 记录基准数
     id key = array[i];
     while (i < j) {
         
         // 首先从右边j开始查找（从最右边往左找）比基数（key）小的值
-        
         while (i < j && [key floatValue] <= [array[j] floatValue]) {
-            
-            NSLog(@"首先从右边j开始查找 i:%ld j:%ld 基数:%@ <= array[%ld]:%@", i, j, key, j, array[j]);
-            
+            NSLog(@"从右边查找: i:%ld j:%ld array[%ld]:%@ 比基数大了", i, j, j, array[j]);
             j--;
+            NSLog(@"j->%ld",j);
         }
         
         // 如果从右边j开始查找的值array[j] 比基数小，将查找的小值换到i的位置
         if (i < j) {
-            NSLog(@"查找的小值换到i的位置 array[%ld]:%@ = array[%ld]:%@", i, array[i], j, array[j]);
+            NSLog(@"后面大的数换到前面：查找的小值换到i的位置 array[%ld]:%@ = array[%ld]:%@", i, array[i], j, array[j]);
             array[i] = array[j];
-            NSLog(@"%@",array);
+            NSLog(@"%@", [self printArrayInline:array]);
         }
         
         // 从i的右边往右查找一个比基准数小的值时，就从i开始往后找比基准数大的值
         while (i < j && [array[i] floatValue] <= [key floatValue]) {
-            NSLog(@"从i的右边往右查找 i:%ld j:%ld array[%ld]:%@ <= 基数:%@", i, j, i, array[i], key);
+            NSLog(@"从左查找: i:%ld j:%ld array[%ld]:%@ 比基数小了", i, j, i, array[i]);
             i++;
+            NSLog(@"i->%ld",i);
         }
         
         // 如果从i的右边往左查找的值array[i] 比基数大，则将查找的大值调换到j的位置
         if (i < j) {
-            NSLog(@"将查找的大值调换到j的位置 array[%ld]:%@ = array[%ld]:%@", j, array[j], i, array[i]);
+            NSLog(@"前面大的数换到后面：将查找的大值调换到j的位置 array[%ld]:%@ = array[%ld]:%@", j, array[j], i, array[i]);
             array[j] = array[i];
-            NSLog(@"%@",array);
+            NSLog(@"%@",[self printArrayInline:array]);
         }
         
     }
@@ -245,6 +242,8 @@
     // 将基数放到正确的位置，改变的是基数的位置
     NSLog(@"将基数放到正确的位置，改变的是基数的位置 array[%ld]:%@ = 基数:%@", i, array[i], key);
     array[i] = key;
+    
+    NSLog(@"%@",[self printArrayInline:array]);
     
     // 递归排序
     // 将i左边的数重新排序
@@ -254,7 +253,16 @@
     NSLog(@"将i:%ld右边的数重新排序 left:%ld right:%ld", i, i + 1, right);
     [self quickSort:array leftIndex:i + 1 rightIndex:right];
     
-    NSLog(@"最终结果: %@", array);
+    NSLog(@"最终结果: %@", [self printArrayInline:array]);
+}
+
+- (NSString *)printArrayInline:(NSArray *)array {
+    NSString *string = @"";
+    for (NSNumber *num in array) {
+        string = [string stringByAppendingString:[NSString stringWithFormat:@"%@-",num]];
+    }
+    return string;
+    
 }
 
 @end
