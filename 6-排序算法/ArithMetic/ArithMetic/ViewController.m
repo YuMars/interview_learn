@@ -25,7 +25,10 @@
 //    [self mergeSort:@[@1,@2,@10,@6,@5,@3,@4,@2,@9].mutableCopy];
     
     
-    [self quickSort:arr leftIndex:0 rightIndex:arr.count - 1];
+//    [self quickSort:arr leftIndex:0 rightIndex:arr.count - 1];
+//    [self insertionSortWithArray:arr];
+//    [self shellSortWithArray:arr];
+    [self heapSortWithArray:arr];
 }
 
 /// 约瑟夫环
@@ -256,13 +259,119 @@
     NSLog(@"最终结果: %@", [self printArrayInline:array]);
 }
 
+#pragma mark - 插入排序
+
+/// 插入排序
+- (void)insertionSortWithArray:(NSMutableArray *)array {
+    
+    // 1.将第一待排序序列第一个元素看做一个有序序列，把第二个元素到最后一个元素当成是未排序序列。
+    // 2.从头到尾依次扫描未排序序列，将扫描到的每个元素插入有序序列的适当位置。（如果待插入的元素与有序序列中的某个元素相等，则将待插入元素插入到相等元素的后面
+    
+//    for (int i = 1; i < array.count; i++) {
+//        for (int j = 0 ; j < i; j++) {
+//            NSNumber *num1 = array[i];
+//            NSNumber *num2 = array[j];
+//            if (num1.integerValue < num2.integerValue) {
+//                [array exchangeObjectAtIndex:i withObjectAtIndex:j];
+//            }
+//            NSLog(@"%@",[self printArrayInline:array]);
+//        }
+//    }
+    
+    for (int i = 0; i < array.count; i++) {
+        NSNumber *temp = array[i]; // temp为待排元素
+        
+        int j = i - 1;
+        while (j >= 0 && [array[j] doubleValue] > [temp doubleValue]) {
+            [array replaceObjectAtIndex:j + 1 withObject:array[j]];
+            NSLog(@"移动后%@", [self printArrayInline:array]);
+            j--;
+        }
+        
+        [array replaceObjectAtIndex:j + 1 withObject:temp];
+        NSLog(@"当前结束：%@", [self printArrayInline:array]);
+    }
+}
+
+#pragma mark - 希尔排序
+
+- (void)shellSortWithArray:(NSMutableArray *)array {
+    // 1.选择一个增量序列t1，t2，…，tk，其中ti>tj，tk=1；
+    // 2.按增量序列个数k，对序列进行k 趟排序；
+    // 3.每趟排序，根据对应的增量ti，将待排序列分割成若干长度为m 的子序列，分别对各子表进行直接插入排序。仅增量因子为1 时，整个序列作为一个表来处理，表长度即为整个序列的长度。
+
+    int gap = (int)array.count / 4;
+    while (gap >= 1) {
+        for (int i = gap; i < array.count; i++) {
+            
+            NSNumber *temp = array[i];
+            int j = i;
+            while (j >= gap && [array[j - gap] doubleValue] > [temp doubleValue]) {
+                [array replaceObjectAtIndex:j withObject:array[j - gap]];
+                NSLog(@"移动后%@", [self printArrayInline:array]);
+                j -= gap;
+            }
+            
+            [array replaceObjectAtIndex:j withObject:temp];
+            NSLog(@"%@", [self printArrayInline:array]);
+        }
+        gap = gap / 2;
+    }
+}
+
+#pragma mark - 堆排序
+
+- (void)heapSortWithArray:(NSMutableArray *)array {
+    // 1.创建一个堆H[0..n-1]
+    // 2.把堆首（最大值）和堆尾互换
+    // 3.把堆的尺寸缩小1，并调用shift_down(0),目的是把新的数组顶端数据调整到相应位置
+    // 4.重复步骤2，直到堆的尺寸为1
+    
+    NSInteger i, size;
+    size = array.count;
+    for (i = array.count / 2 - 1; i >= 0; i--) {
+        [self createBiggesHead:array withSize:size beIndex:i];
+        
+    }
+    
+    while (size > 0) {
+        [array exchangeObjectAtIndex:size - 1 withObjectAtIndex:0]; // 将跟（最大）与数组末尾交互
+        size--;
+        [self createBiggesHead:array withSize:size beIndex:0];
+    }
+    
+}
+
+- (void)createBiggesHead:(NSMutableArray *)list withSize:(NSInteger)size beIndex:(NSInteger)element {
+    NSInteger lchild = element * 2 + 1, rchild = lchild + 1; // 左右子树
+    while (rchild < size) { // 子树均在范围内
+        
+        if ([list[element] doubleValue] >= [list[lchild] doubleValue] && [list[element] doubleValue] > [list[rchild] doubleValue]) { return; }
+        
+        if ([list[lchild] doubleValue] > [list[rchild] doubleValue]) { // 如果左边最大
+            [list exchangeObjectAtIndex:element withObjectAtIndex:lchild]; // 把左边的提到最上面
+            element = lchild; // 循环时整理子树
+        } else { // 右边最大
+            [list exchangeObjectAtIndex:element withObjectAtIndex:rchild];
+            element = rchild;
+        }
+        
+        lchild = element * 2 + 1;
+        rchild = lchild + 1;// 重新计算子树位置
+    }
+    // 只有左子树且子树大于自己
+    if (lchild < size && [list[lchild] doubleValue] > [list[element] doubleValue]) {
+        [list exchangeObjectAtIndex:lchild withObjectAtIndex:element];
+    }
+}
+
+
 - (NSString *)printArrayInline:(NSArray *)array {
     NSString *string = @"";
     for (NSNumber *num in array) {
         string = [string stringByAppendingString:[NSString stringWithFormat:@"%@-",num]];
     }
     return string;
-    
 }
 
 @end
