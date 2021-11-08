@@ -8,8 +8,11 @@
 #import "ViewController.h"
 #import "pthread.h"
 #import <libkern/OSAtomic.h>
+#import <os/lock.h>
 
 @interface ViewController ()
+
+@property (nonatomic, assign) NSInteger ticketNum;
 
 @end
 
@@ -28,6 +31,200 @@
     //[self osspinLock];
     
     //[self metex];
+    
+    [self dealSale];
+}
+
+#pragma mark - 卖票
+
+- (void)dealSale {
+    self.ticketNum = 10;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        for (int i = 0; i < 5; i++) {
+            [self synchroizedSaleTickets];
+        }
+    });
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        for (int i = 0; i < 5; i++) {
+            [self synchroizedSaleTickets];
+        }
+    });
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        for (int i = 0; i < 5; i++) {
+            [self synchroizedSaleTickets];
+        }
+    });
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        for (int i = 0; i < 5; i++) {
+            [self synchroizedSaleTickets];
+        }
+    });
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        for (int i = 0; i < 5; i++) {
+            [self synchroizedSaleTickets];
+        }
+    });
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        for (int i = 0; i < 5; i++) {
+            [self synchroizedSaleTickets];
+        }
+    });
+}
+
+- (void)synchroizedSaleTickets {
+    
+    @synchronized (self) {
+        if (self.ticketNum > 0) {
+            self.ticketNum--;
+            NSLog(@"ticketNum = %ld", self.ticketNum);
+        } else {
+            NSLog(@"ticketNum sale out");
+        }
+    }
+}
+
+#pragma mark - 10w
+
+- (void)hundredThound {
+    // 10w次效率
+    
+    int hpRunTime = 100000;
+    
+    // OSSpinLock
+    {
+        OSSpinLock lock = OS_SPINLOCK_INIT;
+        double_t beginTime = CFAbsoluteTimeGetCurrent();
+        for (int i = 0; i < hpRunTime; i++) {
+            OSSpinLockLock(&lock);
+            OSSpinLockUnlock(&lock);
+        }
+        double_t endTime = CFAbsoluteTimeGetCurrent();
+        
+        printf("OSSpinLock: %f ms", (endTime - beginTime) * 1000);
+    }
+    
+    // dispatch_semaphore_t
+    {
+        dispatch_semaphore_t semaphore = dispatch_semaphore_create(1);
+        double_t beginTime = CFAbsoluteTimeGetCurrent();
+        for (int i = 0; i < hpRunTime; i++) {
+            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+            dispatch_semaphore_signal(semaphore);
+        }
+        double_t endTime = CFAbsoluteTimeGetCurrent();
+        printf("\ndispatch_semaphore_t: %f ms", (endTime - beginTime) * 1000);
+    }
+    
+    // os_unfair_lock
+    {
+        if (@available(iOS 10.0, *)) {
+            os_unfair_lock lock = OS_UNFAIR_LOCK_INIT;
+            double_t beginTime = CFAbsoluteTimeGetCurrent();
+            for (int i = 0; i < hpRunTime; i++) {
+                os_unfair_lock_lock(&lock);
+                os_unfair_lock_unlock(&lock);
+            }
+            double_t endTime = CFAbsoluteTimeGetCurrent();
+            printf("\nos_unfair_lock: %f ms", (endTime - beginTime) * 1000);
+        } else {
+            
+        }
+        
+    }
+    
+    // pthread_mutex_t
+    {
+        pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
+        double_t beginTime = CFAbsoluteTimeGetCurrent();
+        for (int i = 0; i < hpRunTime; i++) {
+            pthread_mutex_lock(&lock);
+            pthread_mutex_unlock(&lock);
+        }
+        double_t endTime = CFAbsoluteTimeGetCurrent();
+        printf("\npthread_mutex_t: %f ms", (endTime - beginTime) * 1000);
+    }
+    
+    // NSLock
+    {
+        NSLock *lock = [[NSLock alloc] init];
+        double_t beginTime = CFAbsoluteTimeGetCurrent();
+        for (int i = 0; i < hpRunTime; i++) {
+            [lock lock];
+            [lock unlock];
+        }
+        double_t endTime = CFAbsoluteTimeGetCurrent();
+        printf("\nNSLock: %f ms", (endTime - beginTime) * 1000);
+    }
+    
+    // NSCondition
+    {
+        NSCondition *condition = [[NSCondition alloc] init];
+        double_t beginTime = CFAbsoluteTimeGetCurrent();
+        for (int i = 0; i < hpRunTime; i++) {
+            [condition lock];
+            [condition unlock];
+        }
+        double_t endTime = CFAbsoluteTimeGetCurrent();
+        printf("\nNSCondition: %f ms", (endTime - beginTime) * 1000);
+    }
+    
+    // NSConditionLock
+    {
+        NSConditionLock *lock = [[NSConditionLock alloc] init];
+        double_t beginTime = CFAbsoluteTimeGetCurrent();
+        for (int i = 0; i < hpRunTime; i++) {
+            [lock lock];
+            [lock unlock];
+        }
+        double_t endTime = CFAbsoluteTimeGetCurrent();
+        printf("\nNSConditionLock: %f ms", (endTime - beginTime) * 1000);
+    }
+    
+    // NSRecursiveLock
+    {
+        NSRecursiveLock *lock = [[NSRecursiveLock alloc] init];
+        double_t beginTime = CFAbsoluteTimeGetCurrent();
+        for (int i = 0; i < hpRunTime; i++) {
+            [lock lock];
+            [lock unlock];
+        }
+        double_t endTime = CFAbsoluteTimeGetCurrent();
+        printf("\nNSRecursiveLock: %f ms", (endTime - beginTime) * 1000);
+    }
+    
+    // pthread_mutex_t(recursive)
+    {
+        pthread_mutex_t mutexRecursive;
+        pthread_mutexattr_t attr;
+        pthread_mutexattr_init(&attr);
+        pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+        pthread_mutex_init(&mutexRecursive, &attr);
+        
+        double_t beginTime = CFAbsoluteTimeGetCurrent();
+        for (int i = 0; i < hpRunTime; i++) {
+            pthread_mutex_lock(&mutexRecursive);
+            pthread_mutex_unlock(&mutexRecursive);
+        }
+        double_t endTime = CFAbsoluteTimeGetCurrent();
+        printf("\npthread_mutex_trecursive: %f ms", (endTime - beginTime) * 1000);
+    }
+    
+    // synchornized
+    {
+        double_t beginTime = CFAbsoluteTimeGetCurrent();
+        for (int i = 0; i < hpRunTime; i++) {
+            @synchronized (self) {
+                
+            }
+        }
+        double_t endTime = CFAbsoluteTimeGetCurrent();
+        printf("\nsynchronized: %f ms", (endTime - beginTime) * 1000);
+    }
 }
 
 - (void)metex {
