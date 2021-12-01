@@ -26,6 +26,7 @@
 		EEAA526A26EA3DED0094A164 /* Course.m in Sources */ = {isa = PBXBuildFile; fileRef = EEAA526926EA3DED0094A164 /* Course.m */; };
 		EEAA526D26EA3DFB0094A164 /* Address.m in Sources */ = {isa = PBXBuildFile; fileRef = EEAA526C26EA3DFB0094A164 /* Address.m */; };
 		EEAA527026EA3F850094A164 /* NSObject+Model.m in Sources */ = {isa = PBXBuildFile; fileRef = EEAA526F26EA3F850094A164 /* NSObject+Model.m */; };
+		EEB42DE1275714060036D500 /* ObjcMsgSend.m in Sources */ = {isa = PBXBuildFile; fileRef = EEB42DE0275714060036D500 /* ObjcMsgSend.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,6 +65,8 @@
 		EEAA526C26EA3DFB0094A164 /* Address.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Address.m; sourceTree = "<group>"; };
 		EEAA526E26EA3F850094A164 /* NSObject+Model.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+Model.h"; sourceTree = "<group>"; };
 		EEAA526F26EA3F850094A164 /* NSObject+Model.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+Model.m"; sourceTree = "<group>"; };
+		EEB42DDF275714060036D500 /* ObjcMsgSend.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjcMsgSend.h; sourceTree = "<group>"; };
+		EEB42DE0275714060036D500 /* ObjcMsgSend.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjcMsgSend.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +103,8 @@
 				EE03105026D3D18400ADC599 /* AppDelegate.m */,
 				EE03105526D3D18400ADC599 /* ViewController.h */,
 				EE03105626D3D18400ADC599 /* ViewController.m */,
+				EEB42DDF275714060036D500 /* ObjcMsgSend.h */,
+				EEB42DE0275714060036D500 /* ObjcMsgSend.m */,
 				EE5947D626E0F92300FAD5C4 /* Student.h */,
 				EE5947D726E0F92300FAD5C4 /* Student.m */,
 				EEAA526826EA3DED0094A164 /* Course.h */,
@@ -211,6 +216,7 @@
 				EEAA526D26EA3DFB0094A164 /* Address.m in Sources */,
 				EE4E963526DE2B6B006CC90C /* URLSessionTaskSwizzling.m in Sources */,
 				EE5947DB26E0F95700FAD5C4 /* Student+Addition.m in Sources */,
+				EEB42DE1275714060036D500 /* ObjcMsgSend.m in Sources */,
 				EE03105726D3D18400ADC599 /* ViewController.m in Sources */,
 				EE4E963B26DF5799006CC90C /* UIFont+FitSwizzling.m in Sources */,
 				EEAA527026EA3F850094A164 /* NSObject+Model.m in Sources */,
@@ -295,7 +301,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -348,7 +354,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

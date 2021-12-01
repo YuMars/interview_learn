@@ -32,7 +32,30 @@
     
     //[self metex];
     
-    [self dealSale];
+//    [self dealSale];
+    [self nsconditionLock];
+}
+
+- (void)nsconditionLock {
+    NSConditionLock *conditionLock = [[NSConditionLock alloc] initWithCondition:2];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        [conditionLock lockWhenCondition:1];
+        NSLog(@"1");
+        [conditionLock unlockWithCondition:0];
+    });
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [conditionLock lockWhenCondition:2];
+        sleep(1);
+        NSLog(@"2");
+        [conditionLock unlockWithCondition:1];
+    });
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [conditionLock lock];
+        NSLog(@"3");
+        [conditionLock unlock];
+    });
 }
 
 #pragma mark - 卖票

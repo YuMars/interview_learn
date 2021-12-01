@@ -11,6 +11,7 @@
 #import "Student.h"
 #import "Course.h"
 #import "NSObject+Model.h"
+#import "ObjcMsgSend.h"
 
 @interface Person : NSObject
 
