@@ -27,6 +27,20 @@ struct Person_IMPL {
 
 @property (nonatomic, assign) int age;
 
+- (void)studentInstanceMethod;
++ (void)studentClassMethod;
+
+@end
+
+@implementation Student
+
+- (void)studentInstanceMethod {
+    
+}
+
++ (void)studentClassMethod {
+    
+}
 
 @end
 
@@ -40,7 +54,32 @@ struct Person_IMPL {
 
 @end
 
-@implementation Student
+@interface Teacher : Person <NSCoding>
+
+@property (nonatomic, assign) int height;
+
+- (void)teacherInstanceMethod;
++ (void)teacherClassMethod;
+
+@end
+
+@implementation Teacher
+
+- (void)teacherInstanceMethod {
+    
+}
+
++ (void)teacherClassMethod {
+    
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    return nil;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    
+}
 
 @end
 
@@ -53,7 +92,7 @@ struct Person_IMPL {
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // 1.一个NSObject对象占用多少内存
+    // Q: 1.一个NSObject对象占用多少内存
     
     /* 代码运行原理
      Objective-C -> C/C++ -> 汇编语言 -> 机器语言
@@ -146,12 +185,14 @@ struct Person_IMPL {
      2. class对象 (类对象)
         isa指针
         superclass指针
-        类的属性信息（ @property）,类的对象方法（instance method）
-        类的协议信息 （protocol），类的成员变量（ivar）
+        类的属性信息（ @property)
+        类的对象方法（instance method）
+        类的协议信息 （protocol），
+        类的成员变量（ivar）
      
-     3. meta-class对象（元类对象）
-        每个类在内存中只有一个元类对象
-        isa指针 suoerclass的指针
+     3. meta-class对象（元类对象） (每个类在内存中只有一个元类对象)
+        isa指针
+        superclass的指针
         类的类方法信息（class method）
      */
     
@@ -168,7 +209,78 @@ struct Person_IMPL {
     Class objectMetaClass = object_getClass(objectClass3);
     Class objectMetaClass2 = object_getClass(objectMetaClass);
     
-    NSLog(@"%p %p %d %d %d", objectMetaClass, objectMetaClass2, class_isMetaClass(obj1), class_isMetaClass(objectClass), class_isMetaClass(objectMetaClass));
+    //NSLog(@"%p %p %d %d %d", objectMetaClass, objectMetaClass2, class_isMetaClass(obj1), class_isMetaClass(objectClass), class_isMetaClass(objectMetaClass));
+    
+    // objc_getClass(<#const char * _Nonnull name#>) 传入类名
+    
+    // 如果传入是instance对象，返回class
+    // 如果传入是class对象，返回meta-class
+    // 如果传入是mete-class，返回NSObject的meta-class
+    // object_getClass(<#id  _Nullable obj#>) 传入对象
+    
+    
+    /*
+     instance 对象 ：Student *student = [[Student alloc] init];
+     class 对象： Class studentClass = [Student class];
+     meta-class 对象：Class studentMetaClass = object_getClass(studentClass);
+     */
+    
+    // Q: 2.对象的isa指针指向哪里
+    
+    /*
+     objc_msdSend(person, @selector())
+     */
+    
+    Student *testStudent = [[Student alloc] init];
+    [testStudent studentInstanceMethod];
+    [Student studentClassMethod];
+    
+    // Student *testStudent = ((Student *(*)(id, SEL))(void *)objc_msgSend)((id)((Student *(*)(id, SEL))(void *)objc_msgSend)((id)objc_getClass("Student"), sel_registerName("alloc")), sel_registerName("init"));
+    // ((void (*)(id, SEL))(void *)objc_msgSend)((id)testStudent, sel_registerName("studentInstanceMethod"));
+    // ((void (*)(id, SEL))(void *)objc_msgSend)((id)objc_getClass("Student"), sel_registerName("studentClassMethod"));
+    
+    
+    // Class对象的superclass指针
+    
+    Teacher *teacher = [[Teacher alloc] init];
+    [teacher studentInstanceMethod];
+    // ↑↑↑↑↑↑↑↑↑↑↑↑
+    // !!!类对象的superclass指向的是父类的class对象
+    // 通过Teacher的instance对象要调用student的对象方法时，
+    // 会先调用teacher的isa找到Teacher的class，
+    // 然后通过superclass找到Student的class,
+    // 最后找到对象方法的实现进行调用
+    
+    // mete-class对象的superclass指针
+    
+    [Teacher studentClassMethod];
+    // ↑↑↑↑↑↑↑↑↑↑↑↑
+    // !!!mete-class对象的superclass指针指向的是父类的元类对象
+    // Teacher的class要调用student的类方法
+    // 先通过Teacher的isa找到meta-class
+    // 然后通过superclass找到student的mete-class
+    // 最后找到类方法的实现调用
+    
+    // isa指针
+    // instance对象的isa指针指向class对象
+    // class对象的isa指针指向meta-class对象
+    // meta-class的isa指针指向基类的meta-class
+    
+    // class对象的superclass指向superclass的class对象
+    // 如果没有superclass，suerclass指针为nil
+    // meta-class对象superclass指向superclass的meta-class
+    // 基类的meta-class的superclass指向基类的class
+    
+    // instance调用对象方法的轨迹
+    // isa找到class，方法不存在，就通过superclass找到父类
+    
+    // class调用类方法
+    // isa找到meta-class,在meta-class中找，通过superclass，找meta-class的superclass的类方法
+    
+    
+    // Q: 3.OC的类信息存放在哪里
+    
+    
 }
 
 

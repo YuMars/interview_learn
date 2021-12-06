@@ -17,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EEA9964F275A199A0085A00E /* isa指针.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "isa指针.cpp"; sourceTree = "<group>"; };
 		EEE641832757635E00786DAB /* Interview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Interview.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EEE641862757635E00786DAB /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		EEE641872757635E00786DAB /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -63,6 +64,7 @@
 		EEE641852757635E00786DAB /* Interview */ = {
 			isa = PBXGroup;
 			children = (
+				EEA9964F275A199A0085A00E /* isa指针.cpp */,
 				EEE641A127576A5100786DAB /* ViewController.cpp */,
 				EEE6419F27576A2C00786DAB /* main-arm64.cpp */,
 				EEE641862757635E00786DAB /* AppDelegate.h */,
