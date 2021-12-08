@@ -23,6 +23,11 @@ struct Person_IMPL {
     int _height; // 4
 }; // 24 bit
 
+struct my_objc_class {
+    Class isa;
+    Class superClass;
+};
+
 @interface Student : NSObject
 
 @property (nonatomic, assign) int age;
@@ -180,7 +185,7 @@ struct Person_IMPL {
      OC对象主要分为3种
      1. instance对象（实例对象）:通过类alloc的对象，每次调用alloc都会产生新的instance，占着不同的内存
        isa指针
-       其他成员变量
+       其他成员变量（具体的值）
      
      2. class对象 (类对象)
         isa指针
@@ -188,7 +193,7 @@ struct Person_IMPL {
         类的属性信息（ @property)
         类的对象方法（instance method）
         类的协议信息 （protocol），
-        类的成员变量（ivar）
+        类的成员变量（ivar，信息）
      
      3. meta-class对象（元类对象） (每个类在内存中只有一个元类对象)
         isa指针
@@ -226,6 +231,9 @@ struct Person_IMPL {
      */
     
     // Q: 2.对象的isa指针指向哪里
+    // instance对象的isa指针指向class对象
+    // class对象的isa指针指向meta-class对象
+    // meta-class的isa指针指向基类的meta-class
     
     /*
      objc_msdSend(person, @selector())
@@ -274,12 +282,34 @@ struct Person_IMPL {
     // instance调用对象方法的轨迹
     // isa找到class，方法不存在，就通过superclass找到父类
     
-    // class调用类方法
-    // isa找到meta-class,在meta-class中找，通过superclass，找meta-class的superclass的类方法
+    Student *student3 = [[Student alloc] init];
+    Class studentClass3 = [student3 class];
+    Class metaClassStudent3 = object_getClass(studentClass3);
     
+    // ISA_MASK
+    // p/x 0x & ISA_MASK:0x00007ffffffffff8
+    
+    Class studentObjcClass = [Student class];
+    struct my_objc_class *studentObjcClass2 = (__bridge struct my_objc_class *)(studentObjcClass);
+    
+    // p/x studentObjcClass2 -> isa & 0x00007ffffffffff8 = metaClassStudent3
+    NSLog(@"%p %p %p", student3, studentClass3, metaClassStudent3);
+    
+    
+    /*
+     struct objc_class : objc_object {
+         // Class ISA;
+         (Class isa)
+         Class superclass;
+         cache_t cache;             // formerly cache pointer and vtable
+         class_data_bits_t bits;    // class_rw_t * plus custom rr/alloc flags
+     };
+     */
     
     // Q: 3.OC的类信息存放在哪里
-    
+    // 对象方法、属性、成员变量、协议 放在class对象中
+    // 类方法，存放在meta-class对象中
+    // 成员变量的具体值，存放在instance对象
     
 }
 
