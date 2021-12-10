@@ -7,38 +7,32 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		EE3B3CBC2760630000DD56D4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EE3B3CBB2760630000DD56D4 /* AppDelegate.m */; };
-		EE3B3CBF2760630000DD56D4 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EE3B3CBE2760630000DD56D4 /* SceneDelegate.m */; };
-		EE3B3CC22760630000DD56D4 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE3B3CC12760630000DD56D4 /* ViewController.m */; };
-		EE3B3CC52760630000DD56D4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EE3B3CC32760630000DD56D4 /* Main.storyboard */; };
-		EE3B3CC72760630100DD56D4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EE3B3CC62760630100DD56D4 /* Assets.xcassets */; };
-		EE3B3CCA2760630100DD56D4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EE3B3CC82760630100DD56D4 /* LaunchScreen.storyboard */; };
-		EE3B3CCD2760630100DD56D4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EE3B3CCC2760630100DD56D4 /* main.m */; };
-		EE3B3CD5276084BE00DD56D4 /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = EE3B3CD4276084BE00DD56D4 /* Person.m */; };
-		EE3B3CD827609B1E00DD56D4 /* NSKVONotifing_Person.m in Sources */ = {isa = PBXBuildFile; fileRef = EE3B3CD727609B1E00DD56D4 /* NSKVONotifing_Person.m */; };
+		EE3B3CE92763392D00DD56D4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EE3B3CE82763392D00DD56D4 /* AppDelegate.m */; };
+		EE3B3CEC2763392D00DD56D4 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EE3B3CEB2763392D00DD56D4 /* SceneDelegate.m */; };
+		EE3B3CEF2763392D00DD56D4 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE3B3CEE2763392D00DD56D4 /* ViewController.m */; };
+		EE3B3CF22763392D00DD56D4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EE3B3CF02763392D00DD56D4 /* Main.storyboard */; };
+		EE3B3CF42763392E00DD56D4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EE3B3CF32763392E00DD56D4 /* Assets.xcassets */; };
+		EE3B3CF72763392E00DD56D4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EE3B3CF52763392E00DD56D4 /* LaunchScreen.storyboard */; };
+		EE3B3CFA2763392E00DD56D4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EE3B3CF92763392E00DD56D4 /* main.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		EE3B3CB72760630000DD56D4 /* Interview-KVO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Interview-KVO.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		EE3B3CBA2760630000DD56D4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		EE3B3CBB2760630000DD56D4 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		EE3B3CBD2760630000DD56D4 /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
-		EE3B3CBE2760630000DD56D4 /* SceneDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
-		EE3B3CC02760630000DD56D4 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		EE3B3CC12760630000DD56D4 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		EE3B3CC42760630000DD56D4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		EE3B3CC62760630100DD56D4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		EE3B3CC92760630100DD56D4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		EE3B3CCB2760630100DD56D4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		EE3B3CCC2760630100DD56D4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		EE3B3CD3276084BE00DD56D4 /* Person.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Person.h; sourceTree = "<group>"; };
-		EE3B3CD4276084BE00DD56D4 /* Person.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Person.m; sourceTree = "<group>"; };
-		EE3B3CD627609B1E00DD56D4 /* NSKVONotifing_Person.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSKVONotifing_Person.h; sourceTree = "<group>"; };
-		EE3B3CD727609B1E00DD56D4 /* NSKVONotifing_Person.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSKVONotifing_Person.m; sourceTree = "<group>"; };
+		EE3B3CE42763392D00DD56D4 /* Interview-KVC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Interview-KVC.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EE3B3CE72763392D00DD56D4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		EE3B3CE82763392D00DD56D4 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		EE3B3CEA2763392D00DD56D4 /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
+		EE3B3CEB2763392D00DD56D4 /* SceneDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
+		EE3B3CED2763392D00DD56D4 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		EE3B3CEE2763392D00DD56D4 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		EE3B3CF12763392D00DD56D4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		EE3B3CF32763392E00DD56D4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		EE3B3CF62763392E00DD56D4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		EE3B3CF82763392E00DD56D4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EE3B3CF92763392E00DD56D4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		EE3B3CB42760630000DD56D4 /* Frameworks */ = {
+		EE3B3CE12763392D00DD56D4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -48,79 +42,75 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		EE3B3CAE2760630000DD56D4 = {
+		EE3B3CDB2763392D00DD56D4 = {
 			isa = PBXGroup;
 			children = (
-				EE3B3CB92760630000DD56D4 /* Interview-KVO */,
-				EE3B3CB82760630000DD56D4 /* Products */,
+				EE3B3CE62763392D00DD56D4 /* Interview-KVC */,
+				EE3B3CE52763392D00DD56D4 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		EE3B3CB82760630000DD56D4 /* Products */ = {
+		EE3B3CE52763392D00DD56D4 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				EE3B3CB72760630000DD56D4 /* Interview-KVO.app */,
+				EE3B3CE42763392D00DD56D4 /* Interview-KVC.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		EE3B3CB92760630000DD56D4 /* Interview-KVO */ = {
+		EE3B3CE62763392D00DD56D4 /* Interview-KVC */ = {
 			isa = PBXGroup;
 			children = (
-				EE3B3CBA2760630000DD56D4 /* AppDelegate.h */,
-				EE3B3CBB2760630000DD56D4 /* AppDelegate.m */,
-				EE3B3CBD2760630000DD56D4 /* SceneDelegate.h */,
-				EE3B3CBE2760630000DD56D4 /* SceneDelegate.m */,
-				EE3B3CC02760630000DD56D4 /* ViewController.h */,
-				EE3B3CC12760630000DD56D4 /* ViewController.m */,
-				EE3B3CD3276084BE00DD56D4 /* Person.h */,
-				EE3B3CD4276084BE00DD56D4 /* Person.m */,
-				EE3B3CD627609B1E00DD56D4 /* NSKVONotifing_Person.h */,
-				EE3B3CD727609B1E00DD56D4 /* NSKVONotifing_Person.m */,
-				EE3B3CC32760630000DD56D4 /* Main.storyboard */,
-				EE3B3CC62760630100DD56D4 /* Assets.xcassets */,
-				EE3B3CC82760630100DD56D4 /* LaunchScreen.storyboard */,
-				EE3B3CCB2760630100DD56D4 /* Info.plist */,
-				EE3B3CCC2760630100DD56D4 /* main.m */,
+				EE3B3CE72763392D00DD56D4 /* AppDelegate.h */,
+				EE3B3CE82763392D00DD56D4 /* AppDelegate.m */,
+				EE3B3CEA2763392D00DD56D4 /* SceneDelegate.h */,
+				EE3B3CEB2763392D00DD56D4 /* SceneDelegate.m */,
+				EE3B3CED2763392D00DD56D4 /* ViewController.h */,
+				EE3B3CEE2763392D00DD56D4 /* ViewController.m */,
+				EE3B3CF02763392D00DD56D4 /* Main.storyboard */,
+				EE3B3CF32763392E00DD56D4 /* Assets.xcassets */,
+				EE3B3CF52763392E00DD56D4 /* LaunchScreen.storyboard */,
+				EE3B3CF82763392E00DD56D4 /* Info.plist */,
+				EE3B3CF92763392E00DD56D4 /* main.m */,
 			);
-			path = "Interview-KVO";
+			path = "Interview-KVC";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		EE3B3CB62760630000DD56D4 /* Interview-KVO */ = {
+		EE3B3CE32763392D00DD56D4 /* Interview-KVC */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = EE3B3CD02760630100DD56D4 /* Build configuration list for PBXNativeTarget "Interview-KVO" */;
+			buildConfigurationList = EE3B3CFD2763392E00DD56D4 /* Build configuration list for PBXNativeTarget "Interview-KVC" */;
 			buildPhases = (
-				EE3B3CB32760630000DD56D4 /* Sources */,
-				EE3B3CB42760630000DD56D4 /* Frameworks */,
-				EE3B3CB52760630000DD56D4 /* Resources */,
+				EE3B3CE02763392D00DD56D4 /* Sources */,
+				EE3B3CE12763392D00DD56D4 /* Frameworks */,
+				EE3B3CE22763392D00DD56D4 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = "Interview-KVO";
-			productName = "Interview-KVO";
-			productReference = EE3B3CB72760630000DD56D4 /* Interview-KVO.app */;
+			name = "Interview-KVC";
+			productName = "Interview-KVC";
+			productReference = EE3B3CE42763392D00DD56D4 /* Interview-KVC.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		EE3B3CAF2760630000DD56D4 /* Project object */ = {
+		EE3B3CDC2763392D00DD56D4 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastUpgradeCheck = 1310;
 				TargetAttributes = {
-					EE3B3CB62760630000DD56D4 = {
+					EE3B3CE32763392D00DD56D4 = {
 						CreatedOnToolsVersion = 13.1;
 					};
 				};
 			};
-			buildConfigurationList = EE3B3CB22760630000DD56D4 /* Build configuration list for PBXProject "Interview-KVO" */;
+			buildConfigurationList = EE3B3CDF2763392D00DD56D4 /* Build configuration list for PBXProject "Interview-KVC" */;
 			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -128,58 +118,56 @@
 				en,
 				Base,
 			);
-			mainGroup = EE3B3CAE2760630000DD56D4;
-			productRefGroup = EE3B3CB82760630000DD56D4 /* Products */;
+			mainGroup = EE3B3CDB2763392D00DD56D4;
+			productRefGroup = EE3B3CE52763392D00DD56D4 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				EE3B3CB62760630000DD56D4 /* Interview-KVO */,
+				EE3B3CE32763392D00DD56D4 /* Interview-KVC */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		EE3B3CB52760630000DD56D4 /* Resources */ = {
+		EE3B3CE22763392D00DD56D4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EE3B3CCA2760630100DD56D4 /* LaunchScreen.storyboard in Resources */,
-				EE3B3CC72760630100DD56D4 /* Assets.xcassets in Resources */,
-				EE3B3CC52760630000DD56D4 /* Main.storyboard in Resources */,
+				EE3B3CF72763392E00DD56D4 /* LaunchScreen.storyboard in Resources */,
+				EE3B3CF42763392E00DD56D4 /* Assets.xcassets in Resources */,
+				EE3B3CF22763392D00DD56D4 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		EE3B3CB32760630000DD56D4 /* Sources */ = {
+		EE3B3CE02763392D00DD56D4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EE3B3CC22760630000DD56D4 /* ViewController.m in Sources */,
-				EE3B3CBC2760630000DD56D4 /* AppDelegate.m in Sources */,
-				EE3B3CD827609B1E00DD56D4 /* NSKVONotifing_Person.m in Sources */,
-				EE3B3CD5276084BE00DD56D4 /* Person.m in Sources */,
-				EE3B3CCD2760630100DD56D4 /* main.m in Sources */,
-				EE3B3CBF2760630000DD56D4 /* SceneDelegate.m in Sources */,
+				EE3B3CEF2763392D00DD56D4 /* ViewController.m in Sources */,
+				EE3B3CE92763392D00DD56D4 /* AppDelegate.m in Sources */,
+				EE3B3CFA2763392E00DD56D4 /* main.m in Sources */,
+				EE3B3CEC2763392D00DD56D4 /* SceneDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		EE3B3CC32760630000DD56D4 /* Main.storyboard */ = {
+		EE3B3CF02763392D00DD56D4 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				EE3B3CC42760630000DD56D4 /* Base */,
+				EE3B3CF12763392D00DD56D4 /* Base */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
-		EE3B3CC82760630100DD56D4 /* LaunchScreen.storyboard */ = {
+		EE3B3CF52763392E00DD56D4 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				EE3B3CC92760630100DD56D4 /* Base */,
+				EE3B3CF62763392E00DD56D4 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -187,7 +175,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		EE3B3CCE2760630100DD56D4 /* Debug */ = {
+		EE3B3CFB2763392E00DD56D4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -246,7 +234,7 @@
 			};
 			name = Debug;
 		};
-		EE3B3CCF2760630100DD56D4 /* Release */ = {
+		EE3B3CFC2763392E00DD56D4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -299,7 +287,7 @@
 			};
 			name = Release;
 		};
-		EE3B3CD12760630100DD56D4 /* Debug */ = {
+		EE3B3CFE2763392E00DD56D4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -307,7 +295,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Interview-KVO/Info.plist";
+				INFOPLIST_FILE = "Interview-KVC/Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -318,14 +306,14 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "demo.Interview-KVO";
+				PRODUCT_BUNDLE_IDENTIFIER = "demo.Interview-KVC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		EE3B3CD22760630100DD56D4 /* Release */ = {
+		EE3B3CFF2763392E00DD56D4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -333,7 +321,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Interview-KVO/Info.plist";
+				INFOPLIST_FILE = "Interview-KVC/Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -344,7 +332,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "demo.Interview-KVO";
+				PRODUCT_BUNDLE_IDENTIFIER = "demo.Interview-KVC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -354,25 +342,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		EE3B3CB22760630000DD56D4 /* Build configuration list for PBXProject "Interview-KVO" */ = {
+		EE3B3CDF2763392D00DD56D4 /* Build configuration list for PBXProject "Interview-KVC" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				EE3B3CCE2760630100DD56D4 /* Debug */,
-				EE3B3CCF2760630100DD56D4 /* Release */,
+				EE3B3CFB2763392E00DD56D4 /* Debug */,
+				EE3B3CFC2763392E00DD56D4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		EE3B3CD02760630100DD56D4 /* Build configuration list for PBXNativeTarget "Interview-KVO" */ = {
+		EE3B3CFD2763392E00DD56D4 /* Build configuration list for PBXNativeTarget "Interview-KVC" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				EE3B3CD12760630100DD56D4 /* Debug */,
-				EE3B3CD22760630100DD56D4 /* Release */,
+				EE3B3CFE2763392E00DD56D4 /* Debug */,
+				EE3B3CFF2763392E00DD56D4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = EE3B3CAF2760630000DD56D4 /* Project object */;
+	rootObject = EE3B3CDC2763392D00DD56D4 /* Project object */;
 }
