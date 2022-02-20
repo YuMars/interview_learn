@@ -11,6 +11,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface Student (Test2)
 
+@property (nonatomic, copy) NSString *name;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -8,7 +8,8 @@
 #import "ViewController.h"
 #import "Person.h"
 #import <objc/runtime.h>
-
+#import "Student+Test1.h"
+#import "Student+Test2.h"
 @interface ViewController ()
 
 @end
@@ -133,6 +134,55 @@
     // 2.再初始化子类(可能最终调用的是父类的initialize方法)
     
     // Q:Category是否能添加成员变量？如果可以，如何给Category添加成员变量
+    Student *student = [[Student alloc] init];
+    student.age = 10;
+    student.num = 11;
+    NSLog(@"age:%d num:%d name:%@", student.age, student.num, student.name);
+    
+    /*
+     OBJC_ASSOCIATION_ASSIGN = 0,           **< Specifies a weak reference to the associated object.
+     !!! assign
+     OBJC_ASSOCIATION_RETAIN_NONATOMIC = 1, **< Specifies a strong reference to the associated object.  The association is not made atomically. *
+     !!! strong, nomatomic
+     OBJC_ASSOCIATION_COPY_NONATOMIC = 3,   **< Specifies that the associated object is copied. The association is not made atomically. *
+     !!! copy, nomatomic
+     OBJC_ASSOCIATION_RETAIN = 01401,       **< Specifies a strong reference to the associated object. The association is made atomically. *
+     !!! strong, atomic
+     OBJC_ASSOCIATION_COPY = 01403          **< Specifies that the associated object is copied. The association is made atomically. *
+     !!! copy, atomic
+     */
+    
+    /*
+     实现关联对象技术的核心对象：
+        AssociationManager
+        AssociationHashMap
+        ObjectAssociationMap
+        ObjectAssociation
+     
+     objc_setAssociatedObject(id  _Nonnull object, const void * _Nonnull key, id  _Nullable value, objc_AssociationPolicy policy);
+     
+     class AssociationsManager {
+        AssociationsHashMap *_map;
+     }
+     
+     <id  _Nonnull object, ObjectAssociationMap>
+     
+     typedef DenseMap<DisguisedPtr<objc_object>, ObjectAssociationMap> AssociationsHashMap;
+     
+     <const void * _Nonnull key, ObjcAssociation>
+     
+     typedef DenseMap<const void *, ObjcAssociation> ObjectAssociationMap;
+     
+     class ObjcAssociation {
+         uintptr_t _policy;   < id  _Nullable value
+         id _value;           < objc_AssociationPolicy policy
+     }
+     
+     ·关联对象并不是存储在被关联对象本身内存中
+     
+     */
+    
+    // A:不能直接添加成员变量，因为分类的_category_t 结构体里不包含ivars成员变量数组，通过objc_setAssociatedObject,objc_getAssociatedObject
 }
 
 - (void)printMethodNamesOfClass:(Class)cls {
