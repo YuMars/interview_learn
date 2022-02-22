@@ -291,13 +291,39 @@ static void __ViewController__viewDidLoad_block_func_0(struct __ViewController__
         NSLog(@"%d", num1);
     };
     
+    /*
+     ·当__block变量在栈上时，不会对指向的对象产生强引用
+     ·当__block变量被copy到堆上时
+        1.会调用__block变量内部的copy函数
+        2.copy函数内部会调用_Block_object_assign函数
+        3._Block_object_assign函数会根据所指向对象的修饰符（__strong, __weak, __unsafe_unretained）做出相应的操作，形成强（弱）引用(ARC会retain，MRC不会retain)
+     
+     ·如果__block变量从堆上移除
+        1.会调用__block变量的dispose函数
+        2.dispose函数会调用内部的_Block_object_dispose函数
+        3._Block_object_dispose函数会自动释放所指向的对象
+     */
+    
     // 无法修改的原因：block内部会生产一个结构体带入num1的值，是指向了结构体内部的num1，无法改变外部的num1值
+    
+    // Q:block的原理是什么？本质是什么？
+    
+    // A:A:block 也是一个OC对象，它内部也有isa指针
+    // block是封装了函数调用已经函数调用环境的的OC对象
     
     // Q:__block的作用是什么？有什么使用注意点
     
+    // A:用__block修饰的变量包装成一个对象（有指针的结构体）
+    // 解决block内部无法修改auto变量值的问题
+    // 内存管理：循环引用要注意，用__weak解决，或者用__block内部把对象赋值 = nil
+    
     // Q:block的属性修饰符为什么是copy，使用block有哪些使用注意
     
+    // A:block一旦copy，就会copy到堆上，可以控制生命周期
+    
     // Q:block在修改NSMutableArray,需不需要添加__block
+    
+    // A:不需要
     
     // [self test0]; // 死锁
     // [self test1]; // 0 1 2
