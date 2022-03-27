@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EE580E2427EDB96A0083EF06 /* isa.md in Resources */ = {isa = PBXBuildFile; fileRef = EE580E2327EDB96A0083EF06 /* isa.md */; };
 		EEE641882757635E00786DAB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EEE641872757635E00786DAB /* AppDelegate.m */; };
 		EEE6418B2757635E00786DAB /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EEE6418A2757635E00786DAB /* SceneDelegate.m */; };
 		EEE6418E2757635E00786DAB /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EEE6418D2757635E00786DAB /* ViewController.m */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EE580E2327EDB96A0083EF06 /* isa.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = isa.md; sourceTree = "<group>"; };
 		EEA9964F275A199A0085A00E /* isa指针.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "isa指针.cpp"; sourceTree = "<group>"; };
 		EEE641832757635E00786DAB /* Interview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Interview.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EEE641862757635E00786DAB /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -65,6 +67,7 @@
 			isa = PBXGroup;
 			children = (
 				EEA9964F275A199A0085A00E /* isa指针.cpp */,
+				EE580E2327EDB96A0083EF06 /* isa.md */,
 				EEE641A127576A5100786DAB /* ViewController.cpp */,
 				EEE6419F27576A2C00786DAB /* main-arm64.cpp */,
 				EEE641862757635E00786DAB /* AppDelegate.h */,
@@ -141,6 +144,7 @@
 			files = (
 				EEE641962757636000786DAB /* LaunchScreen.storyboard in Resources */,
 				EEE641932757636000786DAB /* Assets.xcassets in Resources */,
+				EE580E2427EDB96A0083EF06 /* isa.md in Resources */,
 				EEE641912757635E00786DAB /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

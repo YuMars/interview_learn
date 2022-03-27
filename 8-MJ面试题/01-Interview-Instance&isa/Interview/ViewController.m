@@ -148,10 +148,10 @@ struct my_objc_class {
     student.age = 1;
 //    student.no = 3;
     size_t studentSize = class_getInstanceSize([Student class]);
-    NSLog(@"%zu", studentSize);
+    NSLog(@"%zu", studentSize); // 16
     
     size_t studentSize2 = malloc_size((__bridge const void *)(student));
-    NSLog(@"%zu", studentSize2);
+    NSLog(@"%zu", studentSize2); // 16
     
     struct Student_IMPL *studentIMPL = (__bridge  struct Student_IMPL *)student;
     NSLog(@"%d %d", studentIMPL -> _no, studentIMPL -> _age);
