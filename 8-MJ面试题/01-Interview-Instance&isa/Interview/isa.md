@@ -105,7 +105,6 @@ xcrun -sdk iphoneos(手机) clang -arch(架构) arm64(模拟器:i386，32bit:arm
         
         class_isMetaClass()判断是否是元类对象
         
-        
             instance                   class                        meta-class
               isa                       isa                             isa
            其他成员变量                superclass                      superclass
@@ -118,7 +117,19 @@ xcrun -sdk iphoneos(手机) clang -arch(架构) arm64(模拟器:i386，32bit:arm
         当调用对象方法时，通过instance的isa找到class，最后找到对象方法的实现进行调用
         class的isa指针指向meta-class
         当调用类方法时，通过class的isa找到meta-class，最后找到类方法的实现进行调用
-        superclass指针指向父类的对应c指针
+        meta-class的isa指针指向基类的meta-class
+        
+        superclass指针
+        class的superclass指向父类的class(如果没有父类，superclass指针为nil)
+        meta-class的superclass指向父类的meta-class
+        基类的meta-class指向基类的class(类方法找不到，最终会找到对象方法)
+        
+        [student abc];
+        调用方法顺序：
+            1.student的instance对象的isa指针，找到student的class对象
+             2.如果有：则直接调用，如果没有，则通过superclass指针，找到父类的class对象，依次往父类找到父类的class对象 
+             
+        intance(isa & ISA_MASK) = class(isa)
     }
     
     {

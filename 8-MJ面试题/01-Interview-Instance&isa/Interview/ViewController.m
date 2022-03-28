@@ -236,7 +236,7 @@ struct my_objc_class {
     // meta-class的isa指针指向基类的meta-class
     
     /*
-     objc_msdSend(person, @selector())
+     objc_msgSend(person, @selector())
      */
     
     Student *testStudent = [[Student alloc] init];
