@@ -104,6 +104,21 @@ xcrun -sdk iphoneos(手机) clang -arch(架构) arm64(模拟器:i386，32bit:arm
             object_getClass([NSObject class]);
         
         class_isMetaClass()判断是否是元类对象
+        
+        
+            instance                   class                        meta-class
+              isa                       isa                             isa
+           其他成员变量                superclass                      superclass
+                            属性、对象方法、协议、成员变量信息               类方法
+    }
+    
+    {
+        isa指针
+        instance的isa指向class
+        当调用对象方法时，通过instance的isa找到class，最后找到对象方法的实现进行调用
+        class的isa指针指向meta-class
+        当调用类方法时，通过class的isa找到meta-class，最后找到类方法的实现进行调用
+        superclass指针指向父类的对应c指针
     }
     
     {

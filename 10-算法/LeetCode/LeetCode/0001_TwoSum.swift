@@ -9,7 +9,7 @@ import Foundation
 
 
 class TwoSum {
-    func twoSum(_ nums:[Int], _ target:Int) -> [Int] {
+    public class func twoSum(_ nums:[Int], _ target:Int) -> [Int] { // 暴力解法
         for i in 0...nums.count - 1 {
             for j in i + 1..<nums.count {
                 if nums[i] + nums[j] == target {
