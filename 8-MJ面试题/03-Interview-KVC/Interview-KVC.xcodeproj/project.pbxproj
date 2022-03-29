@@ -32,6 +32,8 @@
 		EE3B3CF92763392E00DD56D4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		EE3B3D0027633CC700DD56D4 /* Person.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Person.h; sourceTree = "<group>"; };
 		EE3B3D0127633CC700DD56D4 /* Person.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Person.m; sourceTree = "<group>"; };
+		EEF1B6ED27F2E38100E1E521 /* KVC.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = KVC.md; sourceTree = "<group>"; };
+		EEF1B6EE27F2E74000E1E521 /* KVC原理.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "KVC原理.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +66,7 @@
 		EE3B3CE62763392D00DD56D4 /* Interview-KVC */ = {
 			isa = PBXGroup;
 			children = (
+				EEF1B6EE27F2E74000E1E521 /* KVC原理.png */,
 				EE3B3CE72763392D00DD56D4 /* AppDelegate.h */,
 				EE3B3CE82763392D00DD56D4 /* AppDelegate.m */,
 				EE3B3CEA2763392D00DD56D4 /* SceneDelegate.h */,
@@ -77,6 +80,7 @@
 				EE3B3CF52763392E00DD56D4 /* LaunchScreen.storyboard */,
 				EE3B3CF82763392E00DD56D4 /* Info.plist */,
 				EE3B3CF92763392E00DD56D4 /* main.m */,
+				EEF1B6ED27F2E38100E1E521 /* KVC.md */,
 			);
 			path = "Interview-KVC";
 			sourceTree = "<group>";
