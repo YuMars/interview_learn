@@ -12,6 +12,7 @@
 @interface ViewController ()
 
 @property (nonatomic, strong) Person *person;
+@property (nonatomic, strong) Person *person2;
 
 @end
 
@@ -45,25 +46,37 @@
      */
     
     self.person = [[Person alloc] init];
-    self.person.age = 30;
+    self.person.age = 10;
     self.person -> _height = 1;
     
+    self.person2 = [[Person alloc] init];
+    self.person2.age = 20;
+    self.person2 -> _height = 2;
+    
+    // getClass
+    NSLog(@"class %@ %@", [self.person class], [self.person2 class]);
+    
     // class对象
-    NSLog(@"类%p",object_getClass(self.person));
+    NSLog(@"类%p %@",object_getClass(self.person), object_getClass(self.person));
     
     // meta-class对象
-    NSLog(@"元类%p", object_getClass(object_getClass(self.person)));
+    NSLog(@"元类%p %@", object_getClass(object_getClass(self.person)), object_getClass(object_getClass(self.person)));
     
     NSLog(@"监听之前%p", [self.person methodForSelector:@selector(setAge:)]);
+    // p (IMP)+上面的方法地址可以打印方法
     
     [self printMethodNamesOfClass:object_getClass(self.person)];
     
     // NSKVONotifing_Person Class
     [self.person addObserver:self forKeyPath:@"age" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
     [self.person addObserver:self forKeyPath:@"height" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
-    NSLog(@"类%p",object_getClass(self.person));
     
-    NSLog(@"元类%p", object_getClass(object_getClass(self.person)));
+    // getClass
+    NSLog(@"class %@ %@", [self.person class], [self.person2 class]);
+    
+    NSLog(@"类%p %@",object_getClass(self.person), object_getClass(self.person));
+    
+    NSLog(@"元类%p %@", object_getClass(object_getClass(self.person)), object_getClass(object_getClass(self.person)));
     
     NSLog(@"监听之后%p", [self.person methodForSelector:@selector(setAge:)]);
     
@@ -111,11 +124,12 @@
     
     // self.person.isa = NSKVONotifing_Person 是使用runtime动态创建的一个类
     // IMP [self.person methodForSelector:@selector(setAge:)]
-    //self.person.age = 20;
+    self.person.age = 20;
+    self.person2.age = 30;
     
-    [self.person willChangeValueForKey:@"height"];
-    self.person -> _height = 30;
-    [self.person didChangeValueForKey:@"height"];
+//    [self.person willChangeValueForKey:@"height"];
+//    self.person -> _height = 30;
+//    [self.person didChangeValueForKey:@"height"];
 }
 
 // 当监听对象的属性值发生改变，就会调用

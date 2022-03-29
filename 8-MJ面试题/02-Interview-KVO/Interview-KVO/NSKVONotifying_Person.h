@@ -9,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NSKVONotifing_Person : Person
+@interface NSKVONotifying_Person : Person
 
 @end
 

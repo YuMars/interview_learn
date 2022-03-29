@@ -5,9 +5,9 @@
 //  Created by Red-Fish on 2021/12/8.
 //
 
-#import "NSKVONotifing_Person.h"
+#import "NSKVONotifying_Person.h"
 
-@implementation NSKVONotifing_Person
+@implementation NSKVONotifying_Person
 
 - (void)setAge:(NSInteger)age {
     _NSSetIntValueAndNotify();
@@ -15,6 +15,7 @@
     
 }
 
+// 伪代码
 void _NSSetIntValueAndNotify() {
 //    [self willChangeValueForKey:@"age"];
 //    [super setAge:age];
@@ -25,7 +26,7 @@ void _NSSetIntValueAndNotify() {
 //    return [Person class];
 //}
 //
-//- (BOOL)isKVOA {
+//- (BOOL)_isKVOA {
 //    return YES;
 //}
 

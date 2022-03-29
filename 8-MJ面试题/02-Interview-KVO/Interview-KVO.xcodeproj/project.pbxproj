@@ -15,7 +15,6 @@
 		EE3B3CCA2760630100DD56D4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EE3B3CC82760630100DD56D4 /* LaunchScreen.storyboard */; };
 		EE3B3CCD2760630100DD56D4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EE3B3CCC2760630100DD56D4 /* main.m */; };
 		EE3B3CD5276084BE00DD56D4 /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = EE3B3CD4276084BE00DD56D4 /* Person.m */; };
-		EE3B3CD827609B1E00DD56D4 /* NSKVONotifing_Person.m in Sources */ = {isa = PBXBuildFile; fileRef = EE3B3CD727609B1E00DD56D4 /* NSKVONotifing_Person.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,8 +32,9 @@
 		EE3B3CCC2760630100DD56D4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		EE3B3CD3276084BE00DD56D4 /* Person.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Person.h; sourceTree = "<group>"; };
 		EE3B3CD4276084BE00DD56D4 /* Person.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Person.m; sourceTree = "<group>"; };
-		EE3B3CD627609B1E00DD56D4 /* NSKVONotifing_Person.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSKVONotifing_Person.h; sourceTree = "<group>"; };
-		EE3B3CD727609B1E00DD56D4 /* NSKVONotifing_Person.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSKVONotifing_Person.m; sourceTree = "<group>"; };
+		EE3B3CD627609B1E00DD56D4 /* NSKVONotifying_Person.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSKVONotifying_Person.h; sourceTree = "<group>"; };
+		EE3B3CD727609B1E00DD56D4 /* NSKVONotifying_Person.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSKVONotifying_Person.m; sourceTree = "<group>"; };
+		EEE3C89B27F1F724003C33D9 /* KVO.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = KVO.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,10 +73,11 @@
 				EE3B3CBE2760630000DD56D4 /* SceneDelegate.m */,
 				EE3B3CC02760630000DD56D4 /* ViewController.h */,
 				EE3B3CC12760630000DD56D4 /* ViewController.m */,
+				EEE3C89B27F1F724003C33D9 /* KVO.md */,
 				EE3B3CD3276084BE00DD56D4 /* Person.h */,
 				EE3B3CD4276084BE00DD56D4 /* Person.m */,
-				EE3B3CD627609B1E00DD56D4 /* NSKVONotifing_Person.h */,
-				EE3B3CD727609B1E00DD56D4 /* NSKVONotifing_Person.m */,
+				EE3B3CD627609B1E00DD56D4 /* NSKVONotifying_Person.h */,
+				EE3B3CD727609B1E00DD56D4 /* NSKVONotifying_Person.m */,
 				EE3B3CC32760630000DD56D4 /* Main.storyboard */,
 				EE3B3CC62760630100DD56D4 /* Assets.xcassets */,
 				EE3B3CC82760630100DD56D4 /* LaunchScreen.storyboard */,
@@ -158,7 +159,6 @@
 			files = (
 				EE3B3CC22760630000DD56D4 /* ViewController.m in Sources */,
 				EE3B3CBC2760630000DD56D4 /* AppDelegate.m in Sources */,
-				EE3B3CD827609B1E00DD56D4 /* NSKVONotifing_Person.m in Sources */,
 				EE3B3CD5276084BE00DD56D4 /* Person.m in Sources */,
 				EE3B3CCD2760630100DD56D4 /* main.m in Sources */,
 				EE3B3CBF2760630000DD56D4 /* SceneDelegate.m in Sources */,
@@ -306,6 +306,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Interview-KVO/Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -332,6 +333,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Interview-KVO/Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
