@@ -59,7 +59,7 @@
     
     // Q:KVC的赋值和取值过程是怎么样的？原理是什么？
     
-    /*
+    /* 
      A:按照setKey: _setKey顺序查找方法（传递参数调用方法）
      查看accessInstanceVariablesDirectlu方法的返回值
      按照_key,_isKey,key,isKey（找到成员变量赋值）

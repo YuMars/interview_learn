@@ -3749,8 +3749,9 @@ static void schedule_class_load(Class cls)
     if (cls->data()->flags & RW_LOADED) return;
 
     // Ensure superclass-first ordering
-    schedule_class_load(cls->superclass);
+    schedule_class_load(cls->superclass); // 从父类开始调用
 
+    // 从头开始遍历，
     add_class_to_loadable_list(cls);
     cls->setInfo(RW_LOADED); 
 }

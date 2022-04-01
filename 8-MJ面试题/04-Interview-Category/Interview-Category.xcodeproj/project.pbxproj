@@ -25,6 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EE1E1B7527F45EBA00D55316 /* Category.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Category.md; sourceTree = "<group>"; };
 		EEDF5E3D2766F04700C02C6E /* Interview-Category.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Interview-Category.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EEDF5E402766F04700C02C6E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		EEDF5E412766F04700C02C6E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -118,6 +119,7 @@
 				EEDF5E4E2766F04800C02C6E /* LaunchScreen.storyboard */,
 				EEDF5E512766F04800C02C6E /* Info.plist */,
 				EEDF5E522766F04800C02C6E /* main.m */,
+				EE1E1B7527F45EBA00D55316 /* Category.md */,
 			);
 			path = "Interview-Category";
 			sourceTree = "<group>";

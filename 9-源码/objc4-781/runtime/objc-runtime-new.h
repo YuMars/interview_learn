@@ -896,12 +896,12 @@ class list_array_tt {
             // many lists -> many lists
             uint32_t oldCount = array()->count;
             uint32_t newCount = oldCount + addedCount;
-            setArray((array_t *)realloc(array(), array_t::byteSize(newCount)));
+            setArray((array_t *)realloc(array(), array_t::byteSize(newCount))); // 重新分配内存
             array()->count = newCount;
             memmove(array()->lists + addedCount, array()->lists, 
-                    oldCount * sizeof(array()->lists[0]));
+                    oldCount * sizeof(array()->lists[0])); // 扩容
             memcpy(array()->lists, addedLists, 
-                   addedCount * sizeof(array()->lists[0]));
+                   addedCount * sizeof(array()->lists[0]));// 扩容后复制新增的
         }
         else if (!list  &&  addedCount == 1) {
             // 0 lists -> 1 list

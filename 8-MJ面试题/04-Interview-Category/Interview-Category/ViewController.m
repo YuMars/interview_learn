@@ -63,7 +63,7 @@
     
     // Q:Category的Extension的区别是什么
     // A: Extension（匿名分类），本来公开的信息可以放在Extension中
-    // Extension在编译的时候将所有extension信息合并到class信息中
+    // Extension在编译的时候将所有extension信息合并到 class信息中
     // Category在runtime的时候讲所有category信息合并到class信息中
     
     // Q:Category中有load方法吗？load方法是什么时候调用的，load方法能继承吗？
