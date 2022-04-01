@@ -123,3 +123,35 @@
     // A: 有load方法
           load方法在runtime加载分类、类的时候调用
           load方法可以继承，但是一般情况下不会主动去调用load，让系统自动调用
+          
+    {
+        initialize方法会在类第一次接受到消息时调用（obj_msgSend()）
+        
+        +initialize调用顺序：
+        1.先调用父类的initialize，再调用子类的+initialize
+        
+        源码顺序：
+        class_getInstanceMethod -> lookUpImpOrNil -> lookUpImpOrForward -> _class_initialize -> callInitilize -> objc_msgSend(clas, SEL_initialize)
+        
+        +initizlize和+load的很大区别是，+initialize是通过objc_msgSend()进行调用，所以有以下特点：
+        1.如果子类没有实现+initialize，会调用父类的+initialize(所以父类的initialize可能被调用多次)
+        2.如果分类实现了+initialize，就会覆盖类本身的+initialize
+    }
+    
+    // Q: +load,+initialize方法的区别
+    // A: 1.load是根据函数地址直接调用，initialize的通过objc_msgSend()调用
+          2.调用时刻：load是runtime加载类、分类的时候调用，只会调用1次
+                    initialize是类第一次接口到消息的时候调用，每一个类只会initialize一次（父类的initialize可能被调用多次，比如子类没实现initialize方法,父类实现了，则子类调用initialize的时候会调用2次initialize，一次是父类initialize，一次是子类本身没实现，调用superclass找到initialize方法）
+                    
+    // Q: +load,+initialize的调用顺序
+    // A: 1.load：
+            先调用类的load
+                先编译的类，优先调用load
+                调用子类的load之前，会先调用父类的load
+            再调用分类的load
+                先编译的分类，优先调用
+            
+          2.initialize
+            先初始化父类
+            再初始化子类
+    

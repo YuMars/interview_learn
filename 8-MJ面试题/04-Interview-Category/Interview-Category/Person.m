@@ -9,6 +9,10 @@
 
 @implementation Person
 
++ (void)initialize {
+    NSLog(@"Person initialize");
+}
+
 - (void)run {
     NSLog(@"run");
 }

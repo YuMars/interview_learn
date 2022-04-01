@@ -23,7 +23,6 @@
     // A:类想要拆解成不同的模块
     
     // Q:Category的实现原理
-    
     Person *person = [[Person alloc] init];
     [person run];
     //objc_msgSend(person, @selector(run));
@@ -87,7 +86,7 @@
     // load方法在runtime加载的时候调用。通过函数指针找到函数直接调用。
     // load方法可以继承，一般情况子不会主动调用，让系统调用。
     
-    [self printMethodNamesOfClass:object_getClass([Person class])];
+    //[self printMethodNamesOfClass:object_getClass([Person class])];
     
     // Q:load,initialize方法的区别是什么？他们在Category中的调用顺序，以及出现继承时他们之间的调用过程
     
@@ -186,7 +185,7 @@
 }
 
 - (void)printMethodNamesOfClass:(Class)cls {
-    
+     
     NSLog(@"start pint -------------");
     unsigned int count;
     Method *methodList = class_copyMethodList(cls, &count);
