@@ -1,0 +1,65 @@
+#  Association
+
+    分类没办法在声明变量后自动生成setter，getter
+    
+    // Q: Categort能否添加成员变量？如果可以，如何给category添加成员变量
+    // A: 不能直接给Category添加成员变量，但可以间接实现(关联对象)
+
+    {
+        objc_setAssociatedObject(id  _Nonnull object, const void * _Nonnull key, id  _Nullable value, objc_AssociationPolicy policy);
+        
+        设置key的方式:
+            1. const void *KNameKey;
+            2. const void *KNameKey = &KNameKey;
+            3. static const char KNameKey;
+            4. @"name"
+            5. @selector(name)
+            6. @selector(name) + _cmd
+    }
+    
+    {
+     **< Specifies a weak reference to the associated object. 
+     OBJC_ASSOCIATION_ASSIGN = 0,       // assign    
+     **< Specifies a strong reference to the associated object.  The association is not made atomically. *
+     OBJC_ASSOCIATION_RETAIN_NONATOMIC = 1, //  strong, nomatomic
+     **< Specifies that the associated object is copied. The association is not made atomically. *
+     OBJC_ASSOCIATION_COPY_NONATOMIC = 3,   // copy, nomatomic
+     **< Specifies a strong reference to the associated object. The association is made atomically. *
+     OBJC_ASSOCIATION_RETAIN = 01401,      // strong, atomic
+     **< Specifies that the associated object is copied. The association is made atomically. *
+     OBJC_ASSOCIATION_COPY = 01403  // copy, atomic          
+    }
+
+    {
+        实现关联对象的核心技术
+            1.AssociationsManager
+            2.AssociationsMap
+            3.ObjectAssociationMap
+            4.ObjeccAssociations
+            
+        源码参考：objc_refrences.mm
+        
+        AssociationsManager:
+            AssociationHashMap *_map;
+            
+        AssociationsMap:
+            disguised_ptr_t ObjectAssociationMap
+            disguised_ptr_t ObjectAssociationMap
+            ....
+        
+        ObjectAssociationMap:
+            void * ObjectAssociation
+            void * ObjectAssociation
+            ...
+            
+        ObjectAssociation:
+            unitptr_t _policy
+                id    _value
+                
+        objc_setAssociatedObject(id  _Nonnull object, const void * _Nonnull key, id  _Nullable value, objc_AssociationPolicy policy); 
+        
+        关联对象并不是存储在被关联对象本身内存中
+        关联对象存储在全局的统一的一个AssociationsManager中
+        设置关联对象为nil，相当于移除关联对象
+        关联对象无法进行弱引用
+    }

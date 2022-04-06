@@ -217,6 +217,15 @@ static void __ViewController__viewDidLoad_block_func_0(struct __ViewController__
      4.block作为GCD API的方法参数
      */
     
+    void(^globalBlock)(void) = ^{
+        NSLog(@"");
+    };
+    
+    NSLog(@"globalBlock:%@", [globalBlock class]);
+    NSLog(@"globalBlock:%@", [[globalBlock class] superclass]);
+    NSLog(@"globalBlock:%@", [[[globalBlock class] superclass] superclass]);
+    NSLog(@"globalBlock:%@", [[[[globalBlock class] superclass] superclass] superclass]);
+    
     /*
      对象类型的auto变量
      

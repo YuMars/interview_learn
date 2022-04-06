@@ -79851,7 +79851,10 @@ static void __ViewController__viewDidLoad_block_func_0(struct __ViewController__
 static struct __ViewController__viewDidLoad_block_desc_0 {
   size_t reserved;
   size_t Block_size;
-} __ViewController__viewDidLoad_block_desc_0_DATA = { 0, sizeof(struct __ViewController__viewDidLoad_block_impl_0)};
+} __ViewController__viewDidLoad_block_desc_0_DATA = {
+    0,
+    sizeof(struct __ViewController__viewDidLoad_block_impl_0)
+};
 
 static void _I_ViewController_viewDidLoad(ViewController * self, SEL _cmd) {
     ((void (*)(__rw_objc_super *, SEL))(void *)objc_msgSendSuper)((__rw_objc_super){(id)self, (id)class_getSuperclass(objc_getClass("ViewController"))}, sel_registerName("viewDidLoad"));

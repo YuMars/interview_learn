@@ -79835,6 +79835,7 @@ static void _I_ViewController_viewDidLoad(ViewController * self, SEL _cmd) {
     // 定义block变量
     void(*parameterBlock)(int, int) = ((void (*)(int, int))&__ViewController__viewDidLoad_block_impl_0((void *)__ViewController__viewDidLoad_block_func_0, &__ViewController__viewDidLoad_block_desc_0_DATA, num));
 
+    // 调用block代码
     ((void (*)(__block_impl *, int, int))( parameterBlock)->FuncPtr)((__block_impl *)parameterBlock, num, d);
 }
 
