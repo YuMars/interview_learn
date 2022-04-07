@@ -17,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EE18324527FDC833004897BF /* ViewController-5__block.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "ViewController-5__block.cpp"; sourceTree = "<group>"; };
 		EE777D0027F7ED4300C06E13 /* Block.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Block.md; sourceTree = "<group>"; };
 		EEDC3A47277B4CCF00570283 /* ViewController-1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "ViewController-1.cpp"; sourceTree = "<group>"; };
 		EEDC3A49277B4EFC00570283 /* ViewController-2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "ViewController-2.cpp"; sourceTree = "<group>"; };
@@ -72,6 +73,7 @@
 				EEDC3A49277B4EFC00570283 /* ViewController-2.cpp */,
 				EEDC3A47277B4CCF00570283 /* ViewController-1.cpp */,
 				EEE15195276C7FD000C1CC28 /* ViewController-0.cpp */,
+				EE18324527FDC833004897BF /* ViewController-5__block.cpp */,
 				EEE1517C276C6B9D00C1CC28 /* AppDelegate.h */,
 				EEE15185276C6B9D00C1CC28 /* Main.storyboard */,
 				EEE1517D276C6B9D00C1CC28 /* AppDelegate.m */,

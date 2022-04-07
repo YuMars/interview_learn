@@ -293,10 +293,10 @@ static void __ViewController__viewDidLoad_block_func_0(struct __ViewController__
     
     // 修改变量
     
-    int num1 = 3;
+    __block int num1 = 3;
     
     BlockAuto block11 = ^ {
-        //num1 = 2;
+        num1 = 2;
         NSLog(@"%d", num1);
     };
     

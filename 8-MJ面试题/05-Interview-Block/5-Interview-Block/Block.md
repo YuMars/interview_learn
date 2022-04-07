@@ -162,3 +162,30 @@
         copy函数              栈上的Block复制到堆时
         dispose函数           堆上的block被废弃时
     }
+    
+    {
+        __block修饰符（修改变量）
+            1.__block可以用于解决block内部无法修改auto变量值的问题
+            2.__block不能修饰全局变量、静态变量（static）
+        
+        __block会将变量包装成一个对象
+        
+        __block int a = 10;
+        struct __Block_byref_num1_0 {
+            void *__isa;
+            __Block_byref_num1_0 *__forwarding; // 自己的地址传给__forwarding
+            int __flags;
+            int __size;
+            int num1;
+        };
+    }
+    
+    {
+         __block的内存管理
+         
+         1.block在栈上时，并不会对__block变量产生强引用
+         2.当block被copy到堆时
+            会调用block内部的copu函数
+            copy函数内部会调用_Block_object_assign函数
+            _Block_object_assign函数会对__block变量形成强引用（retain）
+    }
