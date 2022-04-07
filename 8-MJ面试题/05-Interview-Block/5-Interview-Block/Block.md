@@ -185,7 +185,45 @@
          
          1.block在栈上时，并不会对__block变量产生强引用
          2.当block被copy到堆时
-            会调用block内部的copu函数
+            会调用block内部的copy函数
             copy函数内部会调用_Block_object_assign函数
             _Block_object_assign函数会对__block变量形成强引用（retain）
+            _Block_object_assign((void*)&dst->a, (void *)src->a, 8); // BYREF
+            _Block_object_assign((void*)&dst->p, (void *)src->p, 3); // OBJECT
+            
+            
+        1.当block从堆中移除
+            会调用block内部的dispose函数
+            dispose函数内部会调用_Block_object_dispose函数
+            _Block_object_dispose函数会自动释放引用的__block变量(release)
+            _Block_object_dispose((void *)src->a, 8) // BYREF
+            _Block_object_dispose((void *)src->p, 3) // OBJECT
+    }
+    
+    {
+         __forwarding指针
+            
+            栈上的_forwarding指针指向自己本身
+            
+            栈上的block复制到堆上后
+                栈上_block结构体的_forwarding指针指向堆上的block结构体
+                堆栈_block结构体的_forwarding指针指向自己本身的指针
+    }
+    
+    {
+        被__block修饰的对象类型
+        
+        当__block变量在栈上时，不会对指向的对象产生强引用
+        
+        当__block变量被copy到堆时
+            会调用__block结构体内部的copy函数
+            copy函数内部会调用_Block_object_assign函数
+            _Block_object_assign函数会根据所指向对象的修饰符(__strong, __weak, __unsafe_unretained)做出相应的操作，形成强引用(retain)或者弱引用
+        
+        如果__block从堆上移除
+            会调用__block变量内部的dispose函数
+            dispose函数内部会调用_Block_object_dispose函数
+            _Block_object_dispose函数会自动释放所指向的对象(release);
+            
+            
     }
