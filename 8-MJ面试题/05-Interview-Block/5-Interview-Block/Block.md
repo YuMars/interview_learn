@@ -224,6 +224,44 @@
             会调用__block变量内部的dispose函数
             dispose函数内部会调用_Block_object_dispose函数
             _Block_object_dispose函数会自动释放所指向的对象(release);
-            
-            
     }
+    
+    {
+        循环引用问题：
+            object.block内部持有了 object的对象
+         
+        ARC:    
+            用__weak __unsafe_unretain解决
+            __weak typeof(self) weakSelf = self;
+            self.block = ^{
+                weakSelf;
+            };
+            
+            __unsafe_unretain id weakSelf = self;
+            self.block = ^{
+                weakSelf;
+            };
+            
+            用__block解决 对象 = nil
+            __block id weakSelf = self;
+            self.block = ^{
+                weakSelf = nil;
+            };
+            
+            self.blocl();
+            
+        MRC:
+            用__unsafe_unretain解决
+    }
+
+    // Q:block的原理是什么？本质是什么？
+    // A:block本质是一个OC对象，内部也有一个isa指针，是封装了函数调用已经函数调用环境的OC对象
+    
+    // Q:block的作用是什么？有什么使用注意点
+    // A:将__block修饰的变量包装成对象,解决block内部无法修改auto变量的问题。需要注意内存管理
+    
+    // Q:block的属性修饰符为什么是copy？使用block是哪些使用注意
+    // A:block不使用copy，在栈上不会再堆上。
+    
+    // Q:block在修改NSMutableArray，需不需要添加__block
+    // A:不需要 

@@ -12,6 +12,7 @@ typedef void(^BlockAuto)(void);
 @interface Person : NSObject
 
 @property (nonatomic, assign) NSInteger age;
+@property (nonatomic, copy) void(^block)(void);
 
 @end
 
@@ -337,6 +338,14 @@ static void __ViewController__viewDidLoad_block_func_0(struct __ViewController__
     // [self test0]; // 死锁
     // [self test1]; // 0 1 2
     // [self test2]; // 0 1
+    
+    __block Person *blockPerson = [[Person alloc] init];
+    blockPerson.age = 10;
+    blockPerson.block = ^{
+        blockPerson.age;
+    };
+    
+    blockPerson.block();
 }
 
 - (void)test0 {

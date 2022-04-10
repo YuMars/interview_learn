@@ -36,6 +36,7 @@
 		EEE15195276C7FD000C1CC28 /* ViewController-0.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "ViewController-0.cpp"; sourceTree = "<group>"; };
 		EEE6967A27B63FDE009EAFAC /* ViewController-3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "ViewController-3.cpp"; sourceTree = "<group>"; };
 		EEE6967C27B64416009EAFAC /* ViewController-4.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "ViewController-4.cpp"; sourceTree = "<group>"; };
+		EEF1A4D328018BD800D23EF6 /* ViewController-6_cycle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "ViewController-6_cycle.cpp"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +75,7 @@
 				EEDC3A47277B4CCF00570283 /* ViewController-1.cpp */,
 				EEE15195276C7FD000C1CC28 /* ViewController-0.cpp */,
 				EE18324527FDC833004897BF /* ViewController-5__block.cpp */,
+				EEF1A4D328018BD800D23EF6 /* ViewController-6_cycle.cpp */,
 				EEE1517C276C6B9D00C1CC28 /* AppDelegate.h */,
 				EEE15185276C6B9D00C1CC28 /* Main.storyboard */,
 				EEE1517D276C6B9D00C1CC28 /* AppDelegate.m */,

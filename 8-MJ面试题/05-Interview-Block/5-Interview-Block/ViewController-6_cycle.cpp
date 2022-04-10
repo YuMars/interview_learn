@@ -106,27 +106,27 @@ struct __AtAutoreleasePool {
 };
 
 #define __OFFSETOFIVAR__(TYPE, MEMBER) ((long long) &((TYPE *)0)->MEMBER)
-static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_0 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"%@1 --- dealloc",15};
-static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_1 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"%@ - %@ - %@",12};
-static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_2 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"block3\357\274\232%d %d",14};
-static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_3 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"",0};
-static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_4 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"globalBlock:%@",14};
-static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_5 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"globalBlock:%@",14};
-static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_6 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"globalBlock:%@",14};
-static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_7 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"globalBlock:%@",14};
-static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_8 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"----",4};
-static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_9 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8," %ld",4};
-static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_10 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"----",4};
-static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_11 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"%d",2};
-static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_12 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"0",1};
-static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_13 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"1",1};
-static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_14 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"2",1};
-static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_15 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"0",1};
-static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_16 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"1",1};
-static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_17 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"2",1};
-static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_18 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"0",1};
-static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_19 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"1",1};
-static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_20 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"2",1};
+static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_0 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"%@1 --- dealloc",15};
+static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_1 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"%@ - %@ - %@",12};
+static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_2 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"block3\357\274\232%d %d",14};
+static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_3 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"",0};
+static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_4 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"globalBlock:%@",14};
+static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_5 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"globalBlock:%@",14};
+static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_6 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"globalBlock:%@",14};
+static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_7 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"globalBlock:%@",14};
+static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_8 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"----",4};
+static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_9 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8," %ld",4};
+static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_10 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"----",4};
+static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_11 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"%d",2};
+static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_12 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"0",1};
+static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_13 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"1",1};
+static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_14 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"2",1};
+static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_15 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"0",1};
+static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_16 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"1",1};
+static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_17 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"2",1};
+static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_18 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"0",1};
+static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_19 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"1",1};
+static __NSConstantStringImpl __NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_20 __attribute__ ((section ("__DATA, __cfstring"))) = {__CFConstantStringClassReference,0x000007c8,"2",1};
 typedef signed char __int8_t;
 typedef unsigned char __uint8_t;
 typedef short __int16_t;
@@ -49490,22 +49490,30 @@ typedef struct {} _objc_exc_Person;
 #endif
 
 extern "C" unsigned long OBJC_IVAR_$_Person$_age;
+extern "C" unsigned long OBJC_IVAR_$_Person$_block;
 struct Person_IMPL {
 	struct NSObject_IMPL NSObject_IVARS;
 	NSInteger _age;
+	void (*_block)();
 };
 
 // @property (nonatomic, assign) NSInteger age;
+// @property (nonatomic, copy) void(^block)(void);
 /* @end */
 
 // @implementation Person
 
 static void _I_Person_dealloc(Person * self, SEL _cmd) {
-    NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_0, ((Class (*)(id, SEL))(void *)objc_msgSend)((id)self, sel_registerName("class")));
+    NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_0, ((Class (*)(id, SEL))(void *)objc_msgSend)((id)self, sel_registerName("class")));
 }
 
 static NSInteger _I_Person_age(Person * self, SEL _cmd) { return (*(NSInteger *)((char *)self + OBJC_IVAR_$_Person$_age)); }
 static void _I_Person_setAge_(Person * self, SEL _cmd, NSInteger age) { (*(NSInteger *)((char *)self + OBJC_IVAR_$_Person$_age)) = age; }
+
+static void(* _I_Person_block(Person * self, SEL _cmd) )(){ return (*(void (**)())((char *)self + OBJC_IVAR_$_Person$_block)); }
+extern "C" __declspec(dllimport) void objc_setProperty (id, SEL, long, id, bool, bool);
+
+static void _I_Person_setBlock_(Person * self, SEL _cmd, void (*block)()) { objc_setProperty (self, _cmd, __OFFSETOFIVAR__(struct Person, _block), (id)block, 0, 1); }
 // @end
 
 #ifndef _REWRITER_typedef_Teacher
@@ -49524,7 +49532,7 @@ struct Teacher_IMPL {
 
 static instancetype _I_Teacher_init(Teacher * self, SEL _cmd) {
     if (self = ((Teacher *(*)(__rw_objc_super *, SEL))(void *)objc_msgSendSuper)((__rw_objc_super){(id)self, (id)class_getSuperclass(objc_getClass("Teacher"))}, sel_registerName("init"))) {
-        NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_1, ((Class (*)(id, SEL))(void *)objc_msgSend)((id)self, sel_registerName("class")), ((Class (*)(__rw_objc_super *, SEL))(void *)objc_msgSendSuper)((__rw_objc_super){(id)self, (id)class_getSuperclass(objc_getClass("Teacher"))}, sel_registerName("class")), ((Class (*)(id, SEL))(void *)objc_msgSend)((id)self, sel_registerName("superclass")));
+        NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_1, ((Class (*)(id, SEL))(void *)objc_msgSend)((id)self, sel_registerName("class")), ((Class (*)(__rw_objc_super *, SEL))(void *)objc_msgSendSuper)((__rw_objc_super){(id)self, (id)class_getSuperclass(objc_getClass("Teacher"))}, sel_registerName("class")), ((Class (*)(id, SEL))(void *)objc_msgSend)((id)self, sel_registerName("superclass")));
     }
     return self;
 }
@@ -49555,7 +49563,7 @@ static void __ViewController__viewDidLoad_block_func_0(struct __ViewController__
   int num = __cself->num;
     }
 // @implementation ViewController
-struct   {
+struct __Block_byref_num1_0 {
   void *__isa;
 __Block_byref_num1_0 *__forwarding;
  int __flags;
@@ -49579,7 +49587,7 @@ static void __ViewController__viewDidLoad_block_func_0(struct __ViewController__
   int a = __cself->a; // bound by copy
   int *b = __cself->b; // bound by copy
 
-        NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_2, a, (*b));
+        NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_2, a, (*b));
     }
 
 static struct __ViewController__viewDidLoad_block_desc_0 {
@@ -49599,7 +49607,7 @@ struct __ViewController__viewDidLoad_block_impl_1 {
 };
 static void __ViewController__viewDidLoad_block_func_1(struct __ViewController__viewDidLoad_block_impl_1 *__cself) {
 
-        NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_3);
+        NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_3);
     }
 
 static struct __ViewController__viewDidLoad_block_desc_1 {
@@ -49621,7 +49629,7 @@ struct __ViewController__viewDidLoad_block_impl_2 {
 static void __ViewController__viewDidLoad_block_func_2(struct __ViewController__viewDidLoad_block_impl_2 *__cself) {
   Person *__weak weakP = __cself->weakP; // bound by copy
 
-           NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_9, ((NSInteger (*)(id, SEL))(void *)objc_msgSend)((id)weakP, sel_registerName("age")));
+           NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_9, ((NSInteger (*)(id, SEL))(void *)objc_msgSend)((id)weakP, sel_registerName("age")));
         }
 static void __ViewController__viewDidLoad_block_copy_2(struct __ViewController__viewDidLoad_block_impl_2*dst, struct __ViewController__viewDidLoad_block_impl_2*src) {_Block_object_assign((void*)&dst->weakP, (void*)src->weakP, 3/*BLOCK_FIELD_IS_OBJECT*/);}
 
@@ -49649,7 +49657,7 @@ static void __ViewController__viewDidLoad_block_func_3(struct __ViewController__
   __Block_byref_num1_0 *num1 = __cself->num1; // bound by ref
 
         (num1->__forwarding->num1) = 2;
-        NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_11, (num1->__forwarding->num1));
+        NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_11, (num1->__forwarding->num1));
     }
 static void __ViewController__viewDidLoad_block_copy_3(struct __ViewController__viewDidLoad_block_impl_3*dst, struct __ViewController__viewDidLoad_block_impl_3*src) {_Block_object_assign((void*)&dst->num1, (void*)src->num1, 8/*BLOCK_FIELD_IS_BYREF*/);}
 
@@ -49662,6 +49670,33 @@ static struct __ViewController__viewDidLoad_block_desc_3 {
   void (*dispose)(struct __ViewController__viewDidLoad_block_impl_3*);
 } __ViewController__viewDidLoad_block_desc_3_DATA = { 0, sizeof(struct __ViewController__viewDidLoad_block_impl_3), __ViewController__viewDidLoad_block_copy_3, __ViewController__viewDidLoad_block_dispose_3};
 
+struct __ViewController__viewDidLoad_block_impl_4 {
+  struct __block_impl impl;
+  struct __ViewController__viewDidLoad_block_desc_4* Desc;
+  Person *__strong blockPerson;
+  __ViewController__viewDidLoad_block_impl_4(void *fp, struct __ViewController__viewDidLoad_block_desc_4 *desc, Person *__strong _blockPerson, int flags=0) : blockPerson(_blockPerson) {
+    impl.isa = &_NSConcreteStackBlock;
+    impl.Flags = flags;
+    impl.FuncPtr = fp;
+    Desc = desc;
+  }
+};
+static void __ViewController__viewDidLoad_block_func_4(struct __ViewController__viewDidLoad_block_impl_4 *__cself) {
+  Person *__strong blockPerson = __cself-> ; // bound by copy
+
+        ((NSInteger (*)(id, SEL))(void *)objc_msgSend)((id)blockPerson, sel_registerName("age"));
+    }
+static void __ViewController__viewDidLoad_block_copy_4(struct __ViewController__viewDidLoad_block_impl_4*dst, struct __ViewController__viewDidLoad_block_impl_4*src) {_Block_object_assign((void*)&dst->blockPerson, (void*)src->blockPerson, 3/*BLOCK_FIELD_IS_OBJECT*/);}
+
+static void __ViewController__viewDidLoad_block_dispose_4(struct __ViewController__viewDidLoad_block_impl_4*src) {_Block_object_dispose((void*)src->blockPerson, 3/*BLOCK_FIELD_IS_OBJECT*/);}
+
+static struct __ViewController__viewDidLoad_block_desc_4 {
+  size_t reserved;
+  size_t Block_size;
+  void (*copy)(struct __ViewController__viewDidLoad_block_impl_4*, struct __ViewController__viewDidLoad_block_impl_4*);
+  void (*dispose)(struct __ViewController__viewDidLoad_block_impl_4*);
+} __ViewController__viewDidLoad_block_desc_4_DATA = { 0, sizeof(struct __ViewController__viewDidLoad_block_impl_4), __ViewController__viewDidLoad_block_copy_4, __ViewController__viewDidLoad_block_dispose_4};
+
 static void _I_ViewController_viewDidLoad(ViewController * self, SEL _cmd) {
     ((void (*)(__rw_objc_super *, SEL))(void *)objc_msgSendSuper)((__rw_objc_super){(id)self, (id)class_getSuperclass(objc_getClass("ViewController"))}, sel_registerName("viewDidLoad"));
     Teacher *t = ((Teacher *(*)(id, SEL))(void *)objc_msgSend)((id)((Teacher *(*)(id, SEL))(void *)objc_msgSend)((id)objc_getClass("Teacher"), sel_registerName("alloc")), sel_registerName("init"));
@@ -49672,11 +49707,11 @@ static void _I_ViewController_viewDidLoad(ViewController * self, SEL _cmd) {
     b = 21;
     ((void (*)(__block_impl *))((__block_impl *)block3)->FuncPtr)((__block_impl *)block3);
     void(*globalBlock)(void) = ((void (*)())&__ViewController__viewDidLoad_block_impl_1((void *)__ViewController__viewDidLoad_block_func_1, &__ViewController__viewDidLoad_block_desc_1_DATA));
-    NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_4, ((Class (*)(id, SEL))(void *)objc_msgSend)((id)globalBlock, sel_registerName("class")));
-    NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_5, ((Class (*)(id, SEL))(void *)objc_msgSend)((id)((Class (*)(id, SEL))(void *)objc_msgSend)((id)globalBlock, sel_registerName("class")), sel_registerName("superclass")));
-    NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_6, ((Class (*)(id, SEL))(void *)objc_msgSend)((id)((Class (*)(id, SEL))(void *)objc_msgSend)((id)((Class (*)(id, SEL))(void *)objc_msgSend)((id)globalBlock, sel_registerName("class")), sel_registerName("superclass")), sel_registerName("superclass")));
-    NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_7, ((Class (*)(id, SEL))(void *)objc_msgSend)((id)((Class (*)(id, SEL))(void *)objc_msgSend)((id)((Class (*)(id, SEL))(void *)objc_msgSend)((id)((Class (*)(id, SEL))(void *)objc_msgSend)((id)globalBlock, sel_registerName("class")), sel_registerName("superclass")), sel_registerName("superclass")), sel_registerName("superclass")));
-    NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_8);
+    NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_4, ((Class (*)(id, SEL))(void *)objc_msgSend)((id)globalBlock, sel_registerName("class")));
+    NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_5, ((Class (*)(id, SEL))(void *)objc_msgSend)((id)((Class (*)(id, SEL))(void *)objc_msgSend)((id)globalBlock, sel_registerName("class")), sel_registerName("superclass")));
+    NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_6, ((Class (*)(id, SEL))(void *)objc_msgSend)((id)((Class (*)(id, SEL))(void *)objc_msgSend)((id)((Class (*)(id, SEL))(void *)objc_msgSend)((id)globalBlock, sel_registerName("class")), sel_registerName("superclass")), sel_registerName("superclass")));
+    NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_7, ((Class (*)(id, SEL))(void *)objc_msgSend)((id)((Class (*)(id, SEL))(void *)objc_msgSend)((id)((Class (*)(id, SEL))(void *)objc_msgSend)((id)((Class (*)(id, SEL))(void *)objc_msgSend)((id)globalBlock, sel_registerName("class")), sel_registerName("superclass")), sel_registerName("superclass")), sel_registerName("superclass")));
+    NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_8);
     BlockAuto autoblock;
     {
         Person *p = ((Person *(*)(id, SEL))(void *)objc_msgSend)((id)((Person *(*)(id, SEL))(void *)objc_msgSend)((id)objc_getClass("Person"), sel_registerName("alloc")), sel_registerName("init"));
@@ -49684,22 +49719,13 @@ static void _I_ViewController_viewDidLoad(ViewController * self, SEL _cmd) {
         __attribute__((objc_ownership(weak))) Person *weakP = p;
         autoblock = ((void (*)())&__ViewController__viewDidLoad_block_impl_2((void *)__ViewController__viewDidLoad_block_func_2, &__ViewController__viewDidLoad_block_desc_2_DATA, weakP, 570425344));
     }
-    NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_10);
-    
-    __attribute__((__blocks__(byref))) __Block_byref_num1_0 num1 = {
-        (void*)0,
-        (__Block_byref_num1_0 *)&num1,
-        0,
-        sizeof(__Block_byref_num1_0),
-        3
-    };
-    
-    BlockAuto block11 = (
-                         (void (*)())
-                         &__ViewController__viewDidLoad_block_impl_3(
-                                                                     (void *)__ViewController__viewDidLoad_block_func_3,
-                                                                     &__ViewController__viewDidLoad_block_desc_3_DATA,
-                                                                     (__Block_byref_num1_0 *)&num1, 570425344));
+    NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_10);
+    __attribute__((__blocks__(byref))) __Block_byref_num1_0 num1 = {(void*)0,(__Block_byref_num1_0 *)&num1, 0, sizeof(__Block_byref_num1_0), 3};
+    BlockAuto block11 = ((void (*)())&__ViewController__viewDidLoad_block_impl_3((void *)__ViewController__viewDidLoad_block_func_3, &__ViewController__viewDidLoad_block_desc_3_DATA, (__Block_byref_num1_0 *)&num1, 570425344));
+    Person *blockPerson = ((Person *(*)(id, SEL))(void *)objc_msgSend)((id)((Person *(*)(id, SEL))(void *)objc_msgSend)((id)objc_getClass("Person"), sel_registerName("alloc")), sel_registerName("init"));
+    ((void (*)(id, SEL, NSInteger))(void *)objc_msgSend)((id)blockPerson, sel_registerName("setAge:"), (NSInteger)10);
+    ((void (*)(id, SEL, void (*)()))(void *)objc_msgSend)((id)blockPerson, sel_registerName("setBlock:"), ((void (*)())&__ViewController__viewDidLoad_block_impl_4((void *)__ViewController__viewDidLoad_block_func_4, &__ViewController__viewDidLoad_block_desc_4_DATA, blockPerson, 570425344)));
+    ((void (*(*)(id, SEL))())(void *)objc_msgSend)((id)blockPerson, sel_registerName("block"))();
 }
 
 struct __ViewController__test0_block_impl_0 {
@@ -49714,7 +49740,7 @@ struct __ViewController__test0_block_impl_0 {
 };
 static void __ViewController__test0_block_func_0(struct __ViewController__test0_block_impl_0 *__cself) {
 
-            NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_13);
+            NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_13);
         }
 
 static struct __ViewController__test0_block_desc_0 {
@@ -49734,9 +49760,9 @@ struct __ViewController__test0_block_impl_1 {
 };
 static void __ViewController__test0_block_func_1(struct __ViewController__test0_block_impl_1 *__cself) {
 
-        NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_12);
+        NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_12);
         dispatch_sync(dispatch_get_main_queue(), ((void (*)())&__ViewController__test0_block_impl_0((void *)__ViewController__test0_block_func_0, &__ViewController__test0_block_desc_0_DATA)));
-        NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_14);
+        NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_14);
     }
 
 static struct __ViewController__test0_block_desc_1 {
@@ -49760,7 +49786,7 @@ struct __ViewController__test1_block_impl_0 {
 };
 static void __ViewController__test1_block_func_0(struct __ViewController__test1_block_impl_0 *__cself) {
 
-            NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_16);
+            NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_16);
         }
 
 static struct __ViewController__test1_block_desc_0 {
@@ -49780,9 +49806,9 @@ struct __ViewController__test1_block_impl_1 {
 };
 static void __ViewController__test1_block_func_1(struct __ViewController__test1_block_impl_1 *__cself) {
 
-        NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_15);
+        NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_15);
         dispatch_sync(dispatch_get_main_queue(), ((void (*)())&__ViewController__test1_block_impl_0((void *)__ViewController__test1_block_func_0, &__ViewController__test1_block_desc_0_DATA)));
-        NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_17);
+        NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_17);
     }
 
 static struct __ViewController__test1_block_desc_1 {
@@ -49809,7 +49835,7 @@ static void __ViewController__test2_block_func_0(struct __ViewController__test2_
   ViewController *const __strong self = __cself->self; // bound by copy
 
         ((void (*)(id, SEL, SEL _Nonnull, id  _Nullable __strong, NSTimeInterval))(void *)objc_msgSend)((id)self, sel_registerName("performSelector:withObject:afterDelay:"), sel_registerName("doPerform"), (id _Nullable)__null, (NSTimeInterval)1);
-        NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_19);
+        NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_19);
     }
 static void __ViewController__test2_block_copy_0(struct __ViewController__test2_block_impl_0*dst, struct __ViewController__test2_block_impl_0*src) {_Block_object_assign((void*)&dst->self, (void*)src->self, 3/*BLOCK_FIELD_IS_OBJECT*/);}
 
@@ -49823,17 +49849,15 @@ static struct __ViewController__test2_block_desc_0 {
 } __ViewController__test2_block_desc_0_DATA = { 0, sizeof(struct __ViewController__test2_block_impl_0), __ViewController__test2_block_copy_0, __ViewController__test2_block_dispose_0};
 
 static void _I_ViewController_test2(ViewController * self, SEL _cmd) {
-    NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_18);
+    NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_18);
     dispatch_async(dispatch_get_global_queue(0, 0), ((void (*)())&__ViewController__test2_block_impl_0((void *)__ViewController__test2_block_func_0, &__ViewController__test2_block_desc_0_DATA, self, 570425344)));
 }
 
 static void _I_ViewController_doPerform(ViewController * self, SEL _cmd) {
-    NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_52da8c_mi_20);
+    NSLog((NSString *)&__NSConstantStringImpl__var_folders_h6_5t3f7nb176g5jy6p602g48f80000gn_T_ViewController_da83a9_mi_20);
 }
 
 static void(* _I_ViewController_blockAuto(ViewController * self, SEL _cmd) )(){ return (*(__strong BlockAuto *)((char *)self + OBJC_IVAR_$_ViewController$_blockAuto)); }
-extern "C" __declspec(dllimport) void objc_setProperty (id, SEL, long, id, bool, bool);
-
 static void _I_ViewController_setBlockAuto_(ViewController * self, SEL _cmd, BlockAuto blockAuto) { objc_setProperty (self, _cmd, __OFFSETOFIVAR__(struct ViewController, _blockAuto), (id)blockAuto, 0, 1); }
 // @end
 
@@ -49905,39 +49929,46 @@ extern "C" __declspec(dllimport) struct objc_cache _objc_empty_cache;
 #pragma warning(disable:4273)
 
 extern "C" unsigned long int OBJC_IVAR_$_Person$_age __attribute__ ((used, section ("__DATA,__objc_ivar"))) = __OFFSETOFIVAR__(struct Person, _age);
+extern "C" unsigned long int OBJC_IVAR_$_Person$_block __attribute__ ((used, section ("__DATA,__objc_ivar"))) = __OFFSETOFIVAR__(struct Person, _block);
 
 static struct /*_ivar_list_t*/ {
 	unsigned int entsize;  // sizeof(struct _prop_t)
 	unsigned int count;
-	struct _ivar_t ivar_list[1];
+	struct _ivar_t ivar_list[2];
 } _OBJC_$_INSTANCE_VARIABLES_Person __attribute__ ((used, section ("__DATA,__objc_const"))) = {
 	sizeof(_ivar_t),
-	1,
-	{{(unsigned long int *)&OBJC_IVAR_$_Person$_age, "_age", "q", 3, 8}}
+	2,
+	{{(unsigned long int *)&OBJC_IVAR_$_Person$_age, "_age", "q", 3, 8},
+	 {(unsigned long int *)&OBJC_IVAR_$_Person$_block, "_block", "@?", 3, 8}}
 };
 
 static struct /*_method_list_t*/ {
 	unsigned int entsize;  // sizeof(struct _objc_method)
 	unsigned int method_count;
-	struct _objc_method method_list[5];
+	struct _objc_method method_list[9];
 } _OBJC_$_INSTANCE_METHODS_Person __attribute__ ((used, section ("__DATA,__objc_const"))) = {
 	sizeof(_objc_method),
-	5,
+	9,
 	{{(struct objc_selector *)"dealloc", "v16@0:8", (void *)_I_Person_dealloc},
 	{(struct objc_selector *)"age", "q16@0:8", (void *)_I_Person_age},
 	{(struct objc_selector *)"setAge:", "v24@0:8q16", (void *)_I_Person_setAge_},
+	{(struct objc_selector *)"block", "@?16@0:8", (void *)_I_Person_block},
+	{(struct objc_selector *)"setBlock:", "v24@0:8@?16", (void *)_I_Person_setBlock_},
 	{(struct objc_selector *)"age", "q16@0:8", (void *)_I_Person_age},
-	{(struct objc_selector *)"setAge:", "v24@0:8q16", (void *)_I_Person_setAge_}}
+	{(struct objc_selector *)"setAge:", "v24@0:8q16", (void *)_I_Person_setAge_},
+	{(struct objc_selector *)"block", "@?16@0:8", (void *)_I_Person_block},
+	{(struct objc_selector *)"setBlock:", "v24@0:8@?16", (void *)_I_Person_setBlock_}}
 };
 
 static struct /*_prop_list_t*/ {
 	unsigned int entsize;  // sizeof(struct _prop_t)
 	unsigned int count_of_properties;
-	struct _prop_t prop_list[1];
+	struct _prop_t prop_list[2];
 } _OBJC_$_PROP_LIST_Person __attribute__ ((used, section ("__DATA,__objc_const"))) = {
 	sizeof(_prop_t),
-	1,
-	{{"age","Tq,N,V_age"}}
+	2,
+	{{"age","Tq,N,V_age"},
+	{"block","T@?,C,N,V_block"}}
 };
 
 static struct _class_ro_t _OBJC_METACLASS_RO_$_Person __attribute__ ((used, section ("__DATA,__objc_const"))) = {
