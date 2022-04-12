@@ -635,6 +635,8 @@ void cache_t::bad_cache(id receiver, SEL sel, Class isa)
          "invalid object, or a memory error somewhere else.");
 }
 
+// 查找缓存
+
 ALWAYS_INLINE
 void cache_t::insert(Class cls, SEL sel, IMP imp, id receiver)
 {

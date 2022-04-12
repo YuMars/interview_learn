@@ -14,9 +14,12 @@
 		EEEBABDE27C3B68B00F16AA4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EEEBABDD27C3B68B00F16AA4 /* Assets.xcassets */; };
 		EEEBABE127C3B68B00F16AA4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EEEBABDF27C3B68B00F16AA4 /* LaunchScreen.storyboard */; };
 		EEEBABE427C3B68B00F16AA4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EEEBABE327C3B68B00F16AA4 /* main.m */; };
+		EEF1A4D72802B6E500D23EF6 /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = EEF1A4D62802B6E500D23EF6 /* Person.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EE038FF12805A2F800969223 /* ViewController_1-persontest.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "ViewController_1-persontest.cpp"; sourceTree = "<group>"; };
+		EE038FF22805A4E200969223 /* isa_superclass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = isa_superclass.png; sourceTree = "<group>"; };
 		EEEBABCE27C3B68B00F16AA4 /* 6-Interview-Runtime.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "6-Interview-Runtime.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EEEBABD127C3B68B00F16AA4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		EEEBABD227C3B68B00F16AA4 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -29,6 +32,10 @@
 		EEEBABE027C3B68B00F16AA4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EEEBABE227C3B68B00F16AA4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EEEBABE327C3B68B00F16AA4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		EEF1A4D42802A2B600D23EF6 /* Runtime.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Runtime.md; sourceTree = "<group>"; };
+		EEF1A4D52802B6E500D23EF6 /* Person.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Person.h; sourceTree = "<group>"; };
+		EEF1A4D62802B6E500D23EF6 /* Person.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Person.m; sourceTree = "<group>"; };
+		EEF1A4D82802CC4A00D23EF6 /* type_encoding.webp */ = {isa = PBXFileReference; lastKnownFileType = file; path = type_encoding.webp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,12 +68,18 @@
 		EEEBABD027C3B68B00F16AA4 /* 6-Interview-Runtime */ = {
 			isa = PBXGroup;
 			children = (
+				EE038FF22805A4E200969223 /* isa_superclass.png */,
+				EEF1A4D42802A2B600D23EF6 /* Runtime.md */,
+				EE038FF12805A2F800969223 /* ViewController_1-persontest.cpp */,
+				EEF1A4D82802CC4A00D23EF6 /* type_encoding.webp */,
 				EEEBABD127C3B68B00F16AA4 /* AppDelegate.h */,
 				EEEBABD227C3B68B00F16AA4 /* AppDelegate.m */,
 				EEEBABD427C3B68B00F16AA4 /* SceneDelegate.h */,
 				EEEBABD527C3B68B00F16AA4 /* SceneDelegate.m */,
 				EEEBABD727C3B68B00F16AA4 /* ViewController.h */,
 				EEEBABD827C3B68B00F16AA4 /* ViewController.m */,
+				EEF1A4D52802B6E500D23EF6 /* Person.h */,
+				EEF1A4D62802B6E500D23EF6 /* Person.m */,
 				EEEBABDA27C3B68B00F16AA4 /* Main.storyboard */,
 				EEEBABDD27C3B68B00F16AA4 /* Assets.xcassets */,
 				EEEBABDF27C3B68B00F16AA4 /* LaunchScreen.storyboard */,
@@ -148,6 +161,7 @@
 			files = (
 				EEEBABD927C3B68B00F16AA4 /* ViewController.m in Sources */,
 				EEEBABD327C3B68B00F16AA4 /* AppDelegate.m in Sources */,
+				EEF1A4D72802B6E500D23EF6 /* Person.m in Sources */,
 				EEEBABE427C3B68B00F16AA4 /* main.m in Sources */,
 				EEEBABD627C3B68B00F16AA4 /* SceneDelegate.m in Sources */,
 			);

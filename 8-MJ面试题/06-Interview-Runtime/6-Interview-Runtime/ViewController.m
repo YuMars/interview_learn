@@ -6,6 +6,8 @@
 //
 
 #import "ViewController.h"
+#import "Person.h"
+#import <objc/runtime.h>
 
 @interface ViewController ()
 
@@ -15,6 +17,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    Person *person = [[Person alloc] init];
+    
+    objc_setAssociatedObject(person, "name", @"Mike", OBJC_ASSOCIATION_COPY); // isa的has_assoc位 会变成 1
+
+    [person test];
+    // ((void (*)(id, SEL))(void *)objc_msgSend)((id)person, sel_registerName("test"));
     
     // Q:讲一下OC的消息机制
     

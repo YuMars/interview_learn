@@ -541,9 +541,9 @@ struct entsize_list_tt {
 
 
 struct method_t {
-    SEL name;
-    const char *types;
-    MethodListIMP imp;
+    SEL name;  // 函数名
+    const char *types;// 编码（返回类型、参数类型）
+    MethodListIMP imp; // 指向函数的指针（函数地址）
 
     struct SortBySELAddress :
         public std::binary_function<const method_t&,
@@ -1102,6 +1102,7 @@ public:
         }
     }
 
+    // 方法列表
     const method_array_t methods() const {
         auto v = get_ro_or_rwe();
         if (v.is<class_rw_ext_t *>()) {
@@ -1111,6 +1112,7 @@ public:
         }
     }
 
+    // 属性列表
     const property_array_t properties() const {
         auto v = get_ro_or_rwe();
         if (v.is<class_rw_ext_t *>()) {
@@ -1120,6 +1122,7 @@ public:
         }
     }
 
+    // 协议列表
     const protocol_array_t protocols() const {
         auto v = get_ro_or_rwe();
         if (v.is<class_rw_ext_t *>()) {
@@ -1244,8 +1247,8 @@ public:
 struct objc_class : objc_object {
     // Class ISA;
     Class superclass;
-    cache_t cache;             // formerly cache pointer and vtable
-    class_data_bits_t bits;    // class_rw_t * plus custom rr/alloc flags
+    cache_t cache; // 方法缓存            // formerly cache pointer and vtable //
+    class_data_bits_t bits;// 用于获取具体的类信息    // class_rw_t * plus custom rr/alloc flags
 
     class_rw_t *data() const {
         return bits.data();
