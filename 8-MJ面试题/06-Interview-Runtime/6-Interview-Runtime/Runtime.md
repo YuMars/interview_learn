@@ -65,13 +65,60 @@
             如果不存在，就通过bits到class_rw_t结构体里找到methods(方法列表里面遍历)是否存在method
                 找到方法，就调用method，然后把method放在cache缓存中，下次直接调用
         2.如果当前class对象中找不到，通过superclass，找父类，重复步骤1
+        
+        源码：
+        objc-msg-arm64.s
+            ENTRY _objc_msgSend
+            b.le    LNilOrTagged
+            CacheLookup NORMAL
+            .macro CacheLookup
+            .macro CheckMiss
+            STATIC_ENTRY __objc_msgSend_uncached
+            .macro MethodTableLookup
+            __class_lookupMethodAndLoadCache3
+            
+        objc-runtime-new.mm
+            _class_lookupMethodAndLoadCache3
+            lookUpImpOrForward
+            getMethodNoSuper_nolock、search_method_list、log_and_fill_cache
+            cache_getImp、log_and_fill_cache、getMethodNoSuper_nolock、log_and_fill_cache
+            _class_resolveInstanceMethod
+            _objc_msgForward_impcache
+            
+            
+        objc-msg-arm64.s
+            STATIC_ENTRY __objc_msgForward_impcache
+            ENTRY __objc_msgForward
+
+            Core Foundation
+            __forwarding__（不开源）
     }
     
     {
         objc_msgSend执行流程
             1.OC中的方法调用，都是转换为objc_msgSend函数的调用
             2.objc_msSend的执行流程可分为3大阶段
-                1.消息发送
+                1.消息发送(同上一段有点类似)
                 2.动态方法解析
                 3.消息转发
+                
+        
+    }
+
+    {
+        动态方法解析
+            1.是否已经动态解析
+                已经解析：消息转发
+                还未解析：调用+resolveInstanceMethod、+resolveClassMethod,标记已经解析过
+            2.都失败：尝试消息转发
+    }
+    
+    {
+        消息转发
+            1.调用forwardingTargetForSelector
+                返回不为nil：objc_msgSend()
+                返回为nil：调用methodSignatureForSelector
+            2.调用methodSignatureForSelector
+                返回不为nil:调用forwardInvocation
+                返回nil：调用doesNotRecognizeSelector
     }
