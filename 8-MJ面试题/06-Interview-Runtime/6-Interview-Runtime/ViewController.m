@@ -7,6 +7,7 @@
 
 #import "ViewController.h"
 #import "Person.h"
+#import "Student.h"
 #import <objc/runtime.h>
 
 @interface ViewController ()
@@ -16,7 +17,11 @@
 @implementation ViewController
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
+//    [super viewDidLoad];
+    
+    id cls = [Person class];
+    void *obj = &cls;
+    [(__bridge id)obj print];
     
     Person *person = [[Person alloc] init];
     
@@ -35,6 +40,18 @@
     
     // runtime底层，常用的数据结构，如isa指针,在arm64之前，isa指针是指向Class，Mate-Class内存地址的指针
     
+    
+    NSLog(@"%d" ,[[NSObject class] isKindOfClass:[NSObject class]]); // 1
+    
+    NSLog(@"%d" ,[[NSObject class] isMemberOfClass:[NSObject class]]);  // 0
+    
+    NSLog(@"%d" ,[NSObject isMemberOfClass:[NSObject class]]);// 0
+    // [Person class] -> isKindOfClass,找到是meta-class
+    NSLog(@"%d" ,[[Person class] isKindOfClass:[Person class]]);// 0
+    
+    NSLog(@"%d" ,[[Person class] isMemberOfClass:[Person class]]);// 0
+    
+    NSLog(@"%@",[NSObject class]);
 }
 
 

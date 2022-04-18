@@ -122,3 +122,163 @@
                 返回不为nil:调用forwardInvocation
                 返回nil：调用doesNotRecognizeSelector
     }
+
+
+    {
+        @dynamic: 不会对属性自动生成getter ，setter方法
+            @synthesize age = _age 会自动生成 setAge 和 age方法
+        
+    }
+    
+    {
+        // Q:讲一下OC的消息机制
+        // A:OC是中的方法调用，都是转成了objc_msgSend函数调用，给receiver发送一条消息（方法名）
+            objc_msgSend有3大阶段
+                1.消息发送
+                2.动态方法解析
+                3.消息转发
+        
+        // Q:消息转发机制
+        // A:
+        
+        
+    }
+    
+    {
+        面试题：
+            Student：Person
+            
+            - (instancetype)init {
+                if (self = [super init]) {
+                    NSLog(@"%@", [self class]); // Student
+                    NSLog(@"%@", [super class]); // Student
+                    NSLog(@"%@", [self superclass]); // Person
+                    NSLog(@"%@", [super superclass]); // Person
+                }
+                return self;
+            }
+            
+            struct objc_super {
+                __unsafe_unretained _Nonnull id receiver; // 消息接受者
+                __unsafe_unretained _Nonnull Class super_class; // 消息接受者的父类
+            };
+            
+            objc_msgSend(self, @selector(class))
+            ((Class (*)(id, SEL))(void *)objc_msgSend)((id)self, sel_registerName("class"))
+
+            objc_msgSendSuper(self, [Person class], @selector(class))
+            ((Class (*)(__rw_objc_super *, SEL))(void *)objc_msgSendSuper)((__rw_objc_super){(id)self, (id)class_getSuperclass(objc_getClass("Student"))}, sel_registerName("class")) 
+
+            ((Class (*)(id, SEL))(void *)objc_msgSend)((id)self, sel_registerName("superclass"))
+
+            ((Class (*)(__rw_objc_super *, SEL))(void *)objc_msgSendSuper)((__rw_objc_super){(id)self, (id)class_getSuperclass(objc_getClass("Student"))}, sel_registerName("superclass"))
+
+        [super message]
+        1.消息接受者还是子类的self
+        2.找方法的时候从super优先开始查找
+    }
+
+{
+    NSLog(@"%d" ,[[NSObject class] isKindOfClass:[NSObject class]]); // 1
+
+    NSLog(@"%d" ,[[NSObject class] isMemberOfClass:[NSObject class]]);  // 0
+
+    NSLog(@"%d" ,[NSObject isMemberOfClass:[NSObject class]]);// 0
+    // [Person class] -> isKindOfClass,找到是meta-class
+    NSLog(@"%d" ,[[Person class] isKindOfClass:[Person class]]);// 0
+
+    NSLog(@"%d" ,[[Person class] isMemberOfClass:[Person class]]);// 0
+}
+
+    {
+        id cls = [Person class];
+        void *obj = &cls;
+        [(__bridge id)obj print];
+        
+        person -> isa -> class
+        obj -> cls -> [Person class]
+        
+        [Person]    [obj]
+        isa          cls
+        _name       [print: self.name] -> self
+                                          [UiViewController class]
+        
+        上面的转换
+        
+        // 局部变量分配在栈空间
+        // 栈空间分配，从高地址到低地址
+        
+        [super viewDidLoad]
+        obj_msdSendSuper(self, [UiViewController class], @selector(viewDidLoad))
+        
+        
+    }
+    
+    {
+        // Q:什么是Runtime，平时项目用过吗
+        // A: OC是一门动态性比较强大语言，允许很堵操作推迟到程序运行时在操作
+              OC的动态性就是有Runtime来支撑和实现的，Runtime是一套C语言的API，封装了很多动态性相关的函数
+             1.利用关联对象给分类添加属性
+             2.遍历类的所有成员变量
+             3.交换方法实现
+        
+        
+        动态创建一个类（参数：父类，类名，额外的内存空间）
+        Class objc_allocateClassPair(Class superclass, const char *name, size_t extraBytes)
+
+        注册一个类（要在类注册之前添加成员变量）
+        void objc_registerClassPair(Class cls) 
+
+        销毁一个类
+        void objc_disposeClassPair(Class cls)
+
+        获取isa指向的Class,入参：instance对象，返回class对象， 入参：class对象，返回meta-class对象
+        Class object_getClass(id obj)
+
+        设置isa指向的Class
+        Class object_setClass(id obj, Class cls)
+
+        判断一个OC对象是否为Class
+        BOOL object_isClass(id obj)
+
+        判断一个Class是否为元类
+        BOOL class_isMetaClass(Class cls)
+
+        获取父类
+        Class class_getSuperclass(Class cls)
+        
+        获取一个实例变量信息
+        Ivar class_getInstanceVariable(Class cls, const char *name)
+
+        拷贝实例变量列表（最后需要调用free释放）
+        Ivar *class_copyIvarList(Class cls, unsigned int *outCount)
+
+        设置和获取成员变量的值
+        void object_setIvar(id obj, Ivar ivar, id value)
+        id object_getIvar(id obj, Ivar ivar)
+
+        动态添加成员变量（已经注册的类是不能动态添加成员变量的）
+        BOOL class_addIvar(Class cls, const char * name, size_t size, uint8_t alignment, const char * types)
+
+        获取成员变量的相关信息
+        const char *ivar_getName(Ivar v)
+        const char *ivar_getTypeEncoding(Ivar v)
+        
+        获取一个属性
+        objc_property_t class_getProperty(Class cls, const char *name)
+
+        拷贝属性列表（最后需要调用free释放）
+        objc_property_t *class_copyPropertyList(Class cls, unsigned int *outCount)
+
+        动态添加属性
+        BOOL class_addProperty(Class cls, const char *name, const objc_property_attribute_t *attributes,
+                          unsigned int attributeCount)
+
+        动态替换属性
+        void class_replaceProperty(Class cls, const char *name, const objc_property_attribute_t *attributes,
+                              unsigned int attributeCount)
+
+        获取属性的一些信息
+        const char *property_getName(objc_property_t property)
+        const char *property_getAttributes(objc_property_t property)
+    }

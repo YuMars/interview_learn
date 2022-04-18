@@ -41,10 +41,27 @@ class FindFirstandLastPositionofElementinSortedArray {
     }
     
     func getLeftBorder(_ nums:[Int], _ target: Int) -> Int {
+        // target在数组左边，或右边
+        // target在数组范围中，且不存在target
+        // target在数组范围中，且存在target
         return -1
     }
     
     func getRightBorder(_ nums:[Int], _ target: Int) -> Int {
+        var left: Int = 0
+        var right: Int = nums.count - 1
+        
+        while left <= right {
+            let middle = left + (right - left) / 2
+            if nums[middle] > target {
+                right = middle - 1
+            } else if nums[middle] < target {
+                left = middle + 1
+            } else {
+                return middle
+            }
+        }
+        
         return -1
     }
 }

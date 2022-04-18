@@ -10,6 +10,10 @@
 
 @implementation Person
 
+- (void)print {
+    NSLog(@"%@", self.name);
+}
+
 - (void)test {
     
 }
