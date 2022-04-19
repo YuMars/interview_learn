@@ -30,7 +30,7 @@
 */
 
 #if !CF_BUILDING_CF
-    #error The header file CFInternal.h is for the exclusive use of CoreFoundation. No other project should include it.
+    //#error The header file CFInternal.h is for the exclusive use of CoreFoundation. No other project should include it.
 #endif
 
 #if !defined(__COREFOUNDATION_CFINTERNAL__)

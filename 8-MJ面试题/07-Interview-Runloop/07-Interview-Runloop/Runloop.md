@@ -38,5 +38,31 @@
     3.线程刚创建时并没有Runloop对象，Runloop会在第一次获取它时创建
     4.Runloop会先线程结束时销毁
     5.主线程的Runloop已经自动创建，子线程默认没有开启runloop
+    
 }
 
+{
+    //Q: 讲讲 RunLoop，项目中有用到吗？
+    //A: 
+    
+    //Q: runloop内部实现逻辑？
+    //A: 
+    
+    //Q: runloop和线程的关系？
+    //A: 
+    
+    //Q: timer 与 runloop 的关系？
+    //A: 
+    
+    //Q: 程序中添加每3秒响应一次的NSTimer，当拖动tableview时timer可能无法响应要怎么解决？
+    //A: 
+    
+    //Q: runloop 是怎么响应用户操作的， 具体流程是什么样的？
+    //A: 
+    
+    //Q: 说说runLoop的几种状态
+    //A: 
+    
+    //Q: runloop的mode作用是什么？
+    //A: 
+}
