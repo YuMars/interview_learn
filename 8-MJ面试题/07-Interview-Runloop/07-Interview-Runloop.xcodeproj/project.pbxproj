@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		EE16EAB1280DAE6D00A9D71E /* CFRunLoop.c in Sources */ = {isa = PBXBuildFile; fileRef = EE16EAAE280DA79700A9D71E /* CFRunLoop.c */; };
 		EEC38F54280D975800C42805 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EEC38F53280D975800C42805 /* AppDelegate.m */; };
 		EEC38F57280D975800C42805 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EEC38F56280D975800C42805 /* SceneDelegate.m */; };
 		EEC38F5A280D975800C42805 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EEC38F59280D975800C42805 /* ViewController.m */; };
@@ -155,7 +154,6 @@
 			files = (
 				EEC38F5A280D975800C42805 /* ViewController.m in Sources */,
 				EEC38F54280D975800C42805 /* AppDelegate.m in Sources */,
-				EE16EAB1280DAE6D00A9D71E /* CFRunLoop.c in Sources */,
 				EEC38F65280D975900C42805 /* main.m in Sources */,
 				EEC38F57280D975800C42805 /* SceneDelegate.m in Sources */,
 			);

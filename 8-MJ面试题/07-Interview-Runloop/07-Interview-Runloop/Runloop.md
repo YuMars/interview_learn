@@ -39,6 +39,71 @@
     4.Runloop会先线程结束时销毁
     5.主线程的Runloop已经自动创建，子线程默认没有开启runloop
     
+    
+}
+
+{
+    struct __CFRunLoop {
+        CFRuntimeBase _base;
+        pthread_mutex_t _lock; // locked for  accessing mode list */
+        __CFPort _wakeUpPort;  // used for CFRunLoopWakeUp 
+        Boolean _unused;
+        volatile _per_run_data *_perRunData; // reset for runs of the run loop
+        pthread_t _pthread;
+        uint32_t _winthread;
+        CFMutableSetRef _commonModes;
+        CFMutableSetRef _commonModeItems;
+        CFRunLoopModeRef _currentMode; // 当前模式
+        CFMutableSetRef _modes;        // 模式集合
+        struct _block_item *_blocks_head;
+        struct _block_item *_blocks_tail;
+        CFAbsoluteTime _runTime;
+        CFAbsoluteTime _sleepTime;
+        CFTypeRef _counterpart;
+    };
+    
+    struct __CFRunLoopMode {
+        CFRuntimeBase _base;
+        pthread_mutex_t _lock;// must have the run loop locked before locking this
+        CFStringRef _name;
+        Boolean _stopped;
+        char _padding[3];
+        CFMutableSetRef _sources0;  // CFRunloopSourceRef 
+        CFMutableSetRef _sources1;  // CFRunloopSourceRef
+        CFMutableArrayRef _observers; // CFRunloopObserverRef 
+        CFMutableArrayRef _timers; // CFRunloopTimerRef 定时器
+        CFMutableDictionaryRef _portToV1SourceMap;
+        __CFPortSet _portSet;
+        CFIndex _observerMask;
+}
+
+{
+    CFRunloopModeRef:
+        1.CFRunloopModeRef代表Runloop的运行模式
+        2.一个Runloop包含若干个Mode，每个Mode又包含若干个Souce0、Souce1、Timer、Observer
+        3.Runloop启动时只能选择一个Mode，作为currentMode
+        4.如果需要切换Mode、只能退出当前Loop、再重新进入一个Mode
+        5.不同组的source0、source1、timer、obserber能分隔开
+        
+        如果Mode里没有任何source0、source1、timer、obserber，Runloop会立马退出
+         
+    常见的2中Mode：
+        DefaultMode
+        TrackingRunloop
+        
+    运行逻辑：
+        1.source0：
+            触摸事件处理
+            
+        2.source1：
+            基于Port的线程间通信
+            系统时间捕捉(发送给source0处理)
+        
+        3.timer
+        
+        4.observer
+            监听Runloop状态
+            autoreleasepool
 }
 
 {
