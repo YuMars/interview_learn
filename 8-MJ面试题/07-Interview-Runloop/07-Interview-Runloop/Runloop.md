@@ -107,6 +107,40 @@
 }
 
 {
+    Runloop的运行逻辑
+        1.通知Observer：进入Runloop
+        2.通知Observer：即将处理timer
+        3.通知Observer：即将处理sources
+        4.处理blocks(CFRunLoopPerformBlock)
+        5.处理Source0(可能会再次处理Blocks)
+        6.如果存在source1，就跳转到第8步
+        7.通知Observer是：开始休眠  （切换到内核态层面sleep）
+        8.通知observers:结束休眠（被某个消息唤醒）
+            处理Timer
+            处理GCD Async to Main Queue
+            处理Source1
+        9.处理Blocks
+        10.根据前面的执行结果，决定如何做
+            回到第2步
+        11.通知Observers:退出Runloop
+}
+
+{
+    Runloop在实际开发中的应用
+        1.控制线程生命周期（线程保活）
+        2.解决NSTimer在滑动时停止工作 (NSRunLoopCommonModes)
+        3.监控卡顿
+        4.性能优化 
+        
+    // [[NSRunLoop currentRunLoop] run]无法被停止，适用于用不销毁的线程
+    
+    // 控制Runloop
+    while (shoulStop && [[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]]) {
+        
+    }
+}
+
+{
     //Q: 讲讲 RunLoop，项目中有用到吗？
     //A: 
     

@@ -9,6 +9,8 @@
 
 @interface ViewController ()
 
+@property (nonatomic, strong) NSThread *thread;
+
 @end
 
 @implementation ViewController
@@ -16,8 +18,55 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    //[self initRunloop];
+    // [self timerOptimize];
+    [self threadKeepAlive];
+    
+    [self performSelector:@selector(funRun) onThread:self.thread withObject:nil waitUntilDone:NO];
+}
+
+- (void)threadKeepAlive {
+    self.thread = [[NSThread alloc] initWithTarget:self selector:@selector(testRun) object:nil];
+    [self.thread start];
+}
+
+- (void)testRun {
+    NSLog(@"%@ %@ ", NSStringFromSelector(_cmd), [NSThread currentThread]);
+    
+    // 添加source0、source1、timer、observer
+    [[NSRunLoop currentRunLoop] addPort:[[NSPort alloc] init] forMode:NSDefaultRunLoopMode];
+    [[NSRunLoop currentRunLoop] run];
+    
+    NSLog(@"end");
+}
+
+- (void)funRun {
+    
+}
+
+// NStimer在滑动时候优化
+- (void)timerOptimize {
+    static int count = 0;
+    NSTimer *timer = [NSTimer timerWithTimeInterval:1.0 repeats:YES block:^(NSTimer * _Nonnull timer) {
+        NSLog(@"%d", ++count);
+    }];
+    
+    [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
+    [[NSRunLoop currentRunLoop] addTimer:timer forMode:UITrackingRunLoopMode];
+    // UITrackingRunLoopMode、NSDefaultRunLoopMode是真正的模式
+    // NSRunLoopCommonModes不是真正的模式，只是一个标记,表示在上面两种模式下运行
+    [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
+    // 直接开启定时器
+    
+    [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:YES block:^(NSTimer * _Nonnull timer) {
+        NSLog(@"%d", ++count);
+    }];
+}
+
+/// 初始化、使用runloop
+- (void)initRunloop {
     // 当前线程
-    NSRunLoop *runloop = [NSRunLoop currentRunLoop];
+    NSRunLoop *runloop = [NSRunLoop currentRunLoop]; 
     CFRunLoopRef ref = CFRunLoopGetCurrent();
     
     // 主线程runloop
@@ -30,6 +79,8 @@
     CFRunLoopAddObserver(CFRunLoopGetMain(), observer, kCFRunLoopCommonModes);
     
     CFRelease(observer);
+    
+//    CFRunLoopPerformBlock(<#CFRunLoopRef rl#>, <#CFTypeRef mode#>, <#^(void)block#>)
 }
 
 void runLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopActivity activity, void *info) {
