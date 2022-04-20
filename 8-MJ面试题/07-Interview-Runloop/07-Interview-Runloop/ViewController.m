@@ -66,7 +66,7 @@
 /// 初始化、使用runloop
 - (void)initRunloop {
     // 当前线程
-    NSRunLoop *runloop = [NSRunLoop currentRunLoop]; 
+    NSRunLoop *runloop = [NSRunLoop currentRunLoop];
     CFRunLoopRef ref = CFRunLoopGetCurrent();
     
     // 主线程runloop
