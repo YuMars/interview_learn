@@ -68,3 +68,37 @@
          开启新线程       开启新线程        没有开启新线程
     异步  并行执行任务    串行执行任务        串行执行任务
 }
+
+{
+    线程安全问题 
+    OSSpinLock
+    os_unfair_lock
+    pthread_mutex
+    dispatch_Semaphore
+    dispatch_queue(DISPATCH_QUEUE_SERIAL)
+    NSLock
+    NSRecursivelock
+    NSCondition 
+    NSConditionLock
+    @synchronized
+    
+    OSSpinLock:
+        自旋锁，等待锁的线程会处于忙等状态，一直占用cpu
+        
+        优先级反转：自己实现
+            线程1（优先级高，后进来，cpu分配的资源在此线程）、线程2（优先级低，先进来）、线程3（时间片轮转调度算法）
+            
+    (low level lock)
+    os_unfair_lock:
+    pthread_mutex:
+        互斥锁
+        
+    递归锁：允许对同一线程进行重复加锁
+    
+    NSLock是对mutex普通锁的封装
+    
+    semaphore叫做”信号量”
+    信号量的初始值，可以用来控制线程并发访问的最大数量
+    信号量的初始值为1，代表同时只允许1条线程访问资源，保证线程同步
+
+}       
