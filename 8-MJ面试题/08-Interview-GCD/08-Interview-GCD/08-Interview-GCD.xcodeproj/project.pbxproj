@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EE1D8B07282A650200846858 /* GCDReadWrite.m in Sources */ = {isa = PBXBuildFile; fileRef = EE1D8B06282A650200846858 /* GCDReadWrite.m */; };
 		EEBD8ED6280FFEC6005ADD3B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EEBD8ED5280FFEC6005ADD3B /* AppDelegate.m */; };
 		EEBD8ED9280FFEC6005ADD3B /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EEBD8ED8280FFEC6005ADD3B /* SceneDelegate.m */; };
 		EEBD8EDC280FFEC6005ADD3B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EEBD8EDB280FFEC6005ADD3B /* ViewController.m */; };
@@ -29,6 +30,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EE1D8B05282A650200846858 /* GCDReadWrite.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GCDReadWrite.h; sourceTree = "<group>"; };
+		EE1D8B06282A650200846858 /* GCDReadWrite.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GCDReadWrite.m; sourceTree = "<group>"; };
 		EEBD8ED1280FFEC6005ADD3B /* 08-Interview-GCD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "08-Interview-GCD.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EEBD8ED4280FFEC6005ADD3B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		EEBD8ED5280FFEC6005ADD3B /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -129,6 +132,8 @@
 				EEBD8F1328129BBD005ADD3B /* DispatchSemaphoreBusiness.m */,
 				EEBD8F152812A106005ADD3B /* SynchronizedBusiness.h */,
 				EEBD8F162812A106005ADD3B /* SynchronizedBusiness.m */,
+				EE1D8B05282A650200846858 /* GCDReadWrite.h */,
+				EE1D8B06282A650200846858 /* GCDReadWrite.m */,
 				EEBD8EDD280FFEC6005ADD3B /* Main.storyboard */,
 				EEBD8EE0280FFEC7005ADD3B /* Assets.xcassets */,
 				EEBD8EE2280FFEC7005ADD3B /* LaunchScreen.storyboard */,
@@ -212,6 +217,7 @@
 				EEBD8EF9281159E5005ADD3B /* OSUnfairLockBusiness.m in Sources */,
 				EEBD8EDC280FFEC6005ADD3B /* ViewController.m in Sources */,
 				EEBD8F0B281284CA005ADD3B /* NSConditionBusiness.m in Sources */,
+				EE1D8B07282A650200846858 /* GCDReadWrite.m in Sources */,
 				EEBD8F0828125A95005ADD3B /* NSLockBusiness.m in Sources */,
 				EEBD8F02281241E6005ADD3B /* PthreadmutexLock2Busniess.m in Sources */,
 				EEBD8ED6280FFEC6005ADD3B /* AppDelegate.m in Sources */,

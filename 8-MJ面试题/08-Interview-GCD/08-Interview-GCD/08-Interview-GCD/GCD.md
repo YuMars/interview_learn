@@ -93,12 +93,61 @@
     pthread_mutex:
         互斥锁
         
-    递归锁：允许对同一线程进行重复加锁
+    递归锁：允许对同一线程进行重复加锁(实现原理是什么？)
     
     NSLock是对mutex普通锁的封装
     
     semaphore叫做”信号量”
     信号量的初始值，可以用来控制线程并发访问的最大数量
     信号量的初始值为1，代表同时只允许1条线程访问资源，保证线程同步
+    
+    @synchronized原理是递归锁，通过传入的obj生成的key取唯一对应的hashmap value
+    
+    iOS线程同步方案性能比较
+    
+    1.os_unfair_lock
+    2.OSSpinlock
+    3.dispatch_semaphore
+    4.pthread_mutex
+    5.dispatch_queue
+    6.NSLock
+    7.NSCondition
+    8.pthread_mutex
+    9.NSRecursiveLock
+    10.NSConditionLock
+    11.@synchronized
 
 }       
+
+{
+    自旋锁、互斥锁比较
+    
+    什么情况下用自旋锁
+    预计线程等待锁的时间很短
+    加锁的代码（临界区）经常被调用，但竞争情况很少发生
+    CPU资源不紧张
+    多核处理
+    
+    什么情况使用互斥锁
+    预计线程等待时间较长
+    单核处理
+    临界区有IO操作
+    临界区代码比较复杂或者循环量大
+    临界区竞争强烈
+}
+
+{
+    atomic
+    
+    给属性加上atomic修饰，可以保证属性的setter和getter都是原子性操作，也就是保证setter和getter内部是线程同步的
+}
+
+{
+    多读单写
+    
+    pthread_rwlock:读写锁
+    
+    dispatch_barraier_async:  异步栅栏读写
+        传入的并发队列必须是自己通过dispatch_queue_cretate创建的
+        如果传入的是一个串行或是一个全局的并发队列，那这个函数便等同于dispatch_asnyc
+}

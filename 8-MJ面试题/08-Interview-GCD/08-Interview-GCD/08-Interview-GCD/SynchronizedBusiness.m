@@ -9,7 +9,11 @@
 
 @implementation SynchronizedBusiness
 
+
 - (void)drawMoney {
+//    @synchronized ([self class]) {
+//
+//    };
     @synchronized (self) {
         [super drawMoney];
     }
