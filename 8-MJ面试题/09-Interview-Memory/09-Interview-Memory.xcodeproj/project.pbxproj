@@ -1,0 +1,396 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		EECC4A1A282BAA0100A6D065 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EECC4A19282BAA0100A6D065 /* AppDelegate.m */; };
+		EECC4A1D282BAA0100A6D065 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EECC4A1C282BAA0100A6D065 /* SceneDelegate.m */; };
+		EECC4A20282BAA0100A6D065 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EECC4A1F282BAA0100A6D065 /* ViewController.m */; };
+		EECC4A23282BAA0100A6D065 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EECC4A21282BAA0100A6D065 /* Main.storyboard */; };
+		EECC4A25282BAA0200A6D065 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EECC4A24282BAA0200A6D065 /* Assets.xcassets */; };
+		EECC4A28282BAA0200A6D065 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EECC4A26282BAA0200A6D065 /* LaunchScreen.storyboard */; };
+		EECC4A2B282BAA0200A6D065 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EECC4A2A282BAA0200A6D065 /* main.m */; };
+		EECC4A34282BAF1B00A6D065 /* OneVC.m in Sources */ = {isa = PBXBuildFile; fileRef = EECC4A33282BAF1B00A6D065 /* OneVC.m */; };
+		EECC4A37282BBA1300A6D065 /* Proxy.m in Sources */ = {isa = PBXBuildFile; fileRef = EECC4A36282BBA1300A6D065 /* Proxy.m */; };
+		EECC4A3A282BDEC100A6D065 /* ProxyBaseNSProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = EECC4A39282BDEC100A6D065 /* ProxyBaseNSProxy.m */; };
+		EECC4A3D282BE28200A6D065 /* GCDTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = EECC4A3C282BE28200A6D065 /* GCDTimer.m */; };
+		EECC4A40282BFA5400A6D065 /* TaggedPointer.m in Sources */ = {isa = PBXBuildFile; fileRef = EECC4A3F282BFA5400A6D065 /* TaggedPointer.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		EECC4A15282BAA0100A6D065 /* 09-Interview-Memory.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "09-Interview-Memory.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EECC4A18282BAA0100A6D065 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		EECC4A19282BAA0100A6D065 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		EECC4A1B282BAA0100A6D065 /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
+		EECC4A1C282BAA0100A6D065 /* SceneDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
+		EECC4A1E282BAA0100A6D065 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		EECC4A1F282BAA0100A6D065 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		EECC4A22282BAA0100A6D065 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		EECC4A24282BAA0200A6D065 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		EECC4A27282BAA0200A6D065 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		EECC4A29282BAA0200A6D065 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EECC4A2A282BAA0200A6D065 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		EECC4A31282BAA8500A6D065 /* Memory.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Memory.md; sourceTree = "<group>"; };
+		EECC4A32282BAF1B00A6D065 /* OneVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OneVC.h; sourceTree = "<group>"; };
+		EECC4A33282BAF1B00A6D065 /* OneVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OneVC.m; sourceTree = "<group>"; };
+		EECC4A35282BBA1300A6D065 /* Proxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Proxy.h; sourceTree = "<group>"; };
+		EECC4A36282BBA1300A6D065 /* Proxy.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Proxy.m; sourceTree = "<group>"; };
+		EECC4A38282BDEC100A6D065 /* ProxyBaseNSProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProxyBaseNSProxy.h; sourceTree = "<group>"; };
+		EECC4A39282BDEC100A6D065 /* ProxyBaseNSProxy.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ProxyBaseNSProxy.m; sourceTree = "<group>"; };
+		EECC4A3B282BE28200A6D065 /* GCDTimer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GCDTimer.h; sourceTree = "<group>"; };
+		EECC4A3C282BE28200A6D065 /* GCDTimer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GCDTimer.m; sourceTree = "<group>"; };
+		EECC4A3E282BFA5400A6D065 /* TaggedPointer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TaggedPointer.h; sourceTree = "<group>"; };
+		EECC4A3F282BFA5400A6D065 /* TaggedPointer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TaggedPointer.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		EECC4A12282BAA0100A6D065 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		EECC4A0C282BAA0100A6D065 = {
+			isa = PBXGroup;
+			children = (
+				EECC4A17282BAA0100A6D065 /* 09-Interview-Memory */,
+				EECC4A16282BAA0100A6D065 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		EECC4A16282BAA0100A6D065 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EECC4A15282BAA0100A6D065 /* 09-Interview-Memory.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		EECC4A17282BAA0100A6D065 /* 09-Interview-Memory */ = {
+			isa = PBXGroup;
+			children = (
+				EECC4A31282BAA8500A6D065 /* Memory.md */,
+				EECC4A18282BAA0100A6D065 /* AppDelegate.h */,
+				EECC4A19282BAA0100A6D065 /* AppDelegate.m */,
+				EECC4A1B282BAA0100A6D065 /* SceneDelegate.h */,
+				EECC4A1C282BAA0100A6D065 /* SceneDelegate.m */,
+				EECC4A1E282BAA0100A6D065 /* ViewController.h */,
+				EECC4A1F282BAA0100A6D065 /* ViewController.m */,
+				EECC4A32282BAF1B00A6D065 /* OneVC.h */,
+				EECC4A33282BAF1B00A6D065 /* OneVC.m */,
+				EECC4A35282BBA1300A6D065 /* Proxy.h */,
+				EECC4A36282BBA1300A6D065 /* Proxy.m */,
+				EECC4A38282BDEC100A6D065 /* ProxyBaseNSProxy.h */,
+				EECC4A39282BDEC100A6D065 /* ProxyBaseNSProxy.m */,
+				EECC4A3B282BE28200A6D065 /* GCDTimer.h */,
+				EECC4A3C282BE28200A6D065 /* GCDTimer.m */,
+				EECC4A3E282BFA5400A6D065 /* TaggedPointer.h */,
+				EECC4A3F282BFA5400A6D065 /* TaggedPointer.m */,
+				EECC4A21282BAA0100A6D065 /* Main.storyboard */,
+				EECC4A24282BAA0200A6D065 /* Assets.xcassets */,
+				EECC4A26282BAA0200A6D065 /* LaunchScreen.storyboard */,
+				EECC4A29282BAA0200A6D065 /* Info.plist */,
+				EECC4A2A282BAA0200A6D065 /* main.m */,
+			);
+			path = "09-Interview-Memory";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		EECC4A14282BAA0100A6D065 /* 09-Interview-Memory */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EECC4A2E282BAA0200A6D065 /* Build configuration list for PBXNativeTarget "09-Interview-Memory" */;
+			buildPhases = (
+				EECC4A11282BAA0100A6D065 /* Sources */,
+				EECC4A12282BAA0100A6D065 /* Frameworks */,
+				EECC4A13282BAA0100A6D065 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "09-Interview-Memory";
+			productName = "09-Interview-Memory";
+			productReference = EECC4A15282BAA0100A6D065 /* 09-Interview-Memory.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		EECC4A0D282BAA0100A6D065 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1330;
+				TargetAttributes = {
+					EECC4A14282BAA0100A6D065 = {
+						CreatedOnToolsVersion = 13.3.1;
+					};
+				};
+			};
+			buildConfigurationList = EECC4A10282BAA0100A6D065 /* Build configuration list for PBXProject "09-Interview-Memory" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = EECC4A0C282BAA0100A6D065;
+			productRefGroup = EECC4A16282BAA0100A6D065 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				EECC4A14282BAA0100A6D065 /* 09-Interview-Memory */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		EECC4A13282BAA0100A6D065 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EECC4A28282BAA0200A6D065 /* LaunchScreen.storyboard in Resources */,
+				EECC4A25282BAA0200A6D065 /* Assets.xcassets in Resources */,
+				EECC4A23282BAA0100A6D065 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		EECC4A11282BAA0100A6D065 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EECC4A37282BBA1300A6D065 /* Proxy.m in Sources */,
+				EECC4A20282BAA0100A6D065 /* ViewController.m in Sources */,
+				EECC4A34282BAF1B00A6D065 /* OneVC.m in Sources */,
+				EECC4A1A282BAA0100A6D065 /* AppDelegate.m in Sources */,
+				EECC4A3D282BE28200A6D065 /* GCDTimer.m in Sources */,
+				EECC4A2B282BAA0200A6D065 /* main.m in Sources */,
+				EECC4A3A282BDEC100A6D065 /* ProxyBaseNSProxy.m in Sources */,
+				EECC4A40282BFA5400A6D065 /* TaggedPointer.m in Sources */,
+				EECC4A1D282BAA0100A6D065 /* SceneDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		EECC4A21282BAA0100A6D065 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				EECC4A22282BAA0100A6D065 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		EECC4A26282BAA0200A6D065 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				EECC4A27282BAA0200A6D065 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		EECC4A2C282BAA0200A6D065 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		EECC4A2D282BAA0200A6D065 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		EECC4A2F282BAA0200A6D065 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "09-Interview-Memory/Info.plist";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "demo.-9-Interview-Memory";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		EECC4A30282BAA0200A6D065 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "09-Interview-Memory/Info.plist";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "demo.-9-Interview-Memory";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		EECC4A10282BAA0100A6D065 /* Build configuration list for PBXProject "09-Interview-Memory" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EECC4A2C282BAA0200A6D065 /* Debug */,
+				EECC4A2D282BAA0200A6D065 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EECC4A2E282BAA0200A6D065 /* Build configuration list for PBXNativeTarget "09-Interview-Memory" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EECC4A2F282BAA0200A6D065 /* Debug */,
+				EECC4A30282BAA0200A6D065 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = EECC4A0D282BAA0100A6D065 /* Project object */;
+}

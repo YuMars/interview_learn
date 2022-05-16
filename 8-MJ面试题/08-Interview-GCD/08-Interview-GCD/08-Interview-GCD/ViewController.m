@@ -17,6 +17,7 @@
 
 @property (nonatomic, strong) NSThread *thread;
 
+
 @end
 
 @implementation ViewController
