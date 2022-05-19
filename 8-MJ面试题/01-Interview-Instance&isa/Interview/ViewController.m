@@ -39,6 +39,10 @@ struct my_objc_class {
 
 @implementation Student
 
+- (BOOL)allowsWeakReference {
+    return NO;
+}
+
 - (void)studentInstanceMethod {
     
 }
@@ -145,6 +149,7 @@ struct my_objc_class {
      */
     
     Student *student = [[Student alloc] init];
+    
     student.age = 1;
 //    student.no = 3;
     size_t studentSize = class_getInstanceSize([Student class]);

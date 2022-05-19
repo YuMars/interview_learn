@@ -68,6 +68,11 @@ typedef DisguisedPtr<objc_object *> weak_referrer_t;
  * If out_of_line_ness != REFERRERS_OUT_OF_LINE then the set
  * is instead a small inline array.
  */
+/*
+ 存储在弱引用表中的内部结构。
+ 它维护并存储一个指向对象的弱引用散列集。
+ 如果out_of_line_ness != REFERRERS_OUT_OF_LINE，则该集合是一个小的内联数组。
+ */
 #define WEAK_INLINE_COUNT 4
 
 // out_of_line_ness field overlaps with the low two bits of inline_referrers[1].
@@ -81,9 +86,9 @@ struct weak_entry_t {
     DisguisedPtr<objc_object> referent;
     union {
         struct {
-            weak_referrer_t *referrers;
+            weak_referrer_t *referrers; // 二维指针数组
             uintptr_t        out_of_line_ness : 2;
-            uintptr_t        num_refs : PTR_MINUS_2;
+            uintptr_t        num_refs : PTR_MINUS_2; // 引用数值
             uintptr_t        mask;
             uintptr_t        max_hash_displacement;
         };
@@ -116,11 +121,12 @@ struct weak_entry_t {
  * The global weak references table. Stores object ids as keys,
  * and weak_entry_t structs as their values.
  */
+// id对象作为key，weak_table_t结构体作为value
 struct weak_table_t {
-    weak_entry_t *weak_entries;
-    size_t    num_entries;
-    uintptr_t mask;
-    uintptr_t max_hash_displacement;
+    weak_entry_t *weak_entries; // 保存了所有指向指针对象的weak指针
+    size_t    num_entries; // weak指针指向对象的数量
+    uintptr_t mask; // 掩码
+    uintptr_t max_hash_displacement; // hashkey的 最大散列偏移
 };
 
 /// Adds an (object, weak pointer) pair to the weak table.

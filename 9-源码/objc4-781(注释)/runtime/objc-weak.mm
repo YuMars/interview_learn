@@ -186,6 +186,8 @@ static void remove_referrer(weak_entry_t *entry, objc_object **old_referrer)
     size_t begin = w_hash_pointer(old_referrer) & (entry->mask);
     size_t index = begin;
     size_t hash_displacement = 0;
+    
+    // 遍历
     while (entry->referrers[index] != old_referrer) {
         index = (index+1) & entry->mask;
         if (index == begin) bad_weak_table(entry);
@@ -200,7 +202,11 @@ static void remove_referrer(weak_entry_t *entry, objc_object **old_referrer)
             return;
         }
     }
+    
+    // 将找到的对象清空
     entry->referrers[index] = nil;
+    
+    // 总引用数减一
     entry->num_refs--;
 }
 
@@ -291,7 +297,7 @@ static void weak_entry_remove(weak_table_t *weak_table, weak_entry_t *entry)
 
     weak_table->num_entries--;
 
-    weak_compact_maybe(weak_table);
+    weak_compact_maybe(weak_table); // 指针表减少内存开销
 }
 
 
@@ -318,7 +324,7 @@ weak_entry_for_referent(weak_table_t *weak_table, objc_object *referent)
     size_t index = begin;
     size_t hash_displacement = 0;
     while (weak_table->weak_entries[index].referent != referent) {
-        index = (index+1) & weak_table->mask;
+        index = (index+1) & weak_table->mask; // hash表取下一个（index+1后&运算）
         if (index == begin) bad_weak_table(weak_table->weak_entries);
         hash_displacement++;
         if (hash_displacement > weak_table->max_hash_displacement) {
@@ -344,10 +350,8 @@ weak_entry_for_referent(weak_table_t *weak_table, objc_object *referent)
  * @param referent The object.
  * @param referrer The weak reference.
  */
-void
-weak_unregister_no_lock(weak_table_t *weak_table, id referent_id, 
-                        id *referrer_id)
-{
+// 取消注册已经注册的弱引用
+void weak_unregister_no_lock(weak_table_t *weak_table, id referent_id/*oldObj*/, id *referrer_id/*location*/) {
     objc_object *referent = (objc_object *)referent_id;
     objc_object **referrer = (objc_object **)referrer_id;
 
@@ -356,7 +360,7 @@ weak_unregister_no_lock(weak_table_t *weak_table, id referent_id,
     if (!referent) return;
 
     if ((entry = weak_entry_for_referent(weak_table, referent))) {
-        remove_referrer(entry, referrer);
+        remove_referrer(entry, referrer); //
         bool empty = true;
         if (entry->out_of_line()  &&  entry->num_refs != 0) {
             empty = false;
@@ -387,10 +391,8 @@ weak_unregister_no_lock(weak_table_t *weak_table, id referent_id,
  * @param referent The object pointed to by the weak reference.
  * @param referrer The weak pointer address.
  */
-id 
-weak_register_no_lock(weak_table_t *weak_table, id referent_id, 
-                      id *referrer_id, bool crashIfDeallocating)
-{
+// 注册一个新的弱引用 referrer:（上线）弱指针地址
+id weak_register_no_lock(weak_table_t *weak_table, id referent_id, id *referrer_id, bool crashIfDeallocating) {
     objc_object *referent = (objc_object *)referent_id;
     objc_object **referrer = (objc_object **)referrer_id;
 
@@ -399,7 +401,7 @@ weak_register_no_lock(weak_table_t *weak_table, id referent_id,
     // ensure that the referenced object is viable
     bool deallocating;
     if (!referent->ISA()->hasCustomRR()) {
-        deallocating = referent->rootIsDeallocating();
+        deallocating = referent->rootIsDeallocating(); // 是否正在释放
     }
     else {
         BOOL (*allowsWeakReference)(objc_object *, SEL) = 
@@ -413,7 +415,7 @@ weak_register_no_lock(weak_table_t *weak_table, id referent_id,
             ! (*allowsWeakReference)(referent, @selector(allowsWeakReference));
     }
 
-    if (deallocating) {
+    if (deallocating) { // 正在释放
         if (crashIfDeallocating) {
             _objc_fatal("Cannot form weak reference to instance (%p) of "
                         "class %s. It is possible that this object was "
@@ -426,10 +428,16 @@ weak_register_no_lock(weak_table_t *weak_table, id referent_id,
 
     // now remember it and where it is being stored
     weak_entry_t *entry;
-    if ((entry = weak_entry_for_referent(weak_table, referent))) {
+    if ((entry = weak_entry_for_referent(weak_table, referent))) { // weak_table中hash遍历查找referent
+        
+        // 如果存在,将弱引用指针和对象地址添加入hash表
         append_referrer(entry, referrer);
     } 
     else {
+        
+        // 生成新的 new_entry 弱引用指针和对象地址
+        // 根据情况hash表扩容
+        // hash表插入新生成的new_entry
         weak_entry_t new_entry(referent, referrer);
         weak_grow_maybe(weak_table);
         weak_entry_insert(weak_table, &new_entry);
