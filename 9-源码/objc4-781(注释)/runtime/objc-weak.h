@@ -83,18 +83,20 @@ typedef DisguisedPtr<objc_object *> weak_referrer_t;
 #define REFERRERS_OUT_OF_LINE 2
 
 struct weak_entry_t {
-    DisguisedPtr<objc_object> referent;
+    DisguisedPtr<objc_object> referent; // 弱引用的对象
     union {
-        struct {
-            weak_referrer_t *referrers; // 二维指针数组
+        
+        struct {  (找到的资料是4，个人感觉上REFERRERS_OUT_OF_LINE代表的2，out_of_line_ness == 0b10 (0b10 = 2))
+            weak_referrer_t *referrers; // 二维指针数组,存储指向该对象的弱引用
             uintptr_t        out_of_line_ness : 2;
             uintptr_t        num_refs : PTR_MINUS_2; // 引用数值
             uintptr_t        mask;
             uintptr_t        max_hash_displacement;
         };
+        
         struct {
             // out_of_line_ness field is low bits of inline_referrers[1]
-            weak_referrer_t  inline_referrers[WEAK_INLINE_COUNT];
+            weak_referrer_t  inline_referrers[WEAK_INLINE_COUNT]; // 存储指向该对象的弱引用数组
         };
     };
 
@@ -102,11 +104,13 @@ struct weak_entry_t {
         return (out_of_line_ness == REFERRERS_OUT_OF_LINE);
     }
 
+    // 覆盖老数据
     weak_entry_t& operator=(const weak_entry_t& other) {
         memcpy(this, &other, sizeof(other));
         return *this;
     }
 
+    // 构造方法
     weak_entry_t(objc_object *newReferent, objc_object **newReferrer)
         : referent(newReferent)
     {
@@ -124,8 +128,8 @@ struct weak_entry_t {
 // id对象作为key，weak_table_t结构体作为value
 struct weak_table_t {
     weak_entry_t *weak_entries; // 保存了所有指向指针对象的weak指针
-    size_t    num_entries; // weak指针指向对象的数量
-    uintptr_t mask; // 掩码
+    size_t    num_entries; // entries的数量
+    uintptr_t mask; // hash数组的长度-1
     uintptr_t max_hash_displacement; // hashkey的 最大散列偏移
 };
 

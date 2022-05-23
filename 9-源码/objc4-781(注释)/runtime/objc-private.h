@@ -830,17 +830,18 @@ enum { CacheLineSize = 64 };
 template<typename T>
 class StripedMap {
 #if TARGET_OS_IPHONE && !TARGET_OS_SIMULATOR
-    enum { StripeCount = 8 };
+    enum { StripeCount = 8 }; // 真机是8
 #else
-    enum { StripeCount = 64 };
+    enum { StripeCount = 64 };// 模拟器是64
 #endif
 
     struct PaddedT {
-        T value alignas(CacheLineSize);
+        T value alignas(CacheLineSize); //64
     };
 
-    PaddedT array[StripeCount];
+    PaddedT array[StripeCount]; // 散列表
 
+    // 散列函数，通过对象地址计算出对应 PaddedT在数组中的下标
     static unsigned int indexForPointer(const void *p) {
         uintptr_t addr = reinterpret_cast<uintptr_t>(p);
         return ((addr >> 4) ^ (addr >> 9)) % StripeCount;

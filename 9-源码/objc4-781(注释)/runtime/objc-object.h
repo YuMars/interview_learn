@@ -379,6 +379,7 @@ inline void
 objc_object::setWeaklyReferenced_nolock()
 {
  retry:
+    // 获取对象的 isa 指针
     isa_t oldisa = LoadExclusive(&isa.bits);
     isa_t newisa = oldisa;
     if (slowpath(!newisa.nonpointer)) {
@@ -386,10 +387,12 @@ objc_object::setWeaklyReferenced_nolock()
         sidetable_setWeaklyReferenced_nolock();
         return;
     }
+    // 如果对象isa 的弱引用标志位已经是 true 了，则不进行操作
     if (newisa.weakly_referenced) {
         ClearExclusive(&isa.bits);
         return;
     }
+    // 弱引用标志位设为 true
     newisa.weakly_referenced = true;
     if (!StoreExclusive(&isa.bits, oldisa.bits, newisa.bits)) goto retry;
 }

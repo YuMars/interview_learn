@@ -109,11 +109,11 @@ struct SideTable {
     RefcountMap refcnts; // 引用计数hash表(协助isa指针的extra_rc共同引用技术的变量)
     weak_table_t weak_table; // weak 引用全局 hash 表
 
-    SideTable() {
+    SideTable() { // 构造函数
         memset(&weak_table, 0, sizeof(weak_table));
     }
 
-    ~SideTable() {
+    ~SideTable() { // 析构函数
         _objc_fatal("Do not delete SideTable.");
     }
 
@@ -276,8 +276,8 @@ enum CrashIfDeallocating {
  如果crashifdeallocate为false，则存储nil。
  */
 template <HaveOld haveOld, HaveNew haveNew, CrashIfDeallocating crashIfDeallocating> static id storeWeak(id *location, objc_object *newObj) {
-    ASSERT(haveOld  ||  haveNew);// TODO:同时是新旧就异常？
-    if (!haveNew) ASSERT(newObj == nil);
+    ASSERT(haveOld  ||  haveNew);//校验旧对象和新对象必须存其一
+    if (!haveNew) ASSERT(newObj == nil);//校验如果haveNew=true，newObj不能为nil
 
     // 该过程用来更新弱引用指针的指向
     // 初始化 previouslyInitializedClass 指针
@@ -293,8 +293,9 @@ template <HaveOld haveOld, HaveNew haveNew, CrashIfDeallocating crashIfDeallocat
     // Retry if the old value changes underneath us.
  retry:
     if (haveOld) {
-        // 更改指针，获得以 oldObj 为索引所存储的值地址
+        // 更改指针， 为索引所存储的值地址
         oldObj = *location;
+        //获得以 oldObj为 key取出旧的SideTable
         oldTable = &SideTables()[oldObj];
     } else {
         oldTable = nil;
@@ -308,6 +309,7 @@ template <HaveOld haveOld, HaveNew haveNew, CrashIfDeallocating crashIfDeallocat
     // 加锁操作，防止多线程中竞争冲突
     SideTable::lockTwo<haveOld, haveNew>(oldTable, newTable);
 
+    //校验，如果旧值对不上 goto retry
     if (haveOld  &&  *location != oldObj) {
         SideTable::unlockTwo<haveOld, haveNew>(oldTable, newTable);
         goto retry;
