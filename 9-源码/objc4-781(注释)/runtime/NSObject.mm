@@ -293,9 +293,9 @@ template <HaveOld haveOld, HaveNew haveNew, CrashIfDeallocating crashIfDeallocat
     // Retry if the old value changes underneath us.
  retry:
     if (haveOld) {
-        // 更改指针， 为索引所存储的值地址
+        // 如果weak 指针之前指向过其他对象，取出这个旧对象
         oldObj = *location;
-        //获得以 oldObj为 key取出旧的SideTable
+        // 以旧对象为 key，从全局 SideTables()中取出旧对象对应的 SideTable
         oldTable = &SideTables()[oldObj];
     } else {
         oldTable = nil;

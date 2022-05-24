@@ -309,12 +309,14 @@ static void weak_compact_maybe(weak_table_t *weak_table)
 static void weak_entry_remove(weak_table_t *weak_table, weak_entry_t *entry)
 {
     // remove entry
+    // 如果使用的是动态数组，则释放动态数组的内存
     if (entry->out_of_line()) free(entry->referrers);
+    // 以 entry 为起始地址的前sizeof(*entry)个字节区域清零
     bzero(entry, sizeof(*entry));
-
+    // 全局 weak_table_t中的弱引用对象数量-1
     weak_table->num_entries--;
-
-    weak_compact_maybe(weak_table); // 指针表减少内存开销
+    // 收缩表大小
+    weak_compact_maybe(weak_table);
 }
 
 
