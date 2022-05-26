@@ -33,35 +33,48 @@ class FindFirstandLastPositionofElementinSortedArray {
     }
     
     func searchRange2(_ nums: [Int], _ target: Int) -> [Int] {
-        var leftBorder: Int = getLeftBorder(nums, target)
-        var rightBorder: Int = getRightBorder(nums, target)
+        let leftBorder: Int = getLeftBorder(nums, target)
+        let rightBorder: Int = getRightBorder(nums, target)
         
+        if leftBorder == -2 , rightBorder == -2 { return [-1, -1]}
+        if rightBorder - leftBorder > 1 { return [leftBorder + 1, rightBorder - 1]}
         return [-1, -1]
         
     }
     
     func getLeftBorder(_ nums:[Int], _ target: Int) -> Int {
-        // target在数组左边，或右边
-        // target在数组范围中，且不存在target
-        // target在数组范围中，且存在target
-        return -1
+        var left: Int = 0
+        var right: Int = nums.count - 1
+        var leftBorder: Int = -2
+        while (left <= right) {
+            let middle = left + (right - left) / 2
+            if (nums[middle] >= target) {
+                right = middle - 1
+                leftBorder = right
+            } else {
+                left = middle + 1
+            }
+        }
+        return leftBorder
     }
     
     func getRightBorder(_ nums:[Int], _ target: Int) -> Int {
+        // target在数组左边，或右边
+        // target在数组范围中，且不存在target
+        // target在数组范围中，且存在target
+        // [left,right]
         var left: Int = 0
         var right: Int = nums.count - 1
-        
-        while left <= right {
+        var rightBorder: Int = -2
+        while (left <= right) {
             let middle = left + (right - left) / 2
-            if nums[middle] > target {
+            if (nums[middle] > target) {
                 right = middle - 1
-            } else if nums[middle] < target {
-                left = middle + 1
             } else {
-                return middle
+                left = middle + 1
+                rightBorder = left
             }
         }
-        
-        return -1
+        return rightBorder
     }
 }

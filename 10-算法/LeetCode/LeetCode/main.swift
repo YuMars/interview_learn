@@ -19,3 +19,7 @@ target = 0
 index = SearchInsertPosition.searchInsert(nums, target)
 print("SearchInsertPosition:" + "\(index)")
 
+nums = [3,2,2,3]
+target = 3
+index = RemoveElement.removeElement1(&nums, target)
+print("RemoveElement" + "\(index)")
