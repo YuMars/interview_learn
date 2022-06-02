@@ -8,9 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		EE038FE328044BE100969223 /* 0034_ FindFirstandLastPositionofElementinSortedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE038FE228044BE100969223 /* 0034_ FindFirstandLastPositionofElementinSortedArray.swift */; };
-		EE5562B3283F58BF00DB9C1E /* 027_RemoveElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5562B2283F58BF00DB9C1E /* 027_RemoveElement.swift */; };
+		EE5562B3283F58BF00DB9C1E /* 0027_RemoveElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5562B2283F58BF00DB9C1E /* 0027_RemoveElement.swift */; };
 		EEB76E0927F0B95A00D8EA7B /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB76E0827F0B95A00D8EA7B /* main.swift */; };
 		EEB76E1027F0B9A900D8EA7B /* 0001_TwoSum.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB76E0F27F0B9A900D8EA7B /* 0001_TwoSum.swift */; };
+		EECDB2582840B19400D8A2AC /* 0026_RemoveDuplicates.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECDB2572840B19400D8A2AC /* 0026_RemoveDuplicates.swift */; };
 		EEEC3DE327F1881200B69E57 /* 0704_BinarySearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEC3DE227F1881200B69E57 /* 0704_BinarySearch.swift */; };
 		EEEEF1AD27F3563E0030229F /* 0035_SearchInsertPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEEF1AC27F3563E0030229F /* 0035_SearchInsertPosition.swift */; };
 /* End PBXBuildFile section */
@@ -29,10 +30,11 @@
 
 /* Begin PBXFileReference section */
 		EE038FE228044BE100969223 /* 0034_ FindFirstandLastPositionofElementinSortedArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "0034_ FindFirstandLastPositionofElementinSortedArray.swift"; sourceTree = "<group>"; };
-		EE5562B2283F58BF00DB9C1E /* 027_RemoveElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 027_RemoveElement.swift; sourceTree = "<group>"; };
+		EE5562B2283F58BF00DB9C1E /* 0027_RemoveElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0027_RemoveElement.swift; sourceTree = "<group>"; };
 		EEB76E0527F0B95A00D8EA7B /* LeetCode */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = LeetCode; sourceTree = BUILT_PRODUCTS_DIR; };
 		EEB76E0827F0B95A00D8EA7B /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		EEB76E0F27F0B9A900D8EA7B /* 0001_TwoSum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0001_TwoSum.swift; sourceTree = "<group>"; };
+		EECDB2572840B19400D8A2AC /* 0026_RemoveDuplicates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0026_RemoveDuplicates.swift; sourceTree = "<group>"; };
 		EEEC3DE227F1881200B69E57 /* 0704_BinarySearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0704_BinarySearch.swift; sourceTree = "<group>"; };
 		EEEEF1AC27F3563E0030229F /* 0035_SearchInsertPosition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0035_SearchInsertPosition.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -72,7 +74,8 @@
 				EEEC3DE227F1881200B69E57 /* 0704_BinarySearch.swift */,
 				EEEEF1AC27F3563E0030229F /* 0035_SearchInsertPosition.swift */,
 				EE038FE228044BE100969223 /* 0034_ FindFirstandLastPositionofElementinSortedArray.swift */,
-				EE5562B2283F58BF00DB9C1E /* 027_RemoveElement.swift */,
+				EE5562B2283F58BF00DB9C1E /* 0027_RemoveElement.swift */,
+				EECDB2572840B19400D8A2AC /* 0026_RemoveDuplicates.swift */,
 			);
 			path = LeetCode;
 			sourceTree = "<group>";
@@ -135,9 +138,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EE5562B3283F58BF00DB9C1E /* 027_RemoveElement.swift in Sources */,
+				EE5562B3283F58BF00DB9C1E /* 0027_RemoveElement.swift in Sources */,
 				EEB76E0927F0B95A00D8EA7B /* main.swift in Sources */,
 				EEEEF1AD27F3563E0030229F /* 0035_SearchInsertPosition.swift in Sources */,
+				EECDB2582840B19400D8A2AC /* 0026_RemoveDuplicates.swift in Sources */,
 				EE038FE328044BE100969223 /* 0034_ FindFirstandLastPositionofElementinSortedArray.swift in Sources */,
 				EEEC3DE327F1881200B69E57 /* 0704_BinarySearch.swift in Sources */,
 				EEB76E1027F0B9A900D8EA7B /* 0001_TwoSum.swift in Sources */,
