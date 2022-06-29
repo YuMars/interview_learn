@@ -33,3 +33,9 @@ let string1 = "a#c"
 let string2 = "b"
 print("BackspaceStringCompare", BackspaceStringCompare.backspaceCompare(string1, string2))
 
+nums = [-4,-1,0,3,10]
+print("SquareOfASortArray", SquareOfASortArray.sortedSquares1(nums))
+
+nums = [2,3,1,2,4,3]
+target = 7
+print("MinimumSizeSubarraySum", MinimumSizeSubarraySum.minSubArrayLen1(target, nums))

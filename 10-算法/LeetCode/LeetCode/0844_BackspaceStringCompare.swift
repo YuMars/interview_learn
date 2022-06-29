@@ -28,7 +28,7 @@ class BackspaceStringCompare {
         return string1
     }
     
-    // 双指针方法
+    // 双指针方法 (两个字符串s、t，分别从字符串尾部开始遍历判断对应的字符串是否相同，如果遇到#，标记遇到#的次数再往前偏移对应的次数，再做两个字符串的比较)
     public class func backspaceCompare2(_ s: String, _ t: String) -> Bool {
         var sIndex = s.count - 1
         var tIndex = t.count - 1
@@ -36,12 +36,43 @@ class BackspaceStringCompare {
         var tJump: Int = 0
         
         while sIndex >= 0 || tIndex >= 0 {
-            if (sIndex >= 0) {
+            while (sIndex >= 0) {
                 if s[s.index(s.startIndex, offsetBy: sIndex)] == "#" {
                     sJump += 1
+                    sIndex -= 1
+                } else if sJump > 0 {
+                    sJump -= 1
+                    sIndex -= 1
+                } else {
+                    break
                 }
-                sIndex -= 1
             }
+            
+            while tIndex >= 0 {
+                if t[t.index(t.startIndex, offsetBy: tIndex)] == "#" {
+                    tJump += 1
+                    tIndex -= 1
+                } else if tJump > 0 {
+                    tJump -= 1
+                    tIndex -= 1
+                } else {
+                    break
+                }
+            }
+            
+            if sIndex >= 0, tIndex >= 0 {
+                if s[s.index(s.startIndex, offsetBy: sIndex)] != t[t.index(t.startIndex, offsetBy: tIndex)] {
+                    return false
+                }
+            } else {
+                if sIndex >= 0 || tIndex >= 0 {
+                    return false
+                }
+            }
+            
+            sIndex -= 1
+            tIndex -= 1
         }
+        return true
     }
 }
