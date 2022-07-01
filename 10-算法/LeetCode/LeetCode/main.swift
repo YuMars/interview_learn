@@ -39,3 +39,8 @@ print("SquareOfASortArray", SquareOfASortArray.sortedSquares1(nums))
 nums = [2,3,1,2,4,3]
 target = 7
 print("MinimumSizeSubarraySum", MinimumSizeSubarraySum.minSubArrayLen1(target, nums))
+
+nums =  [0,1,2,2]
+print("FruitIntoBaskets", FruitIntoBaskets.totalFruit(nums))
+
+print("SpiralMatrix2", SpiralMatrix2.generateMatrix(6))
