@@ -50,8 +50,8 @@ RunTime
 
 		typedef struct objc_object *id;
 
-		id定义为一个指向objc_object结构提的指针。可以看出objc_object只包含一个Class类型的isa指针。换句话说，一个object唯一保存的就是它所属Class的地址。当我们对一个对象进行方法调用时，比如[receiver selector]，它会通过obj_object结构体的isa指针去找对应的objc_class结构体，然后在objc_class结构体的objc_method_list（方法列表）中找到调用对应的方法，然后执行。
-
+		`id定义为一个指向objc_object结构提的指针。可以看出objc_object只包含一个Class类型的isa指针。换句话说，一个object唯一保存的就是它所属Class的地址。当我们对一个对象进行方法调用时，比如[receiver selector]，它会通过obj_object结构体的isa指针去找对应的objc_class结构体，然后在objc_class结构体的objc_method_list（方法列表）中找到调用对应的方法，然后执行。
+		`
 	3.4 Meta class
 		objc_object的isa指针指向对应的objc_class（类对象）
 		objc_class的isa指针指向什么？
@@ -69,7 +69,7 @@ RunTime
 
 			stringWithFormat被发送给了NSString类，NSString类通过isa指针找到NSString元类，然后该元类的方法列表中找到对应的stringWithFormat方法，然后执行该方法
 
-	3.5 实力对象，类，元类对象的关系
+	3.5 实例对象，类，元类对象的关系
 
 			⬆ 父类   -----> isa指针
 
@@ -125,10 +125,9 @@ RunTime
 	若找不到对应的selector,消息被转发或者临时向receiver添加这个selector对应的实现方法,否则就会发生崩溃.
 	当一个方法找不到的时候,Runtime提供了消息动态解析,消息接受者重定向,消息重定向等三步处理,具体流程如下:
 
-	+resolveInstanceMethod/+resolveClassMethod   +forwardingTargetForSelector/-forwardingTargetForSelector  
-
+	+resolveInstanceMethod/+resolveClassMethod   
+	+forwardingTargetForSelector/-forwardingTargetForSelector  
 	+methodSignatureForSelector/-methodSignatureForSelector
-					||												||
 						消息成功处理
 	4.1 消息动态解析
 		Objective-C运行时会调用+resolveInstanceMethod或者+resolveClassMethod,前者在对象方法未找到时,后者在类方法未找到时调用,可以通过重写这两个方法,添加其他函数实现,并返回YES,运行时系统会重新启动一次消息发送的过程.

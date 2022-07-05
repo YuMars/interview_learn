@@ -32,7 +32,6 @@ class SpiralMatrix2 {
       [13, 12, 11, 10, 9],]
      */
     public class func generateMatrix(_ n: Int) -> [[Int]] {
-        
         var resultArray: Array = Array(repeating: Array(repeating: 0, count: n), count: n)
         var offsetX: Int = 0
         var offsetY: Int = 0

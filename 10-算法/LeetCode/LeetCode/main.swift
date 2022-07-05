@@ -44,3 +44,24 @@ nums =  [0,1,2,2]
 print("FruitIntoBaskets", FruitIntoBaskets.totalFruit(nums))
 
 print("SpiralMatrix2", SpiralMatrix2.generateMatrix(6))
+
+let linkList = MyLinkedList()
+print("MyLinkedList", linkList.addAtHead(1), linkList.addAtTail(3), linkList.addAtIndex(1, 2), linkList.get(1), linkList.deleteAtIndex(0), linkList.get(0))
+
+let head = MyLinkedList()
+head.addAtTail(1)
+head.addAtTail(2)
+head.addAtTail(3)
+head.addAtTail(4)
+head.addAtTail(5)
+head.addAtTail(6)
+print("SwapNodesInPairs", (SwapNodesInPairs.swapPairs(head.head)?.val) as Any)
+
+let head2 = MyLinkedList()
+head2.addAtTail(1)
+head2.addAtTail(2)
+//head2.addAtTail(3)
+//head2.addAtTail(4)
+//head2.addAtTail(5)
+//head2.addAtTail(6)
+print("RemoveNthNodeFromEndofList", (RemoveNthNodeFromEndofList.removeNthFromEnd(head2.head, 1))?.val as Any)
