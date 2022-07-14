@@ -200,11 +200,11 @@ LExit$0:
 // CacheHit: x17 = cached IMP, x12 = address of cached IMP, x1 = SEL, x16 = isa
 .macro CacheHit
 .if $0 == NORMAL
-	TailCallCachedImp x17, x12, x1, x16	// authenticate and call imp
+	TailCallCachedImp x17, x12, x1, x16	// authenticate and call imp (命中走这里)
 .elseif $0 == GETIMP
 	mov	p0, p17
 	cbz	p0, 9f			// don't ptrauth a nil imp
-	AuthAndResignAsIMP x0, x12, x1, x16	// authenticate imp and re-sign as IMP
+	AuthAndResignAsIMP x0, x12, x1, x16	// authenticate imp and re-sign as IMP ()
 9:	ret				// return IMP
 .elseif $0 == LOOKUP
 	// No nil check for ptrauth: the caller would crash anyway when they
@@ -356,13 +356,13 @@ _objc_debug_taggedpointer_ext_classes:
 	ENTRY _objc_msgSend
 	UNWIND _objc_msgSend, NoFrame
 
-	cmp	p0, #0			// nil check and tagged pointer check
+	cmp	p0, #0			// nil check and tagged pointer check (比较，是否是nil或者是tagpointer)
 #if SUPPORT_TAGGED_POINTERS
 	b.le	LNilOrTagged		//  (MSB tagged pointer looks negative)
 #else
 	b.eq	LReturnZero
 #endif
-	ldr	p13, [x0]		// p13 = isa
+	ldr	p13, [x0]		// p13 = isa (ldr类似mov)
 	GetClassFromIsa_p16 p13		// p16 = class
 LGetIsaDone:
 	// calls imp or objc_msgSend_uncached
@@ -373,7 +373,7 @@ LNilOrTagged:
 	b.eq	LReturnZero		// nil check
 
 	// tagged
-	adrp	x10, _objc_debug_taggedpointer_classes@PAGE
+	adrp	x10, _objc_debug_taggedpointer_classes@PAGE //(adrp：寄存器立即数)
 	add	x10, x10, _objc_debug_taggedpointer_classes@PAGEOFF
 	ubfx	x11, x0, #60, #4
 	ldr	x16, [x10, x11, LSL #3]

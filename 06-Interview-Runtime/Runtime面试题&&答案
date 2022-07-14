@@ -1,0 +1,300 @@
+Runtime面试题 && 答案
+
+
+1.一个NSObject对象占用多少内存？
+  系统分配了16个字节给NSObject对象（通过malloc_size函数获得）
+  但NSObject对象内部只使用了8个字节的空间（64bit环境下，可以通过class_getInstanceSize函数获得）
+  (objc_rootAllocWithZone -> _class_createInstanceFromZone -> instanceSize -> if (size < 16) size = 16;)
+
+结构体分配内存大小，按照最小结构体的倍数分配
+分配对象内存大小的时候，最小按照16的倍数分配 buckets sized{16,32,48,64,80,96,112.... }
+
+2.介绍下runtime的内存模型（isa、对象、类、metaclass、结构体的存储信息等）
+
+instance：成员变量
+class：存储实例属性、实例方法、实例协议
+meta-class：存储类方法
+
+将源代码转换为可执行的程序，通常需要经过三个步骤：编译,链接,运行。
+OC中，对象的方法调用都是类似[receiver selector],其本质就是让对象在运行时发送消息的过程。
+编译阶段：
+[receiver selector]方法被编译器转换为：
+- objc_msgSend(receiver, selector)  -- 不带参数
+- objc_msgSend(receiver, selector, vlg1, vg2) -- 带参数
+运行阶段：
+1. 通过receiver的isa指针找到receiver的Class
+2. 在Class的cache（方法缓存）的散列表中寻找对应的IMP（方法实现）
+3. 如果在cache（方法缓存）中没有找到对应的IMP（方法实现）的话，就继续在Class的objc_method_list中找到对应的selector，如果找到，填充到cache（方法缓存）中，并返回selector
+4. 如果在Class中没有找到这个selector，就继续在他的superClass中寻找
+5. 一旦找到对应的selector，直接执行receiver对应selector方法实现的IMP（方法实现）
+6. 若找不到对应的selector，消息被转发或者临时向receiver添加这个selector对应的实现方法，否则就会发生崩溃。
+
+isa指针找到receiver的Class：
+一个对象NSObject的结构
+@interface NSObject <NSObject> {
+    Class isa;          // isa 指针
+}
+⬇ clang转成编译语言后
+struct NSObject_IMPL {
+ Class isa; // 指针（8个字节）(64位下是8个字节，32位下是4个字节)     
+};	
+⬇
+typedef struct objc_class *Class;
+⬇
+struct objc_class {
+	Class _Nonnull isa  OBJC_ISA_AVAILABILITY;                   // 保存所属类的结构体的实例的指针
+	Class _Nullable super_class                                  // 指向父类的指针
+   	const char * _Nonnull name                                   // 类的名称
+	long version                                                 // 类的版本号，默认为0
+	long info                                                    // 类的信息，供运行时期使用的一些标识
+	long instance_size                                           // 实例变量大小
+	struct objc_ivar_list * _Nullable ivars                      // 成员变量-列表
+	struct objc_method_list * _Nullable * _Nullable methodLists  // 方法-列表
+	struct objc_cache * _Nonnull cache                           // 方法缓存
+	struct objc_protocol_list * _Nullable protocols              // 遵守的协议列表
+} OBJC2_UNAVAILABLE;
+
+类对象(objc_class)
+实例(objc_object)
+元类(Meta Class)
+Method(objc_method)
+SEL(objc_selector)
+IMP
+类缓存(objc_cache)
+Category(objc_category)
+
+instance.isa -> instance.class  instance.class.isa -> instance.meta_class instance.meta_calss.isa -> Root class(meta)  Root class(meta).isa -> Root class(meta)
+instance.super_class指针 -> instance.SuperClass instance.SuperClass.super_class指针 -> Root Class Root Class(class).super_class指针 -> nil 
+Root Class(meta).super_class -> Root class(class)
+
+
+
+
+
+
+ 
+3.为什么要设计metaclass
+
+lookUpImpOrForward(id inst, SEL sel, Class cls, int behavior) 的时候需要传入cls，不知道是实例对象还是类对象，查找缓存的时候需要判断cls是什么对象
+通过元类就可以巧妙的解决上述的问题，让各类各司其职。
+实例对象就干存储属性值的事，类对象存储实例方法列表，元类对象存储类方法列表，完美的符合6大设计原则中的单一职责。
+而且忽略了对对象类型的判断和方法类型的判断可以大大的提升消息发送的效率，并且在不同种类的方法走的都是同一套流程，在之后的维护上也大大节约了成本
+
+
+
+
+
+
+4.class_copyIvarList & class_copyPropertyList区别
+ivar = proterty + @interface大括号中声明的变量（获取到属性名带下划线）
+property 是@proterty修饰过的变量（不带下划线）
+ivar在底层，从cls->data->ro下获取，property是cls->data->rw下获取
+
+
+
+
+
+
+5.class_rw_t 和 class_ro_t 的区别
+
+struct class_rw_t {
+    // Be warned that Symbolication knows the layout of this structure.
+    uint32_t flags;
+    uint16_t witness;
+#if SUPPORT_INDEXED_ISA
+    uint16_t index;
+#endif
+
+    explicit_atomic<uintptr_t> ro_or_rw_ext;
+
+    Class firstSubclass;
+    Class nextSiblingClass;
+
+public:
+    void setFlags(uint32_t set)
+    {
+        __c11_atomic_fetch_or((_Atomic(uint32_t) *)&flags, set, __ATOMIC_RELAXED);
+    }
+
+    void clearFlags(uint32_t clear) 
+    {
+        __c11_atomic_fetch_and((_Atomic(uint32_t) *)&flags, ~clear, __ATOMIC_RELAXED);
+    }
+
+    // set and clear must not overlap
+    void changeFlags(uint32_t set, uint32_t clear) 
+    {
+        ASSERT((set & clear) == 0);
+
+        uint32_t oldf, newf;
+        do {
+            oldf = flags;
+            newf = (oldf | set) & ~clear;
+        } while (!OSAtomicCompareAndSwap32Barrier(oldf, newf, (volatile int32_t *)&flags));
+    }
+
+    class_rw_ext_t *ext() const {
+        return get_ro_or_rwe().dyn_cast<class_rw_ext_t *>();
+    }
+
+    class_rw_ext_t *extAllocIfNeeded() {
+        auto v = get_ro_or_rwe();
+        if (fastpath(v.is<class_rw_ext_t *>())) {
+            return v.get<class_rw_ext_t *>();
+        } else {
+            return extAlloc(v.get<const class_ro_t *>());
+        }
+    }
+
+    class_rw_ext_t *deepCopy(const class_ro_t *ro) {
+        return extAlloc(ro, true);
+    }
+
+    const class_ro_t *ro() const {
+        auto v = get_ro_or_rwe();
+        if (slowpath(v.is<class_rw_ext_t *>())) {
+            return v.get<class_rw_ext_t *>()->ro;
+        }
+        return v.get<const class_ro_t *>();
+    }
+
+    void set_ro(const class_ro_t *ro) {
+        auto v = get_ro_or_rwe();
+        if (v.is<class_rw_ext_t *>()) {
+            v.get<class_rw_ext_t *>()->ro = ro;
+        } else {
+            set_ro_or_rwe(ro);
+        }
+    }
+
+    // 方法列表
+    const method_array_t methods() const {
+        auto v = get_ro_or_rwe();
+        if (v.is<class_rw_ext_t *>()) {
+            return v.get<class_rw_ext_t *>()->methods;
+        } else {
+            return method_array_t{v.get<const class_ro_t *>()->baseMethods()};
+        }
+    }
+
+    // 属性列表
+    const property_array_t properties() const {
+        auto v = get_ro_or_rwe();
+        if (v.is<class_rw_ext_t *>()) {
+            return v.get<class_rw_ext_t *>()->properties;
+        } else {
+            return property_array_t{v.get<const class_ro_t *>()->baseProperties};
+        }
+    }
+
+    // 协议列表
+    const protocol_array_t protocols() const {
+        auto v = get_ro_or_rwe();
+        if (v.is<class_rw_ext_t *>()) {
+            return v.get<class_rw_ext_t *>()->protocols;
+        } else {
+            return protocol_array_t{v.get<const class_ro_t *>()->baseProtocols};
+        }
+    }
+}
+
+struct class_ro_t {
+    uint32_t flags;
+    uint32_t instanceStart;
+    uint32_t instanceSize;
+#ifdef __LP64__
+    uint32_t reserved;
+#endif
+
+    const uint8_t * ivarLayout;
+    
+    const char * name;
+    method_list_t * baseMethodList;
+    protocol_list_t * baseProtocols;
+    const ivar_list_t * ivars;
+
+    const uint8_t * weakIvarLayout;
+    property_list_t *baseProperties;
+
+    // This field exists only when RO_HAS_SWIFT_INITIALIZER is set.
+    _objc_swiftMetadataInitializer __ptrauth_objc_method_list_imp _swiftMetadataInitializer_NEVER_USE[0];
+
+    _objc_swiftMetadataInitializer swiftMetadataInitializer() const {
+        if (flags & RO_HAS_SWIFT_INITIALIZER) {
+            return _swiftMetadataInitializer_NEVER_USE[0];
+        } else {
+            return nil;
+        }
+    }
+
+    method_list_t *baseMethods() const {
+        return baseMethodList;
+    }
+
+    class_ro_t *duplicate() const {
+        if (flags & RO_HAS_SWIFT_INITIALIZER) {
+            size_t size = sizeof(*this) + sizeof(_swiftMetadataInitializer_NEVER_USE[0]);
+            class_ro_t *ro = (class_ro_t *)memdup(this, size);
+            ro->_swiftMetadataInitializer_NEVER_USE[0] = this->_swiftMetadataInitializer_NEVER_USE[0];
+            return ro;
+        } else {
+            size_t size = sizeof(*this);
+            class_ro_t *ro = (class_ro_t *)memdup(this, size);
+            return ro;
+        }
+    }
+};
+
+
+class_rw_t: (实例方法、实例属性、协议)
+	methods
+	properties
+	protocols
+	class_ro_t
+class_ro_t:（成员变量）
+	name
+	methodList
+	ivars
+	properties
+	protocols
+
+
+
+
+
+
+
+6.category如何被加载的,两个category的load⽅法的加载顺序，两个category的同名⽅法的加载顺序
+
+
+
+
+
+7. category & extension区别，能给NSObject添加Extension吗，结果如何
+
+
+ 
+
+
+
+8.消息转发机制，消息转发机制和其他语⾔的消息机制优劣对⽐
+
+
+
+9.在⽅法调⽤的时候，⽅法查询-> 动态解析-> 消息转发 之前做了什么
+
+
+
+10. IMP、SEL、Method的区别和使⽤场景
+
+
+
+11. load、initialize⽅法的区别什么？在继承关系中他们有什么区别
+
+
+
+12.说说消息转发机制的优劣
+
+
+
+

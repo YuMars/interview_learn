@@ -65,3 +65,15 @@ head2.addAtTail(2)
 //head2.addAtTail(5)
 //head2.addAtTail(6)
 print("RemoveNthNodeFromEndofList", (RemoveNthNodeFromEndofList.removeNthFromEnd(head2.head, 1))?.val as Any)
+
+let head3 = MyLinkedList()
+head3.addAtTail(3)
+head3.addAtTail(2)
+head3.addAtTail(0)
+head3.addAtTail(-4)
+head3.head?.next?.next?.next = head3.head?.next
+print("LinkedListCycle", LinkedListCycle.detectCycle(head3.head)?.val as Any)
+
+let s:String = "anagram"
+let t:String = "nagaram"
+print("ValidAnagram", ValidAnagram.isAnagram2(s, t))

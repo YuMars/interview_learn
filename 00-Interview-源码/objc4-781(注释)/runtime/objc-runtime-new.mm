@@ -1757,7 +1757,7 @@ static void addFutureNamedClass(const char *name, Class cls)
     ro->name = strdupIfMutable(name);
     rw->set_ro(ro);
     cls->setData(rw);
-    cls->data()->flags = RO_FUTURE;
+    cls->data()->flags = RO_FUTURE;6
 
     old = NXMapKeyCopyingInsert(futureNamedClasses(), name, cls);
     ASSERT(!old);

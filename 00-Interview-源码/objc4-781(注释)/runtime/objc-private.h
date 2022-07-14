@@ -83,7 +83,7 @@ union isa_t {
          uintptr_t magic             : 6; // (用于在调试的时候分辨对象是否有初始化)
          uintptr_t weakly_referenced : 1; // (是否有被弱引用指向，如果没有，释放会更快)
          uintptr_t deallocating      : 1; // (对象是否正在释放)
-         uintptr_t has_sidetable_rc  : 1; // (引用计数器是否多大无法存储在isa中、如果为1，那么引用计数器会存储在一个叫SideTable的类的属性中)
+         uintptr_t has_sidetable_rc  : 1; // (引用计数器是否很大无法存储在isa中、如果为1，那么引用计数器会存储在一个叫SideTable的类的属性中)
          uintptr_t extra_rc          : 19 // (里面存储的值是引用计数器减一)
          */
     };

@@ -1046,19 +1046,16 @@ private:
     class_rw_ext_t *extAlloc(const class_ro_t *ro, bool deep = false);
 
 public:
-    void setFlags(uint32_t set)
-    {
+    void setFlags(uint32_t set) {
         __c11_atomic_fetch_or((_Atomic(uint32_t) *)&flags, set, __ATOMIC_RELAXED);
     }
 
-    void clearFlags(uint32_t clear) 
-    {
+    void clearFlags(uint32_t clear)  {
         __c11_atomic_fetch_and((_Atomic(uint32_t) *)&flags, ~clear, __ATOMIC_RELAXED);
     }
 
     // set and clear must not overlap
-    void changeFlags(uint32_t set, uint32_t clear) 
-    {
+    void changeFlags(uint32_t set, uint32_t clear)  {
         ASSERT((set & clear) == 0);
 
         uint32_t oldf, newf;

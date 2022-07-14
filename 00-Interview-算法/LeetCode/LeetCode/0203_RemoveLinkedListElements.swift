@@ -15,6 +15,17 @@ public class ListNode {
     public init(_ val: Int, _ next: ListNode?) { self.val = val; self.next = next; }
 }
 
+extension ListNode: Hashable, Equatable {
+   public func hash(into hasher: inout Hasher) {
+     // 用于唯一标识
+     hasher.combine(val)
+     hasher.combine(ObjectIdentifier(self))
+   }
+   public static func ==(lhs: ListNode, rhs: ListNode) -> Bool {
+     return lhs === rhs
+   }
+}
+
 
 class RemoveLinkedListElements {
     public class func removeElements(_ head: ListNode?, _ val: Int) -> ListNode? {

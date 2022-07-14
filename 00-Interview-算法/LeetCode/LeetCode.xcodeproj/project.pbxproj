@@ -22,6 +22,9 @@
 		EECDB2582840B19400D8A2AC /* 0026_RemoveDuplicates.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECDB2572840B19400D8A2AC /* 0026_RemoveDuplicates.swift */; };
 		EEDCF9192848B99B00012735 /* 0844_BackspaceStringCompare.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDCF9182848B99B00012735 /* 0844_BackspaceStringCompare.swift */; };
 		EEEC3DE327F1881200B69E57 /* 0704_BinarySearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEC3DE227F1881200B69E57 /* 0704_BinarySearch.swift */; };
+		EEED8983287D544200D5CEDA /* R_0207_IntersectionOfTwoLinkedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEED8982287D544200D5CEDA /* R_0207_IntersectionOfTwoLinkedList.swift */; };
+		EEED8985287D5ADB00D5CEDA /* 0142_LinkedListCycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEED8984287D5ADB00D5CEDA /* 0142_LinkedListCycle.swift */; };
+		EEED898A287EAF4800D5CEDA /* 0242_ValidAnagram.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEED8989287EAF4800D5CEDA /* 0242_ValidAnagram.swift */; };
 		EEEEF1AD27F3563E0030229F /* 0035_SearchInsertPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEEF1AC27F3563E0030229F /* 0035_SearchInsertPosition.swift */; };
 		EEFC4E45286B3CCB002720EA /* 0209_MinimumSizeSubarraySum.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFC4E44286B3CCB002720EA /* 0209_MinimumSizeSubarraySum.swift */; };
 		EEFFC2F22871B73300764E45 /* 0707_DesignLinkedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFFC2F12871B73300764E45 /* 0707_DesignLinkedList.swift */; };
@@ -56,6 +59,9 @@
 		EECDB2572840B19400D8A2AC /* 0026_RemoveDuplicates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0026_RemoveDuplicates.swift; sourceTree = "<group>"; };
 		EEDCF9182848B99B00012735 /* 0844_BackspaceStringCompare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0844_BackspaceStringCompare.swift; sourceTree = "<group>"; };
 		EEEC3DE227F1881200B69E57 /* 0704_BinarySearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0704_BinarySearch.swift; sourceTree = "<group>"; };
+		EEED8982287D544200D5CEDA /* R_0207_IntersectionOfTwoLinkedList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = R_0207_IntersectionOfTwoLinkedList.swift; sourceTree = "<group>"; };
+		EEED8984287D5ADB00D5CEDA /* 0142_LinkedListCycle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0142_LinkedListCycle.swift; sourceTree = "<group>"; };
+		EEED8989287EAF4800D5CEDA /* 0242_ValidAnagram.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0242_ValidAnagram.swift; sourceTree = "<group>"; };
 		EEEEF1AC27F3563E0030229F /* 0035_SearchInsertPosition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0035_SearchInsertPosition.swift; sourceTree = "<group>"; };
 		EEFC4E44286B3CCB002720EA /* 0209_MinimumSizeSubarraySum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0209_MinimumSizeSubarraySum.swift; sourceTree = "<group>"; };
 		EEFFC2F12871B73300764E45 /* 0707_DesignLinkedList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0707_DesignLinkedList.swift; sourceTree = "<group>"; };
@@ -109,6 +115,9 @@
 				EE4AC2472872A40A00301517 /* 0206_ReverseLinkedList.swift */,
 				EE4AC2492873184600301517 /* 0024_SwapNodesInPairs.swift */,
 				EEC7C9682873F69000C36E26 /* 0019_RemoveNthNodeFromEndofList.swift */,
+				EEED8982287D544200D5CEDA /* R_0207_IntersectionOfTwoLinkedList.swift */,
+				EEED8984287D5ADB00D5CEDA /* 0142_LinkedListCycle.swift */,
+				EEED8989287EAF4800D5CEDA /* 0242_ValidAnagram.swift */,
 			);
 			path = LeetCode;
 			sourceTree = "<group>";
@@ -185,10 +194,13 @@
 				EEA0B2D528704421007FF6F9 /* ListNode.swift in Sources */,
 				EEEC3DE327F1881200B69E57 /* 0704_BinarySearch.swift in Sources */,
 				EEB76E1027F0B9A900D8EA7B /* 0001_TwoSum.swift in Sources */,
+				EEED898A287EAF4800D5CEDA /* 0242_ValidAnagram.swift in Sources */,
+				EEED8985287D5ADB00D5CEDA /* 0142_LinkedListCycle.swift in Sources */,
 				EEFC4E45286B3CCB002720EA /* 0209_MinimumSizeSubarraySum.swift in Sources */,
 				EE4AC2482872A40A00301517 /* 0206_ReverseLinkedList.swift in Sources */,
 				EE0417062871B1DE0082D34A /* 0203_RemoveLinkedListElements.swift in Sources */,
 				EEA0B2D1286DE744007FF6F9 /* 0904_FruitIntoBaskets.swift in Sources */,
+				EEED8983287D544200D5CEDA /* R_0207_IntersectionOfTwoLinkedList.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
