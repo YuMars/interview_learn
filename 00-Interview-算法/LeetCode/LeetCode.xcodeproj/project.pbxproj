@@ -16,6 +16,9 @@
 		EE5D5E0C28869B61007B12F3 /* 0454_4Sum.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5D5E0B28869B61007B12F3 /* 0454_4Sum.swift */; };
 		EE5D5E0E2887A912007B12F3 /* 0383_RansomNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5D5E0D2887A912007B12F3 /* 0383_RansomNote.swift */; };
 		EE5D5E102887B305007B12F3 /* 0015_3Sum.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5D5E0F2887B305007B12F3 /* 0015_3Sum.swift */; };
+		EE5D5E1228892373007B12F3 /* 0018_4Sum.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5D5E1128892373007B12F3 /* 0018_4Sum.swift */; };
+		EE5D5E1428893C54007B12F3 /* 0344_ReverseString.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5D5E1328893C54007B12F3 /* 0344_ReverseString.swift */; };
+		EE5D5E162889456F007B12F3 /* 0541_ReverseString.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5D5E152889456F007B12F3 /* 0541_ReverseString.swift */; };
 		EE85F153288531F200D217CB /* 0349_IntersectionofTwoArrays.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE85F152288531F200D217CB /* 0349_IntersectionofTwoArrays.swift */; };
 		EEA0B2D1286DE744007FF6F9 /* 0904_FruitIntoBaskets.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0B2D0286DE744007FF6F9 /* 0904_FruitIntoBaskets.swift */; };
 		EEA0B2D3286E9E89007FF6F9 /* 0059_SpiralMatrix2.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0B2D2286E9E89007FF6F9 /* 0059_SpiralMatrix2.swift */; };
@@ -57,6 +60,9 @@
 		EE5D5E0B28869B61007B12F3 /* 0454_4Sum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0454_4Sum.swift; sourceTree = "<group>"; };
 		EE5D5E0D2887A912007B12F3 /* 0383_RansomNote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0383_RansomNote.swift; sourceTree = "<group>"; };
 		EE5D5E0F2887B305007B12F3 /* 0015_3Sum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0015_3Sum.swift; sourceTree = "<group>"; };
+		EE5D5E1128892373007B12F3 /* 0018_4Sum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0018_4Sum.swift; sourceTree = "<group>"; };
+		EE5D5E1328893C54007B12F3 /* 0344_ReverseString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0344_ReverseString.swift; sourceTree = "<group>"; };
+		EE5D5E152889456F007B12F3 /* 0541_ReverseString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0541_ReverseString.swift; sourceTree = "<group>"; };
 		EE85F152288531F200D217CB /* 0349_IntersectionofTwoArrays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0349_IntersectionofTwoArrays.swift; sourceTree = "<group>"; };
 		EEA0B2D0286DE744007FF6F9 /* 0904_FruitIntoBaskets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0904_FruitIntoBaskets.swift; sourceTree = "<group>"; };
 		EEA0B2D2286E9E89007FF6F9 /* 0059_SpiralMatrix2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0059_SpiralMatrix2.swift; sourceTree = "<group>"; };
@@ -133,6 +139,9 @@
 				EE5D5E0B28869B61007B12F3 /* 0454_4Sum.swift */,
 				EE5D5E0D2887A912007B12F3 /* 0383_RansomNote.swift */,
 				EE5D5E0F2887B305007B12F3 /* 0015_3Sum.swift */,
+				EE5D5E1128892373007B12F3 /* 0018_4Sum.swift */,
+				EE5D5E1328893C54007B12F3 /* 0344_ReverseString.swift */,
+				EE5D5E152889456F007B12F3 /* 0541_ReverseString.swift */,
 			);
 			path = LeetCode;
 			sourceTree = "<group>";
@@ -195,6 +204,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EE5D5E162889456F007B12F3 /* 0541_ReverseString.swift in Sources */,
+				EE5D5E1428893C54007B12F3 /* 0344_ReverseString.swift in Sources */,
 				EE5562B3283F58BF00DB9C1E /* 0027_RemoveElement.swift in Sources */,
 				EEB76E0927F0B95A00D8EA7B /* main.swift in Sources */,
 				EEFFC2F22871B73300764E45 /* 0707_DesignLinkedList.swift in Sources */,
@@ -207,6 +218,7 @@
 				EECDB2582840B19400D8A2AC /* 0026_RemoveDuplicates.swift in Sources */,
 				EE038FE328044BE100969223 /* 0034_ FindFirstandLastPositionofElementinSortedArray.swift in Sources */,
 				EE85F153288531F200D217CB /* 0349_IntersectionofTwoArrays.swift in Sources */,
+				EE5D5E1228892373007B12F3 /* 0018_4Sum.swift in Sources */,
 				EEC450AC28696D6600904ADA /* 0977_SquaresOfASortArray.swift in Sources */,
 				EEA0B2D528704421007FF6F9 /* ListNode.swift in Sources */,
 				EE5D5E0A288688C3007B12F3 /* 0202_HappyNum.swift in Sources */,

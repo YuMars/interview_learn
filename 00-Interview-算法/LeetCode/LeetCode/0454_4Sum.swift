@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class FourSum {
+public class FourSum2 {
     
     /// 暴力解法
     public class func fourSumCount(_ nums1: [Int], _ nums2: [Int], _ nums3: [Int], _ nums4: [Int]) -> Int {
