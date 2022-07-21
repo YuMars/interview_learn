@@ -1,0 +1,80 @@
+
+6.Category能否添加成员变量？如果可以，如何给category添加成员变量？
+不能直接给category添加成员变量，但是可以通过关联对象添加成员变量。
+objc_setAssociatedObject(self, @selector(), value, OBJECT_ASSOCIATION_XXX_NONATOMIC);
+objc_getAssociatedObject(self, @selector())
+
+
+1.关联对象的应用?系统如何实现关联对象的
+
+#import <objc/runtime.h>
+
+// const void *KNameKey = &KNameKey;
+@implementation Person (Test)
+
+- (void)setName:(NSString *)name {
+    objc_setAssociatedObject(self, @selector(name), name, OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (NSString *)name {
+    return objc_getAssociatedObject(self, _cmd);
+}
+
+@end
+
+
+2.关联对象的如何进行内存管理的?关联对象如何实现weak属性
+
+关联对象如何实现weak属性：
+1.用__weak修饰对象,并将其用block包裹,关联时,关联block对象
+
+-(void)setWeakvalue:(NSObject *)weakvalue {
+    __weak typeof(weakvalue) weakObj = weakvalue;
+    typeof(weakvalue) (^block)() = ^(){
+        return weakObj;
+    };
+    objc_setAssociatedObject(self, weakValueKey, block, OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+-(NSObject *)weakvalue {
+    id (^block)() = objc_getAssociatedObject(self, weakValueKey);
+    return block();
+}
+
+2.额外创造一个类WeakObjectContainer，在这个类里实现weak属性 weakObject ，虽然 分类里 retain 了一个 WeakObjectContainer，但是 WeakObjectContainer 最终会随着属性的持有对象一起销毁，不存在泄露。
+
+WeakObjectContainer.h
+@property (nonatomic, readonly, weak) id weakObject;
+- (instancetype)initWithWeakObject:(id)object;
+
+WeakObjectContainer.m
+
+- (instancetype)initWithWeakObject:(id)object {
+    self = [super init];
+    if (self) {
+        _weakObject = object;
+    }
+    
+    return self;
+}
+
+NSObject+AssociateWeak.h
+
+@property(weak, nonatomic) NSObject *weakObject;
+
+NSObject+AssociateWeak.m
+
+#import <objc/runtime.h>
+#import "WeakObjectContainer.h"
+
+NSString const *kKeyWeakObject = @"kKeyWeakObject";
+-(void)setWeakObject:(NSObject *)weakObject
+{
+    WeakObjectContainer *container = [[WeakObjectContainer alloc] initWithWeakObject:weakObject];
+    objc_setAssociatedObject(self, &kKeyWeakObject, (id)container, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+-(NSObject *)weakObject
+{
+    WeakObjectContainer *container = objc_getAssociatedObject(self, &kKeyWeakObject);
+    return container.weakObject;
+}

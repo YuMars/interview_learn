@@ -901,7 +901,7 @@ class list_array_tt {
             memmove(array()->lists + addedCount, array()->lists, 
                     oldCount * sizeof(array()->lists[0])); // 扩容
             memcpy(array()->lists, addedLists, 
-                   addedCount * sizeof(array()->lists[0]));// 扩容后复制新增的
+                   addedCount * sizeof(array()->lists[0]));// 扩容后复制新增的(也就意味着相同方法，会先调用后编译的分类)
         }
         else if (!list  &&  addedCount == 1) {
             // 0 lists -> 1 list
@@ -1241,7 +1241,7 @@ public:
 };
 
 
-struct objc_class : objc_object {
+struct  objc_class : objc_object {
     // Class ISA;
     Class superclass;
     cache_t cache; // 方法缓存            // formerly cache pointer and vtable //

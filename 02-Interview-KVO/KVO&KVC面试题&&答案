@@ -1,0 +1,77 @@
+1.KVO的实现原理（本质是什么）
+   1.利用runtime动态生成一个继承当前类的NSKVONotifying_类名的类，并且让instance对象isa指向全新的子类
+   2.当修改instance对象的属性时，调用Foundation的_NSSetxxxValueAndNotify函数
+   3._NSSetxxxValueAndNotify的实现 1.willChangeValueForKey: 2.[supet setXXX:] 3.didChangeValueForKey:
+   4.然后didChangeValueForKey内部再调用observeValueForKeyPath:ofObject:change:context:
+
+
+
+
+
+2.如何手动触发KVO
+调用willChangeValueForKey:和didChangeValueForKey:
+
+KVO在添加Observer的时候会先调用+automaticallyNotifiesObserversForKey:,判断能否自动通知。
+但是可以通过1.willChangeValueForKey: 2.[supet setXXX:] 3.didChangeValueForKey:方式手动通知
+
+
+
+3.直接修改成员变量会触发KVO吗？
+不会。
+self.person->age = 2 不是通过setAge:方法修改
+
+
+
+
+2.如何手动关闭KVO
+
++automaticallyNotifiesObserversForKey: 根据key return NO
+
+
+
+
+
+3.通过KVC修改属性会触发KVO么
+
+会触发。
+1.KVC会先查询对应的getter、setter方法
+2.没找到就会调用accessInstanceVariablesDirectly:
+3.如果return YES.会按照: 
+getter流程： getKey:  key:  isKey:  _key: _key  _isKey  key  isKey 顺序查找
+setter流程：setKey:  _setKey:  _key  _isKey  key  isKey 顺序查找
+
+
+
+
+
+
+4.哪些情况下使用KVO会崩溃，怎么保护崩溃
+
+1.dealloc没有移除KVO观察者。解决方案：创建一个中间对象，将其最为某个属性的观察者，然后dealloc的时候去除观察者。调用者是持有中间对象，调用者释放，中间对象也就释放，dealloc也就移除观察者
+2.多次重复移除同一属性的观察者，或者移除了未添加过的观察者
+3.被观察者提前被释放，被观察者在dealloc时仍然注册着KVO，导致崩溃。例如：被观察者是局部变量，weak
+4.添加观察者，但是未实现+observeValueForKeyPath:ofObject:change:context:方法，导致崩溃
+5.添加或者移除时，keyPath:nil ，导致崩溃
+https://juejin.cn/post/6844903927469588488
+
+
+
+
+
+
+5.KVO的优缺点
+
+优点：
+1.运动了设计模式：观察者模式
+2.支持多个观察者观察同一属性，或者同一观察者监听不同属性
+3.不需要实现属性变化的通知发送
+4.对创建的对象的状态改变做出响应，不要改变对象的实现（比如SDK对象）
+5.能够提供观察的属性新值和旧值
+6.可以用key path来观察属性，所以可以观察嵌套对象
+7.完成了对观察对象的抽象，因为不需要额外的代码来允许观察值能够被观察
+
+缺点：
+1.观察的属性键值硬编码（字符串），编译器无法发出警告
+2.允许一对多观察属性，回调方法中可能有很多分支情况
+
+

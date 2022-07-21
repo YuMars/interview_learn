@@ -13,7 +13,6 @@
 
 - (void)setName:(NSString *)name {
     objc_setAssociatedObject(self, @selector(name), name, OBJC_ASSOCIATION_COPY_NONATOMIC);
-    
 }
 
 - (NSString *)name {

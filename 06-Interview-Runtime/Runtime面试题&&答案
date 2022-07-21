@@ -264,13 +264,7 @@ class_ro_t:（成员变量）
 
 
 
-6.category如何被加载的,两个category的load⽅法的加载顺序，两个category的同名⽅法的加载顺序
 
-
-
-
-
-7. category & extension区别，能给NSObject添加Extension吗，结果如何
 
 
  

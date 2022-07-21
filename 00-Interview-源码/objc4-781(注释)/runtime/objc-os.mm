@@ -452,7 +452,7 @@ void objc_addLoadImageFunc(objc_func_loadImage _Nonnull func) {
 #endif
 
 void 
-map_images_nolock(unsigned mhCount, const char * const mhPaths[],
+ map_images_nolock(unsigned mhCount, const char * const mhPaths[],
                   const struct mach_header * const mhdrs[])
 {
     static bool firstTime = YES;
@@ -589,6 +589,7 @@ map_images_nolock(unsigned mhCount, const char * const mhPaths[],
     }
 
     if (hCount > 0) {
+        // 加载镜像
         _read_images(hList, hCount, totalClasses, unoptimizedTotalClasses);
     }
 

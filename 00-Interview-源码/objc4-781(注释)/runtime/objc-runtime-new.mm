@@ -1287,9 +1287,7 @@ class_rw_t::extAlloc(const class_ro_t *ro, bool deepCopy)
 // Assumes the categories in cats are all loaded and sorted by load order, 
 // oldest categories first.
 static void
-attachCategories(Class cls, const locstamped_category_t *cats_list, uint32_t cats_count,
-                 int flags)
-{
+attachCategories(Class cls, const locstamped_category_t *cats_list, uint32_t cats_count, int flags) {
     if (slowpath(PrintReplacedMethods)) {
         printReplacements(cls, cats_list, cats_count);
     }
@@ -1310,9 +1308,9 @@ attachCategories(Class cls, const locstamped_category_t *cats_list, uint32_t cat
      * lists, so the final result is in the expected order.
      */
     constexpr uint32_t ATTACH_BUFSIZ = 64;
-    method_list_t   *mlists[ATTACH_BUFSIZ];
-    property_list_t *proplists[ATTACH_BUFSIZ];
-    protocol_list_t *protolists[ATTACH_BUFSIZ];
+    method_list_t   *mlists[ATTACH_BUFSIZ]; // 方法数组
+    property_list_t *proplists[ATTACH_BUFSIZ]; // 属性数组
+    protocol_list_t *protolists[ATTACH_BUFSIZ]; // 协议数组
 
     uint32_t mcount = 0;
     uint32_t propcount = 0;
@@ -1324,6 +1322,7 @@ attachCategories(Class cls, const locstamped_category_t *cats_list, uint32_t cat
     for (uint32_t i = 0; i < cats_count; i++) {
         auto& entry = cats_list[i];
 
+        // 添加方法（isMeta：实例方法、类方法）
         method_list_t *mlist = entry.cat->methodsForMeta(isMeta);
         if (mlist) {
             if (mcount == ATTACH_BUFSIZ) {
@@ -1331,10 +1330,11 @@ attachCategories(Class cls, const locstamped_category_t *cats_list, uint32_t cat
                 rwe->methods.attachLists(mlists, mcount);
                 mcount = 0;
             }
-            mlists[ATTACH_BUFSIZ - ++mcount] = mlist;
+            mlists[ATTACH_BUFSIZ - ++mcount] = mlist; // 从后往前构建
             fromBundle |= entry.hi->isBundle();
         }
 
+        // 添加属性
         property_list_t *proplist =
             entry.cat->propertiesForMeta(isMeta, entry.hi);
         if (proplist) {
@@ -1345,6 +1345,7 @@ attachCategories(Class cls, const locstamped_category_t *cats_list, uint32_t cat
             proplists[ATTACH_BUFSIZ - ++propcount] = proplist;
         }
 
+        // 添加协议方法
         protocol_list_t *protolist = entry.cat->protocolsForMeta(isMeta);
         if (protolist) {
             if (protocount == ATTACH_BUFSIZ) {
@@ -3034,7 +3035,7 @@ static void load_categories_nolock(header_info *hi) {
                     ||  cat->instanceProperties)
                 {
                     if (cls->isRealized()) {
-                        attachCategories(cls, &lc, 1, ATTACH_EXISTING);
+                        attachCategories(cls, &lc, 1, ATTACH_EXISTING); // 添加分类
                     } else {
                         objc::unattachedCategories.addForClass(lc, cls);
                     }
@@ -3445,6 +3446,7 @@ void _read_images(header_info **hList, uint32_t hCount, int totalClasses, int un
             disableTaggedPointers();
         }
         
+        // 初始化tagged pointer
         initializeTaggedPointerObfuscator();
 
         if (PrintConnecting) {
@@ -3613,7 +3615,7 @@ void _read_images(header_info **hList, uint32_t hCount, int totalClasses, int un
     // the call to _dyld_objc_notify_register completes. rdar://problem/53119145
     if (didInitialAttachCategories) {
         for (EACH_HEADER) {
-            load_categories_nolock(hi);
+            load_categories_nolock(hi); // 加载分类
         }
     }
 

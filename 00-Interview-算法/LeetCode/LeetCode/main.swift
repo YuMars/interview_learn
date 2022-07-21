@@ -77,3 +77,14 @@ print("LinkedListCycle", LinkedListCycle.detectCycle(head3.head)?.val as Any)
 let s:String = "anagram"
 let t:String = "nagaram"
 print("ValidAnagram", ValidAnagram.isAnagram2(s, t))
+
+
+print("HappyNum", HappyNum.isHappy(19))
+
+nums = [3,2,4]
+target = 6
+print("TwoSum", TwoSum.twoSum2(nums, target))
+
+print("RansomNote", RansomNote.canConstruct2("aa", "ab"))
+
+print("ThreeSum", ThreeSum.threeSum([-4,2,1]))
