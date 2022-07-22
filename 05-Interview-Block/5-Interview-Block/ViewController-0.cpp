@@ -79809,10 +79809,10 @@ struct __ViewController__viewDidLoad_block_impl_0 {
   struct __ViewController__viewDidLoad_block_desc_0* Desc;
   int num;
   __ViewController__viewDidLoad_block_impl_0(void *fp, struct __ViewController__viewDidLoad_block_desc_0 *desc, int _num, int flags=0) : num(_num) {
-    impl.isa = &_NSConcreteStackBlock;
+    impl.isa = &_NSConcreteStackBlock; // block类型
     impl.Flags = flags;
-    impl.FuncPtr = fp;
-    Desc = desc;
+    impl.FuncPtr = fp; // 函数实现（block内代码）
+    Desc = desc; // block描述
   }
 };
 static void __ViewController__viewDidLoad_block_func_0(struct __ViewController__viewDidLoad_block_impl_0 *__cself, int a, int b) {
