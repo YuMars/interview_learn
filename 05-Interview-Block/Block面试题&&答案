@@ -1,0 +1,23 @@
+1. block的内部实现，结构体是什么样的
+
+
+2. block是类吗，有哪些类型
+
+
+3. 一个int变量被__block修饰与否的区别?
+
+4. block在修改NSMutableArray，需不需要添加__block
+
+5. block怎么进行内存管理的
+
+
+6. block可以用strong修饰吗
+
+
+7. 解决循环引用时为什么要用__strong、__weak修饰
+
+
+8. block发生copy时机
+
+
+9. Block访问对象类型的auto变量时，在ARC和MRC下有什么区别

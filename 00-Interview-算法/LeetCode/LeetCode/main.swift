@@ -90,3 +90,5 @@ print("RansomNote", RansomNote.canConstruct2("aa", "ab"))
 print("ThreeSum", ThreeSum.threeSum([-4,2,1]))
 
 print("ReplaceSpace", ReplaceSpace.replaceSpace("We are happy."))
+
+print("ReverseWordsInAString", ReverseWordsInAString.reverseWords("the sky is blue"))

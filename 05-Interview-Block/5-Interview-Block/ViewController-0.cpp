@@ -79810,7 +79810,7 @@ struct __ViewController__viewDidLoad_block_impl_0 {
   int num;
   __ViewController__viewDidLoad_block_impl_0(void *fp, struct __ViewController__viewDidLoad_block_desc_0 *desc, int _num, int flags=0) : num(_num) {
     impl.isa = &_NSConcreteStackBlock; // block类型
-    impl.Flags = flags;
+    impl.Flags = flags;x
     impl.FuncPtr = fp; // 函数实现（block内代码）
     Desc = desc; // block描述
   }

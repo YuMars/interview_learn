@@ -52,7 +52,7 @@ struct __ViewController__viewDidLoad_block_impl_0 {
 ## __block_impl结构体
 ```
 struct __block_impl {
-  void *isa;
+  void *isa; // block类型
   int Flags;
   int Reserved;
   void *FuncPtr; // 函数调用地址
@@ -105,7 +105,7 @@ num));
 
 > auto:离开作用域就会自动销毁
 
-会进行捕获self:因为self是auto局部变量 -(void)test() = - (void)test(Class *self, SEL _cmd)传入block中
+会进行捕获self:因为self是auto局部变量 -(void)test:()  ==  - (void)test(Class *self, SEL _cmd)传入block中
 void(^block4)(void) = ^{
     NSLog(@"%@", self);
 };

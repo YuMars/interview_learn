@@ -91,7 +91,6 @@ static void __ViewController__viewDidLoad_block_func_0(struct __ViewController__
     [super viewDidLoad];
     
     Teacher *t = [[Teacher alloc] init];
-    
     // Q:Block的原理是什么？本质是什么？
     
 //    ^{
