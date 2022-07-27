@@ -52,7 +52,7 @@ struct __ViewController__viewDidLoad_block_impl_0 {
 ## __block_impl结构体
 ```
 struct __block_impl {
-  void *isa; // block类型
+  void *isa;
   int Flags;
   int Reserved;
   void *FuncPtr; // 函数调用地址
@@ -105,7 +105,7 @@ num));
 
 > auto:离开作用域就会自动销毁
 
-会进行捕获self:因为self是auto局部变量 -(void)test:()  ==  - (void)test(Class *self, SEL _cmd)传入block中
+会进行捕获self:因为self是auto局部变量 -(void)test()   ==   - (void)test(Class *self, SEL _cmd)传入block中
 void(^block4)(void) = ^{
     NSLog(@"%@", self);
 };
@@ -166,6 +166,115 @@ _NSConcreteMallocBlock_           堆                  引用计数增加
     
 _NSMallocBlock 会持有引用的变量，使引用的变量引用计数器+1
 _NSMallocBlock 不会持有引用的变量
+
+### block_copy
+block的复制可以使用，Block_copy()函数又或者copy实例方法。
+Block_copy()的实现。在Block.h文件中看到(在Xcode中也可以找到)：
+
+```
+#define Block_copy(...) ((__typeof(__VA_ARGS__))_Block_copy((const void *)(__VA_ARGS__)))
+```
+
+Block_copy()的原型是_Block_copy()函数，而实际上最后调用的是_Block_copy_internal()函数：
+
+```
+//这里传入的参数实际上就是Block
+void *_Block_copy(const void *arg) {
+    return _Block_copy_internal(arg, WANTS_ONE);
+}
+
+static void *_Block_copy_internal(const void *arg, const int flags) {
+    struct Block_layout *aBlock;
+
+    //1.如果传递的参数为NULL，返回NULL。
+    if (!arg) return NULL;
+    
+    //2.参数类型转换。转为指向Block_layout结构体的指针。Block_layout结构体请回顾文章开头，相当于clang转换后的__main_block_impl_0结构体，包括指向block的实现功能的指针和各种数据。
+    aBlock = (struct Block_layout *)arg;
+
+    //3.如果block的flags包含BLOCK_NEEDS_FREE，表明它是堆上的Block（为什么？见第7步注释）
+    //增加引用计数，返回相同的block
+    if (aBlock->flags & BLOCK_NEEDS_FREE) {
+        // latches on high
+        latching_incr_int(&aBlock->flags);
+        return aBlock;
+    }
+    //这里删掉了与垃圾回收（GC）相关的代码，GC不做讨论
+
+    //4.如果是全局block，什么也不做，返回相同的block
+    else if (aBlock->flags & BLOCK_IS_GLOBAL) {
+        return aBlock;
+    }
+
+    // Its a stack block.  Make a copy.
+    if (!isGC) {
+        //5.能够走到这里，表明是一个栈Block。需要复制到堆上。第一步申请内存
+        struct Block_layout *result = malloc(aBlock->descriptor->size);
+        if (!result) return (void *)0;
+        //6.将栈数据复制到堆上
+        memmove(result, aBlock, aBlock->descriptor->size); // bitcopy first
+        //7.更新block的flags
+        //第一句后面的注释说它不是必须的。
+        result->flags &= ~(BLOCK_REFCOUNT_MASK);    // XXX not needed
+        //设置flags为BLOCK_NEEDS_FREE，表明它是一个堆block。内存支持它一旦引用计数=0，
+        //就进行释放。 “|1”是用来把block的引用计数设置为1。
+        result->flags |= BLOCK_NEEDS_FREE | 1;
+        //8.block的isa指针设置为_NSConcreteMallocBlock
+        result->isa = _NSConcreteMallocBlock;
+        //9.如果block有copy helper函数就调用它（和block所持有对象的内存管理有关，文章后面会讲到这部分）
+        if (result->flags & BLOCK_HAS_COPY_DISPOSE) {
+            //printf("calling block copy helper %p(%p, %p)...\n", aBlock->descriptor->copy, result, aBlock);
+            (*aBlock->descriptor->copy)(result, aBlock); // do fixup
+        }
+        return result;
+    }
+    else {
+        //GC相关
+    }
+}
+```
+
+### block release
+同样地，block的释放可以使用Block_release()函数或者release方法。
+
+```
+#define Block_release(...) _Block_release((const void *)(__VA_ARGS__))
+```
+Block_release()原型是_Block_release()函数：
+
+```
+void _Block_release(void *arg) {
+    //1.参数类型转换，转换为一个指向Block_layout结构体的指针。
+    struct Block_layout *aBlock = (struct Block_layout *)arg;
+    if (!aBlock) return;
+
+    //2.取出flags中表示引用计数的部分，并且对它递减。
+    int32_t newCount;
+    newCount = latching_decr_int(&aBlock->flags) & BLOCK_REFCOUNT_MASK;
+    //3.如果引用计数>0，表明仍然有对block的引用，block不需要释放
+    if (newCount > 0) return;
+
+    if (aBlock->flags & BLOCK_IS_GC) {
+        //GC相关
+    }
+    //4.flags包含BLOCK_NEEDS_FREE（堆block），且引用计数=0
+    else if (aBlock->flags & BLOCK_NEEDS_FREE) {
+        //如果有copy helper函数就调用，释放block捕获的一些对象，对应_Block_copy_internal中的第9步
+        if (aBlock->flags & BLOCK_HAS_COPY_DISPOSE)(*aBlock->descriptor->dispose)(aBlock);
+        //释放block
+        _Block_deallocator(aBlock);
+    }
+    //5.全局Block，什么也不做
+    else if (aBlock->flags & BLOCK_IS_GLOBAL) {
+        ;
+    }
+    //6.发生了一些奇怪的事情导致堆栈block视图被释放，打印日志警告开发者
+    else {
+        printf("Block_release called upon a stack Block: %p, ignored\n", (void *)aBlock);
+    }
+}
+```
+
     
 ### 对象类型的auto变量：
 #### 当block内部访问了对象类型的auto变量时
