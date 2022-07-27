@@ -31,6 +31,8 @@
 		EEC7C9692873F69000C36E26 /* 0019_RemoveNthNodeFromEndofList.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC7C9682873F69000C36E26 /* 0019_RemoveNthNodeFromEndofList.swift */; };
 		EECDB2582840B19400D8A2AC /* 0026_RemoveDuplicates.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECDB2572840B19400D8A2AC /* 0026_RemoveDuplicates.swift */; };
 		EEDCF9192848B99B00012735 /* 0844_BackspaceStringCompare.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDCF9182848B99B00012735 /* 0844_BackspaceStringCompare.swift */; };
+		EEE49CBE288FB3D90035C8B0 /* R_0058_LeftRotateString.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE49CBD288FB3D90035C8B0 /* R_0058_LeftRotateString.swift */; };
+		EEE49CC0288FBFFA0035C8B0 /* 0028_ImplementStrStr.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE49CBF288FBFFA0035C8B0 /* 0028_ImplementStrStr.swift */; };
 		EEEC3DE327F1881200B69E57 /* 0704_BinarySearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEC3DE227F1881200B69E57 /* 0704_BinarySearch.swift */; };
 		EEED8983287D544200D5CEDA /* R_0207_IntersectionOfTwoLinkedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEED8982287D544200D5CEDA /* R_0207_IntersectionOfTwoLinkedList.swift */; };
 		EEED8985287D5ADB00D5CEDA /* 0142_LinkedListCycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEED8984287D5ADB00D5CEDA /* 0142_LinkedListCycle.swift */; };
@@ -78,6 +80,8 @@
 		EEC7C9682873F69000C36E26 /* 0019_RemoveNthNodeFromEndofList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0019_RemoveNthNodeFromEndofList.swift; sourceTree = "<group>"; };
 		EECDB2572840B19400D8A2AC /* 0026_RemoveDuplicates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0026_RemoveDuplicates.swift; sourceTree = "<group>"; };
 		EEDCF9182848B99B00012735 /* 0844_BackspaceStringCompare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0844_BackspaceStringCompare.swift; sourceTree = "<group>"; };
+		EEE49CBD288FB3D90035C8B0 /* R_0058_LeftRotateString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = R_0058_LeftRotateString.swift; sourceTree = "<group>"; };
+		EEE49CBF288FBFFA0035C8B0 /* 0028_ImplementStrStr.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0028_ImplementStrStr.swift; sourceTree = "<group>"; };
 		EEEC3DE227F1881200B69E57 /* 0704_BinarySearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0704_BinarySearch.swift; sourceTree = "<group>"; };
 		EEED8982287D544200D5CEDA /* R_0207_IntersectionOfTwoLinkedList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = R_0207_IntersectionOfTwoLinkedList.swift; sourceTree = "<group>"; };
 		EEED8984287D5ADB00D5CEDA /* 0142_LinkedListCycle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0142_LinkedListCycle.swift; sourceTree = "<group>"; };
@@ -148,6 +152,8 @@
 				EE5D5E152889456F007B12F3 /* 0541_ReverseString.swift */,
 				EEC66F96288A537D00755A69 /* R_005_ReplaceSpace.swift */,
 				EEC66F98288E6E7200755A69 /* 0151_ReverseWordsinAString.swift */,
+				EEE49CBD288FB3D90035C8B0 /* R_0058_LeftRotateString.swift */,
+				EEE49CBF288FBFFA0035C8B0 /* 0028_ImplementStrStr.swift */,
 			);
 			path = LeetCode;
 			sourceTree = "<group>";
@@ -216,6 +222,7 @@
 				EEB76E0927F0B95A00D8EA7B /* main.swift in Sources */,
 				EEFFC2F22871B73300764E45 /* 0707_DesignLinkedList.swift in Sources */,
 				EEC7C9692873F69000C36E26 /* 0019_RemoveNthNodeFromEndofList.swift in Sources */,
+				EEE49CBE288FB3D90035C8B0 /* R_0058_LeftRotateString.swift in Sources */,
 				EEC66F99288E6E7200755A69 /* 0151_ReverseWordsinAString.swift in Sources */,
 				EEA0B2D3286E9E89007FF6F9 /* 0059_SpiralMatrix2.swift in Sources */,
 				EEDCF9192848B99B00012735 /* 0844_BackspaceStringCompare.swift in Sources */,
@@ -228,6 +235,7 @@
 				EEC66F97288A537D00755A69 /* R_005_ReplaceSpace.swift in Sources */,
 				EE5D5E1228892373007B12F3 /* 0018_4Sum.swift in Sources */,
 				EEC450AC28696D6600904ADA /* 0977_SquaresOfASortArray.swift in Sources */,
+				EEE49CC0288FBFFA0035C8B0 /* 0028_ImplementStrStr.swift in Sources */,
 				EEA0B2D528704421007FF6F9 /* ListNode.swift in Sources */,
 				EE5D5E0A288688C3007B12F3 /* 0202_HappyNum.swift in Sources */,
 				EEEC3DE327F1881200B69E57 /* 0704_BinarySearch.swift in Sources */,

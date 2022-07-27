@@ -92,3 +92,7 @@ print("ThreeSum", ThreeSum.threeSum([-4,2,1]))
 print("ReplaceSpace", ReplaceSpace.replaceSpace("We are happy."))
 
 print("ReverseWordsInAString", ReverseWordsInAString.reverseWords("the sky is blue"))
+
+print("LeftRotateString",LeftRotateString.reverseLeftWords("abcdefg", 2))
+
+print("ImplementStrStr", ImplementStrStr.strStr("hllallollb", "llo"))

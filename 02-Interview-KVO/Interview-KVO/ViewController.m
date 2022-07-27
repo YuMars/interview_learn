@@ -36,9 +36,27 @@
     free(methodList);
 }
 
+- (void)test2 {
+    NSLog(@"3-%@",[NSThread currentThread]);
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    NSLog(@"1-%@",[NSThread currentThread]);
+    
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+       
+        NSLog(@"2-%@", [NSThread currentThread]);
+        
+//        [self performSelector:@selector(test2) onThread:[NSThread currentThread] withObject:nil waitUntilDone:YES];
+        [self performSelector:@selector(test2) withObject:nil afterDelay:0.0];
+        [[NSRunLoop currentRunLoop] run];
+        
+        NSLog(@"4-%@", [NSThread currentThread]);
+    });
+    
+    NSLog(@"5-%@",[NSThread currentThread]);
     // Q:iOS用什么方式实现一个对象的KVO？（KVO的本质是什么）
     
     /*
