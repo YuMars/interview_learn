@@ -27,6 +27,7 @@
 		EEA9DABE289109A500D17FD1 /* 0225_ImplementStackUsingQueues.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA9DABD289109A500D17FD1 /* 0225_ImplementStackUsingQueues.swift */; };
 		EEA9DAC02891873600D17FD1 /* 0020_ValidParentheses.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA9DABF2891873600D17FD1 /* 0020_ValidParentheses.swift */; };
 		EEA9DAC22892208400D17FD1 /* 1047_RemoveAllAdjacentDuplicatesInString.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA9DAC12892208400D17FD1 /* 1047_RemoveAllAdjacentDuplicatesInString.swift */; };
+		EEA9DAC42892274500D17FD1 /* 0150_EvaluateReversePolishNotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA9DAC32892274500D17FD1 /* 0150_EvaluateReversePolishNotation.swift */; };
 		EEB76E0927F0B95A00D8EA7B /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB76E0827F0B95A00D8EA7B /* main.swift */; };
 		EEB76E1027F0B9A900D8EA7B /* 0001_TwoSum.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB76E0F27F0B9A900D8EA7B /* 0001_TwoSum.swift */; };
 		EEC450AC28696D6600904ADA /* 0977_SquaresOfASortArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC450AB28696D6600904ADA /* 0977_SquaresOfASortArray.swift */; };
@@ -79,6 +80,7 @@
 		EEA9DABD289109A500D17FD1 /* 0225_ImplementStackUsingQueues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0225_ImplementStackUsingQueues.swift; sourceTree = "<group>"; };
 		EEA9DABF2891873600D17FD1 /* 0020_ValidParentheses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0020_ValidParentheses.swift; sourceTree = "<group>"; };
 		EEA9DAC12892208400D17FD1 /* 1047_RemoveAllAdjacentDuplicatesInString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 1047_RemoveAllAdjacentDuplicatesInString.swift; sourceTree = "<group>"; };
+		EEA9DAC32892274500D17FD1 /* 0150_EvaluateReversePolishNotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0150_EvaluateReversePolishNotation.swift; sourceTree = "<group>"; };
 		EEB76E0527F0B95A00D8EA7B /* LeetCode */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = LeetCode; sourceTree = BUILT_PRODUCTS_DIR; };
 		EEB76E0827F0B95A00D8EA7B /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		EEB76E0F27F0B9A900D8EA7B /* 0001_TwoSum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0001_TwoSum.swift; sourceTree = "<group>"; };
@@ -166,6 +168,7 @@
 				EEA9DABD289109A500D17FD1 /* 0225_ImplementStackUsingQueues.swift */,
 				EEA9DABF2891873600D17FD1 /* 0020_ValidParentheses.swift */,
 				EEA9DAC12892208400D17FD1 /* 1047_RemoveAllAdjacentDuplicatesInString.swift */,
+				EEA9DAC32892274500D17FD1 /* 0150_EvaluateReversePolishNotation.swift */,
 			);
 			path = LeetCode;
 			sourceTree = "<group>";
@@ -234,6 +237,7 @@
 				EE5562B3283F58BF00DB9C1E /* 0027_RemoveElement.swift in Sources */,
 				EEB76E0927F0B95A00D8EA7B /* main.swift in Sources */,
 				EEFFC2F22871B73300764E45 /* 0707_DesignLinkedList.swift in Sources */,
+				EEA9DAC42892274500D17FD1 /* 0150_EvaluateReversePolishNotation.swift in Sources */,
 				EEC7C9692873F69000C36E26 /* 0019_RemoveNthNodeFromEndofList.swift in Sources */,
 				EEE49CBE288FB3D90035C8B0 /* R_0058_LeftRotateString.swift in Sources */,
 				EEC66F99288E6E7200755A69 /* 0151_ReverseWordsinAString.swift in Sources */,
