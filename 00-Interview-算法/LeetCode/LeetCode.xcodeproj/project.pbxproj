@@ -25,6 +25,8 @@
 		EEA0B2D528704421007FF6F9 /* ListNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0B2D428704421007FF6F9 /* ListNode.swift */; };
 		EEA9DABC2891069C00D17FD1 /* 0232_ImplementQueueUsingStacks.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA9DABB2891069C00D17FD1 /* 0232_ImplementQueueUsingStacks.swift */; };
 		EEA9DABE289109A500D17FD1 /* 0225_ImplementStackUsingQueues.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA9DABD289109A500D17FD1 /* 0225_ImplementStackUsingQueues.swift */; };
+		EEA9DAC02891873600D17FD1 /* 0020_ValidParentheses.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA9DABF2891873600D17FD1 /* 0020_ValidParentheses.swift */; };
+		EEA9DAC22892208400D17FD1 /* 1047_RemoveAllAdjacentDuplicatesInString.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA9DAC12892208400D17FD1 /* 1047_RemoveAllAdjacentDuplicatesInString.swift */; };
 		EEB76E0927F0B95A00D8EA7B /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB76E0827F0B95A00D8EA7B /* main.swift */; };
 		EEB76E1027F0B9A900D8EA7B /* 0001_TwoSum.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB76E0F27F0B9A900D8EA7B /* 0001_TwoSum.swift */; };
 		EEC450AC28696D6600904ADA /* 0977_SquaresOfASortArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC450AB28696D6600904ADA /* 0977_SquaresOfASortArray.swift */; };
@@ -75,6 +77,8 @@
 		EEA0B2D428704421007FF6F9 /* ListNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListNode.swift; sourceTree = "<group>"; };
 		EEA9DABB2891069C00D17FD1 /* 0232_ImplementQueueUsingStacks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0232_ImplementQueueUsingStacks.swift; sourceTree = "<group>"; };
 		EEA9DABD289109A500D17FD1 /* 0225_ImplementStackUsingQueues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0225_ImplementStackUsingQueues.swift; sourceTree = "<group>"; };
+		EEA9DABF2891873600D17FD1 /* 0020_ValidParentheses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0020_ValidParentheses.swift; sourceTree = "<group>"; };
+		EEA9DAC12892208400D17FD1 /* 1047_RemoveAllAdjacentDuplicatesInString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 1047_RemoveAllAdjacentDuplicatesInString.swift; sourceTree = "<group>"; };
 		EEB76E0527F0B95A00D8EA7B /* LeetCode */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = LeetCode; sourceTree = BUILT_PRODUCTS_DIR; };
 		EEB76E0827F0B95A00D8EA7B /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		EEB76E0F27F0B9A900D8EA7B /* 0001_TwoSum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0001_TwoSum.swift; sourceTree = "<group>"; };
@@ -160,6 +164,8 @@
 				EEE49CBF288FBFFA0035C8B0 /* 0028_ImplementStrStr.swift */,
 				EEA9DABB2891069C00D17FD1 /* 0232_ImplementQueueUsingStacks.swift */,
 				EEA9DABD289109A500D17FD1 /* 0225_ImplementStackUsingQueues.swift */,
+				EEA9DABF2891873600D17FD1 /* 0020_ValidParentheses.swift */,
+				EEA9DAC12892208400D17FD1 /* 1047_RemoveAllAdjacentDuplicatesInString.swift */,
 			);
 			path = LeetCode;
 			sourceTree = "<group>";
@@ -243,6 +249,7 @@
 				EE5D5E1228892373007B12F3 /* 0018_4Sum.swift in Sources */,
 				EEC450AC28696D6600904ADA /* 0977_SquaresOfASortArray.swift in Sources */,
 				EEE49CC0288FBFFA0035C8B0 /* 0028_ImplementStrStr.swift in Sources */,
+				EEA9DAC22892208400D17FD1 /* 1047_RemoveAllAdjacentDuplicatesInString.swift in Sources */,
 				EEA0B2D528704421007FF6F9 /* ListNode.swift in Sources */,
 				EE5D5E0A288688C3007B12F3 /* 0202_HappyNum.swift in Sources */,
 				EEEC3DE327F1881200B69E57 /* 0704_BinarySearch.swift in Sources */,
@@ -251,6 +258,7 @@
 				EEED8985287D5ADB00D5CEDA /* 0142_LinkedListCycle.swift in Sources */,
 				EE5D5E0E2887A912007B12F3 /* 0383_RansomNote.swift in Sources */,
 				EEFC4E45286B3CCB002720EA /* 0209_MinimumSizeSubarraySum.swift in Sources */,
+				EEA9DAC02891873600D17FD1 /* 0020_ValidParentheses.swift in Sources */,
 				EE4AC2482872A40A00301517 /* 0206_ReverseLinkedList.swift in Sources */,
 				EE0417062871B1DE0082D34A /* 0203_RemoveLinkedListElements.swift in Sources */,
 				EEA9DABC2891069C00D17FD1 /* 0232_ImplementQueueUsingStacks.swift in Sources */,

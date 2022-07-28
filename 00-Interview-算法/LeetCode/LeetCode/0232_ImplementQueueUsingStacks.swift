@@ -25,7 +25,8 @@ public class MyQueue {
     func pop() -> Int {
         if stackOut.isEmpty { // 输出栈为空，把输入栈全部导入
             while !stackIn.isEmpty {
-                stackOut.append(stackIn.popLast()!)
+                let out = stackIn.popLast()!
+                stackOut.append(out)  // 栈只能从尾开始移除
             }
         }
         return stackOut.popLast() ?? -1
