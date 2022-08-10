@@ -207,8 +207,8 @@ private:
     // IMP-first is better for arm64e ptrauth and no worse for arm64.
     // SEL-first is better for armv7* and i386 and x86_64.
 #if __arm64__
-    explicit_atomic<uintptr_t> _imp;
-    explicit_atomic<SEL> _sel;
+    explicit_atomic<uintptr_t> _imp; // 方法实现地址
+    explicit_atomic<SEL> _sel; // key
 #else
     explicit_atomic<SEL> _sel;
     explicit_atomic<uintptr_t> _imp;
@@ -266,8 +266,8 @@ public:
 
 struct cache_t {
 #if CACHE_MASK_STORAGE == CACHE_MASK_STORAGE_OUTLINED
-    explicit_atomic<struct bucket_t *> _buckets;
-    explicit_atomic<mask_t> _mask;
+    explicit_atomic<struct bucket_t *> _buckets; // 散列表
+    explicit_atomic<mask_t> _mask; // 散列表长度-1
 #elif CACHE_MASK_STORAGE == CACHE_MASK_STORAGE_HIGH_16
     explicit_atomic<uintptr_t> _maskAndBuckets;
     mask_t _mask_unused;
@@ -306,7 +306,7 @@ struct cache_t {
 #if __LP64__
     uint16_t _flags;
 #endif
-    uint16_t _occupied;
+    uint16_t _occupied; // 已经缓存的方法数量
 
 public:
     static bucket_t *emptyBuckets();
@@ -1102,9 +1102,9 @@ public:
     // 方法列表
     const method_array_t methods() const {
         auto v = get_ro_or_rwe();
-        if (v.is<class_rw_ext_t *>()) {
+        if (v.is<class_rw_ext_t *>()) { // 优先从class_rw_t查找方法
             return v.get<class_rw_ext_t *>()->methods;
-        } else {
+        } else { // 再从class初始化的时候class_ro_t查找方法
             return method_array_t{v.get<const class_ro_t *>()->baseMethods()};
         }
     }

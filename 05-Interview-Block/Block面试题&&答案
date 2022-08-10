@@ -169,12 +169,22 @@ __weak 为了避免 retainCycle，⽽block 内部 __strong 则是在作⽤域 re
 
 
 
+
 8. block发生copy时机
+block 从栈上拷⻉到堆上⼏种情况：
+	调⽤Block的copy⽅法
+	将Block作为函数返回值时
+	将Block赋值给__strong修饰的变量或Block类型成员变量时
+	向Cocoa框架含有usingBlock的⽅法或者GCD的API传递Block参数时
+
+
 
 
 9. Block访问对象类型的auto变量时，在ARC和MRC下有什么区别
 
-
+简单来说：ARC下会对这个对象强引用，MRC下不会。
+ARC下，由于block被自动copy到了堆区，从而对外部的对象进行强引用，如果这个对象同样强引用这个block，就会形成循环引用。
+MRC下，由于访问的外部变量是auto修饰的，所以这个block属于栈区的，如果不对block手动进行copy操作，在运行完block的定义代码段后，block就会被释放，而由于没有进行copy操作，所以这个变量也不会经过Block_object_assign处理，也就不会对变量强引用。
 
 
 10.Block原理是什么？本质是什么？

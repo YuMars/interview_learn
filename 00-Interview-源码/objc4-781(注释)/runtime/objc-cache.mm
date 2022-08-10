@@ -651,15 +651,15 @@ void cache_t::insert(Class cls, SEL sel, IMP imp, id receiver)
     // Use the cache as-is if it is less than 3/4 full
     mask_t newOccupied = occupied() + 1;
     unsigned oldCapacity = capacity(), capacity = oldCapacity;
-    if (slowpath(isConstantEmptyCache())) {
+    if (slowpath(isConstantEmptyCache())) { // cache是空的
         // Cache is read-only. Replace it.
         if (!capacity) capacity = INIT_CACHE_SIZE;
         reallocate(oldCapacity, capacity, /* freeOld */false);
     }
-    else if (fastpath(newOccupied + CACHE_END_MARKER <= capacity / 4 * 3)) {
+    else if (fastpath(newOccupied + CACHE_END_MARKER <= capacity / 4 * 3)) { // <= 3/4
         // Cache is less than 3/4 full. Use it as-is.
     }
-    else {
+    else { // 已经用完
         capacity = capacity ? capacity * 2 : INIT_CACHE_SIZE;
         if (capacity > MAX_CACHE_SIZE) {
             capacity = MAX_CACHE_SIZE;

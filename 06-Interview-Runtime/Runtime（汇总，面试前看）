@@ -17,7 +17,6 @@ OC中，对象的方法调用都是类似`[receiver selector]`,其本质就是�
 4. 如果在`Class中`没有找到这个`selector`，就继续在他的`superClass`中寻找
 5. 一旦找到对应的`selector`，直接执行`receiver`对应`selector`方法实现的`IMP`（方法实现）
 6. 若找不到对应的`selector`，消息被转发或者临时向`receiver`添加这个`selector`对应的实现方法，否则就会发生崩溃。
-7. 
 
 ## 3.Runtime中的概念解析
 
@@ -53,6 +52,21 @@ struct objc_object {
 
 typedef struct objc_object *id;
 ```
+
+
+```
+uintptr_t nonpointer        : 1; //(0：普通指针，存储Class、Meta-Class对象 1：优化过使用位域存储更多信息)
+uintptr_t has_assoc         : 1; //(是否有设置过关联对象,如果没有，释放会更快）
+uintptr_t has_cxx_dtor      : 1; //(是否有C++析构函数，如果没有，释放更快）
+uintptr_t shiftcls          : 33; //MACH_VM_MAX_ADDRESS 0x1000000000(存储Class、Meta-Classs对象的内存地址)
+uintptr_t magic             : 6; // (用于在调试的时候分辨对象是否有初始化)
+uintptr_t weakly_referenced : 1; // (是否有被弱引用指向，如果没有，释放会更快)
+uintptr_t deallocating      : 1; // (对象是否正在释放)
+uintptr_t has_sidetable_rc  : 1; // (引用计数器是否很大无法存储在isa中、如果为1，那么引用计数器会存储在一个叫SideTable的类的属性中)
+uintptr_t extra_rc          : 19 // (里面存储的值是引用计数器减一)
+```
+
+
 `id`定义为一个指向`objc_object`结构提的指针。可以看出`objc_object`只包含一个`Class`类型的`isa`指针。换句话说，一个`object`唯一保存的就是它所属`Class`的地址。当我们对一个对象进行方法调用时，比如[`receiver selector]`，它会通过`obj_object`结构体的`isa`指针去找对应的`objc_class`结构体，然后在`objc_class`结构体的`objc_method_list`（方法列表）中找到调用对应的方法，然后执行。
 
 ### 3.4 Meta class
