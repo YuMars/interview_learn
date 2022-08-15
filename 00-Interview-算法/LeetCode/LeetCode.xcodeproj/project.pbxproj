@@ -19,6 +19,7 @@
 		EE5D5E1228892373007B12F3 /* 0018_4Sum.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5D5E1128892373007B12F3 /* 0018_4Sum.swift */; };
 		EE5D5E1428893C54007B12F3 /* 0344_ReverseString.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5D5E1328893C54007B12F3 /* 0344_ReverseString.swift */; };
 		EE5D5E162889456F007B12F3 /* 0541_ReverseString.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5D5E152889456F007B12F3 /* 0541_ReverseString.swift */; };
+		EE66D32028A3AFAA00E36118 /* 0347_TopKFrequentElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE66D31F28A3AFAA00E36118 /* 0347_TopKFrequentElements.swift */; };
 		EE85F153288531F200D217CB /* 0349_IntersectionofTwoArrays.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE85F152288531F200D217CB /* 0349_IntersectionofTwoArrays.swift */; };
 		EEA0B2D1286DE744007FF6F9 /* 0904_FruitIntoBaskets.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0B2D0286DE744007FF6F9 /* 0904_FruitIntoBaskets.swift */; };
 		EEA0B2D3286E9E89007FF6F9 /* 0059_SpiralMatrix2.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0B2D2286E9E89007FF6F9 /* 0059_SpiralMatrix2.swift */; };
@@ -73,6 +74,7 @@
 		EE5D5E1128892373007B12F3 /* 0018_4Sum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0018_4Sum.swift; sourceTree = "<group>"; };
 		EE5D5E1328893C54007B12F3 /* 0344_ReverseString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0344_ReverseString.swift; sourceTree = "<group>"; };
 		EE5D5E152889456F007B12F3 /* 0541_ReverseString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0541_ReverseString.swift; sourceTree = "<group>"; };
+		EE66D31F28A3AFAA00E36118 /* 0347_TopKFrequentElements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0347_TopKFrequentElements.swift; sourceTree = "<group>"; };
 		EE85F152288531F200D217CB /* 0349_IntersectionofTwoArrays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0349_IntersectionofTwoArrays.swift; sourceTree = "<group>"; };
 		EEA0B2D0286DE744007FF6F9 /* 0904_FruitIntoBaskets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0904_FruitIntoBaskets.swift; sourceTree = "<group>"; };
 		EEA0B2D2286E9E89007FF6F9 /* 0059_SpiralMatrix2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0059_SpiralMatrix2.swift; sourceTree = "<group>"; };
@@ -172,6 +174,7 @@
 				EEA9DAC12892208400D17FD1 /* 1047_RemoveAllAdjacentDuplicatesInString.swift */,
 				EEA9DAC32892274500D17FD1 /* 0150_EvaluateReversePolishNotation.swift */,
 				EEA9DB3A2893B59200D17FD1 /* 0239_SlidingWindowMaximum.swift */,
+				EE66D31F28A3AFAA00E36118 /* 0347_TopKFrequentElements.swift */,
 			);
 			path = LeetCode;
 			sourceTree = "<group>";
@@ -238,6 +241,7 @@
 				EE5D5E1428893C54007B12F3 /* 0344_ReverseString.swift in Sources */,
 				EEA9DABE289109A500D17FD1 /* 0225_ImplementStackUsingQueues.swift in Sources */,
 				EE5562B3283F58BF00DB9C1E /* 0027_RemoveElement.swift in Sources */,
+				EE66D32028A3AFAA00E36118 /* 0347_TopKFrequentElements.swift in Sources */,
 				EEB76E0927F0B95A00D8EA7B /* main.swift in Sources */,
 				EEFFC2F22871B73300764E45 /* 0707_DesignLinkedList.swift in Sources */,
 				EEA9DAC42892274500D17FD1 /* 0150_EvaluateReversePolishNotation.swift in Sources */,

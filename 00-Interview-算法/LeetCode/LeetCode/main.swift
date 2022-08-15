@@ -98,3 +98,5 @@ print("LeftRotateString",LeftRotateString.reverseLeftWords("abcdefg", 2))
 print("ImplementStrStr", ImplementStrStr.strStr("hllallollb", "llo"))
 
 print("SlidingWindowMaximum ",SlidingWindowMaximum.maxSlidingWindow([1,3,-1,-3,5,3,6,7], 3))
+
+print("TopKFrequentElement ",TopKFrequentElement.topKFrequent([1,1,1,2,2,3], 2))
