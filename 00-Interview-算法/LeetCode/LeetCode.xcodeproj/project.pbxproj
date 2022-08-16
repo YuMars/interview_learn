@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		EE038FE328044BE100969223 /* 0034_ FindFirstandLastPositionofElementinSortedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE038FE228044BE100969223 /* 0034_ FindFirstandLastPositionofElementinSortedArray.swift */; };
 		EE0417062871B1DE0082D34A /* 0203_RemoveLinkedListElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0417052871B1DE0082D34A /* 0203_RemoveLinkedListElements.swift */; };
+		EE056D3D28A9F84B0039402E /* 0144_BinaryTreePreorderTraversal.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE056D3C28A9F84B0039402E /* 0144_BinaryTreePreorderTraversal.swift */; };
+		EE056D3F28A9FA680039402E /* TreeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE056D3E28A9FA680039402E /* TreeNode.swift */; };
+		EE056D4128AA16B10039402E /* 0145_BinaryTreePostorderTraversal.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE056D4028AA16B10039402E /* 0145_BinaryTreePostorderTraversal.swift */; };
+		EE056D4328AA1A950039402E /* 0094_BinaryTreeInorderTraversal.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE056D4228AA1A950039402E /* 0094_BinaryTreeInorderTraversal.swift */; };
 		EE4AC2482872A40A00301517 /* 0206_ReverseLinkedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4AC2472872A40A00301517 /* 0206_ReverseLinkedList.swift */; };
 		EE4AC24A2873184600301517 /* 0024_SwapNodesInPairs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4AC2492873184600301517 /* 0024_SwapNodesInPairs.swift */; };
 		EE5562B3283F58BF00DB9C1E /* 0027_RemoveElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5562B2283F58BF00DB9C1E /* 0027_RemoveElement.swift */; };
@@ -64,6 +68,10 @@
 /* Begin PBXFileReference section */
 		EE038FE228044BE100969223 /* 0034_ FindFirstandLastPositionofElementinSortedArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "0034_ FindFirstandLastPositionofElementinSortedArray.swift"; sourceTree = "<group>"; };
 		EE0417052871B1DE0082D34A /* 0203_RemoveLinkedListElements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0203_RemoveLinkedListElements.swift; sourceTree = "<group>"; };
+		EE056D3C28A9F84B0039402E /* 0144_BinaryTreePreorderTraversal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0144_BinaryTreePreorderTraversal.swift; sourceTree = "<group>"; };
+		EE056D3E28A9FA680039402E /* TreeNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeNode.swift; sourceTree = "<group>"; };
+		EE056D4028AA16B10039402E /* 0145_BinaryTreePostorderTraversal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0145_BinaryTreePostorderTraversal.swift; sourceTree = "<group>"; };
+		EE056D4228AA1A950039402E /* 0094_BinaryTreeInorderTraversal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0094_BinaryTreeInorderTraversal.swift; sourceTree = "<group>"; };
 		EE4AC2472872A40A00301517 /* 0206_ReverseLinkedList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0206_ReverseLinkedList.swift; sourceTree = "<group>"; };
 		EE4AC2492873184600301517 /* 0024_SwapNodesInPairs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0024_SwapNodesInPairs.swift; sourceTree = "<group>"; };
 		EE5562B2283F58BF00DB9C1E /* 0027_RemoveElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0027_RemoveElement.swift; sourceTree = "<group>"; };
@@ -137,6 +145,7 @@
 			children = (
 				EEB76E0827F0B95A00D8EA7B /* main.swift */,
 				EEA0B2D428704421007FF6F9 /* ListNode.swift */,
+				EE056D3E28A9FA680039402E /* TreeNode.swift */,
 				EEB76E0F27F0B9A900D8EA7B /* 0001_TwoSum.swift */,
 				EEEC3DE227F1881200B69E57 /* 0704_BinarySearch.swift */,
 				EEEEF1AC27F3563E0030229F /* 0035_SearchInsertPosition.swift */,
@@ -175,6 +184,9 @@
 				EEA9DAC32892274500D17FD1 /* 0150_EvaluateReversePolishNotation.swift */,
 				EEA9DB3A2893B59200D17FD1 /* 0239_SlidingWindowMaximum.swift */,
 				EE66D31F28A3AFAA00E36118 /* 0347_TopKFrequentElements.swift */,
+				EE056D3C28A9F84B0039402E /* 0144_BinaryTreePreorderTraversal.swift */,
+				EE056D4028AA16B10039402E /* 0145_BinaryTreePostorderTraversal.swift */,
+				EE056D4228AA1A950039402E /* 0094_BinaryTreeInorderTraversal.swift */,
 			);
 			path = LeetCode;
 			sourceTree = "<group>";
@@ -259,18 +271,22 @@
 				EE85F153288531F200D217CB /* 0349_IntersectionofTwoArrays.swift in Sources */,
 				EEC66F97288A537D00755A69 /* R_005_ReplaceSpace.swift in Sources */,
 				EE5D5E1228892373007B12F3 /* 0018_4Sum.swift in Sources */,
+				EE056D3D28A9F84B0039402E /* 0144_BinaryTreePreorderTraversal.swift in Sources */,
 				EEC450AC28696D6600904ADA /* 0977_SquaresOfASortArray.swift in Sources */,
+				EE056D4328AA1A950039402E /* 0094_BinaryTreeInorderTraversal.swift in Sources */,
 				EEE49CC0288FBFFA0035C8B0 /* 0028_ImplementStrStr.swift in Sources */,
 				EEA9DAC22892208400D17FD1 /* 1047_RemoveAllAdjacentDuplicatesInString.swift in Sources */,
 				EEA0B2D528704421007FF6F9 /* ListNode.swift in Sources */,
 				EE5D5E0A288688C3007B12F3 /* 0202_HappyNum.swift in Sources */,
 				EEEC3DE327F1881200B69E57 /* 0704_BinarySearch.swift in Sources */,
 				EEB76E1027F0B9A900D8EA7B /* 0001_TwoSum.swift in Sources */,
+				EE056D4128AA16B10039402E /* 0145_BinaryTreePostorderTraversal.swift in Sources */,
 				EEED898A287EAF4800D5CEDA /* 0242_ValidAnagram.swift in Sources */,
 				EEED8985287D5ADB00D5CEDA /* 0142_LinkedListCycle.swift in Sources */,
 				EE5D5E0E2887A912007B12F3 /* 0383_RansomNote.swift in Sources */,
 				EEFC4E45286B3CCB002720EA /* 0209_MinimumSizeSubarraySum.swift in Sources */,
 				EEA9DAC02891873600D17FD1 /* 0020_ValidParentheses.swift in Sources */,
+				EE056D3F28A9FA680039402E /* TreeNode.swift in Sources */,
 				EE4AC2482872A40A00301517 /* 0206_ReverseLinkedList.swift in Sources */,
 				EE0417062871B1DE0082D34A /* 0203_RemoveLinkedListElements.swift in Sources */,
 				EEA9DABC2891069C00D17FD1 /* 0232_ImplementQueueUsingStacks.swift in Sources */,
