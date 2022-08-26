@@ -36,6 +36,7 @@
 		EE5E23D028ACE23100AA53DB /* 0637_AverageofLevelsinBinaryTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5E23CF28ACE23100AA53DB /* 0637_AverageofLevelsinBinaryTree.swift */; };
 		EE5E23D228ACECA000AA53DB /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5E23D128ACECA000AA53DB /* Node.swift */; };
 		EE66D32028A3AFAA00E36118 /* 0347_TopKFrequentElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE66D31F28A3AFAA00E36118 /* 0347_TopKFrequentElements.swift */; };
+		EE7250A328B8954400C9AFF8 /* 0101_SymmetricTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7250A228B8954400C9AFF8 /* 0101_SymmetricTree.swift */; };
 		EE85F153288531F200D217CB /* 0349_IntersectionofTwoArrays.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE85F152288531F200D217CB /* 0349_IntersectionofTwoArrays.swift */; };
 		EEA0B2D1286DE744007FF6F9 /* 0904_FruitIntoBaskets.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0B2D0286DE744007FF6F9 /* 0904_FruitIntoBaskets.swift */; };
 		EEA0B2D3286E9E89007FF6F9 /* 0059_SpiralMatrix2.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0B2D2286E9E89007FF6F9 /* 0059_SpiralMatrix2.swift */; };
@@ -107,6 +108,7 @@
 		EE5E23CF28ACE23100AA53DB /* 0637_AverageofLevelsinBinaryTree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0637_AverageofLevelsinBinaryTree.swift; sourceTree = "<group>"; };
 		EE5E23D128ACECA000AA53DB /* Node.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
 		EE66D31F28A3AFAA00E36118 /* 0347_TopKFrequentElements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0347_TopKFrequentElements.swift; sourceTree = "<group>"; };
+		EE7250A228B8954400C9AFF8 /* 0101_SymmetricTree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0101_SymmetricTree.swift; sourceTree = "<group>"; };
 		EE85F152288531F200D217CB /* 0349_IntersectionofTwoArrays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0349_IntersectionofTwoArrays.swift; sourceTree = "<group>"; };
 		EEA0B2D0286DE744007FF6F9 /* 0904_FruitIntoBaskets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0904_FruitIntoBaskets.swift; sourceTree = "<group>"; };
 		EEA0B2D2286E9E89007FF6F9 /* 0059_SpiralMatrix2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0059_SpiralMatrix2.swift; sourceTree = "<group>"; };
@@ -223,6 +225,7 @@
 				EE1CC97128AE36B000C578D1 /* 0104_MaximumDepthofBinaryTree.swift */,
 				EE1CC97328AE38B300C578D1 /* 0111_MinimumDepthOfBinaryTree.swift */,
 				EE1CC97528AF5B7C00C578D1 /* 0226_InvertBinaryTree.swift */,
+				EE7250A228B8954400C9AFF8 /* 0101_SymmetricTree.swift */,
 			);
 			path = LeetCode;
 			sourceTree = "<group>";
@@ -334,6 +337,7 @@
 				EEA9DAC02891873600D17FD1 /* 0020_ValidParentheses.swift in Sources */,
 				EE2D384628ADEB9100BDEA18 /* 0515_FindLargestValueInEachTreeRow.swift in Sources */,
 				EE056D3F28A9FA680039402E /* TreeNode.swift in Sources */,
+				EE7250A328B8954400C9AFF8 /* 0101_SymmetricTree.swift in Sources */,
 				EE4AC2482872A40A00301517 /* 0206_ReverseLinkedList.swift in Sources */,
 				EE0417062871B1DE0082D34A /* 0203_RemoveLinkedListElements.swift in Sources */,
 				EEA9DABC2891069C00D17FD1 /* 0232_ImplementQueueUsingStacks.swift in Sources */,
