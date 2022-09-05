@@ -267,7 +267,10 @@ class_ro_t:（成员变量）
 
 
 
- 
+8.讲一下消息转发机制
+    1.OC中的方法调用其实都是转成了objc_msgSend函数的调用，给receiver（方法调用者）发送了一条消息（selector方法名）
+    2.objc_msgSend底层有3大阶段
+      消息发送（当前类、父类中查找）、动态方法解析、消息转发
 
 
 
@@ -288,6 +291,30 @@ class_ro_t:（成员变量）
 
 
 12.说说消息转发机制的优劣
+
+
+13. Student:Person Person:NSobject，以下打印分别是什么？
+
+@implementation Student
+
+- (voud)init {
+    if (self = [super init]) {
+       NSLog(@"%@",[self class]); // Student
+       NSLog(@"%@",[super class]);//  Student
+       NSLog(@"%@",[self superClass]); // Person
+       NSLog(@"%@",[super superClass]);// Person
+    }
+    return self;
+}
+
+@end
+
+
+14.以下代码分别打印什么？
+NSLog(@"%d",[[NSObject class] isKindOfCalss:[NSObject class]);  // 1
+NSLog(@"%d",[[NSObject class] isMemberOfCalss:[NSObject class]);// 0
+NSLog(@"%d",[[Person class] isKindOfCalss:[NSObject class]);    // 0 for (cls = isa; cls; cls = cls->superclass)  if (cls == (Class)aClass)
+NSLog(@"%d",[[Person class] isMemberOfCalss:[NSObject class]);  // 0  isa == (Class)aClass
 
 
 

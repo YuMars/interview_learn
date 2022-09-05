@@ -658,8 +658,7 @@ void cache_t::insert(Class cls, SEL sel, IMP imp, id receiver)
     }
     else if (fastpath(newOccupied + CACHE_END_MARKER <= capacity / 4 * 3)) { // <= 3/4
         // Cache is less than 3/4 full. Use it as-is.
-    }
-    else { // 已经用完
+    } else { // 已经用完
         capacity = capacity ? capacity * 2 : INIT_CACHE_SIZE;
         if (capacity > MAX_CACHE_SIZE) {
             capacity = MAX_CACHE_SIZE;

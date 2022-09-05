@@ -220,7 +220,7 @@
 }
 
 + (BOOL)resolveInstanceMethod:(SEL)sel {
-    return YES; // 为了进行下一步 消息接受者重定向
+    return YES; // 为了进行下一步 消息接受者重定向，返回YES，代表有动态添加方法
 }
 
 - (id)forwardingTargetForSelector:(SEL)aSelector {
