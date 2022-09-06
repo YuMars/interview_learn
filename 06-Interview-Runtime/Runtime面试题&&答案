@@ -275,15 +275,42 @@ class_ro_t:（成员变量）
 
 
 8.消息转发机制，消息转发机制和其他语⾔的消息机制优劣对⽐
+RunTime简称运行时。就是系统在运行的时候的一些机制，其中最主要的是消息机制。
+对于C语言，函数的调用在编译的时候会决定调用哪个函数。编译完成之后直接顺序执行，无任何二义性。
+OC的函数调用称为消息发送。属于动态调用过程。在编译的时候并不能决定真正调用哪个函数（也就是说，在编译阶段，OC可以调用任何函数，即使这个函数并未实现，只要申明过就不会报错。而C语言在编译阶段就会报错）。只有在真正运行的时候才会根据函数的名称找 到对应的函数来调用。
+
+
+
+
 
 
 
 9.在⽅法调⽤的时候，⽅法查询-> 动态解析-> 消息转发 之前做了什么
+·首先检查selector是不是要忽略（MacOS有了垃圾回收就不会例会retain，release）
+·检查这个selector的target是不是nil，如果是nil就不会crash运行时被忽略
+
+
+
 
 
 
 10. IMP、SEL、Method的区别和使⽤场景
+struct objc_method {
+    SEL method_name                                          OBJC2_UNAVAILABLE;
+    char *method_types                                       OBJC2_UNAVAILABLE;
+    IMP method_imp                                           OBJC2_UNAVAILABLE;
+}
 
+Method和我们平时理解的函数是一致的，就是表示能够独立完成一个功能的一段代码，比如：
+- (void)message {
+    NSLog(@"");
+}
+
+/// An opaque type that represents a method selector.代表一个方法的不透明类型
+typedef struct objc_selector *SEL;
+
+/// A pointer to the function of a method implementation.  指向一个方法实现的指针
+typedef id (*IMP)(id, SEL, ...); 
 
 
 11. load、initialize⽅法的区别什么？在继承关系中他们有什么区别
@@ -291,6 +318,20 @@ class_ro_t:（成员变量）
 
 
 12.说说消息转发机制的优劣
+优点：
+    优雅的消息传递机制
+    动态特性
+    Category
+缺点：
+    不支持命名空间
+    蹩脚的KVO
+    蹩脚的多态
+    Runtime 的各种黑魔法
+    引用计数的内存管理方式(会有循环引用)
+    鬼畜的布尔类型
+    轻量的面向对象特性 (由于支持C中的东西，装入OO的容器需要wrap)
+
+
 
 
 13. Student:Person Person:NSobject，以下打印分别是什么？

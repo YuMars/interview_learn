@@ -28,17 +28,17 @@ OC中，对象的方法调用都是类似`[receiver selector]`,其本质就是�
 在obc/rumtime.h中，Class被定义为指向objc_class
 ```
 struct objc_class {
-	Class _Nonnull isa  OBJC_ISA_AVAILABILITY;                   // 保存所属类的结构体的实例的指针
+    Class _Nonnull isa  OBJC_ISA_AVAILABILITY;                   // 保存所属类的结构体的实例的指针
 #if !__OBJC2__
-	Class _Nullable super_class                                  // 指向父类的指针
-   	const char * _Nonnull name                                   // 类的名称
-	long version                                                 // 类的版本号，默认为0
-	long info                                                    // 类的信息，供运行时期使用的一些标识
-	long instance_size                                           // 该类的实例变量大小
-	struct objc_ivar_list * _Nullable ivars                      // 该类的实力变量列表
-	struct objc_method_list * _Nullable * _Nullable methodLists  // 方法定义的列表
-	struct objc_cache * _Nonnull cache                           // 方法缓存
-	struct objc_protocol_list * _Nullable protocols              // 遵守的协议列表
+    Class _Nullable super_class                                  // 指向父类的指针
+    const char * _Nonnull name                                   // 类的名称
+    long version                                                 // 类的版本号，默认为0
+    long info                                                    // 类的信息，供运行时期使用的一些标识
+    long instance_size                                           // 该类的实例变量大小
+    struct objc_ivar_list * _Nullable ivars                      // 该类的实力变量列表
+    struct objc_method_list * _Nullable * _Nullable methodLists  // 方法定义的列表
+    struct objc_cache * _Nonnull cache                           // 方法缓存
+    struct objc_protocol_list * _Nullable protocols              // 遵守的协议列表
 #endif
 
 } OBJC2_UNAVAILABLE;
@@ -47,7 +47,7 @@ struct objc_class {
 ### 3.3 Object - objc/objc.h
 ```
 struct objc_object {
-	Class _Nonnull isa  OBJC_ISA_AVAILABILITY;
+    Class _Nonnull isa  OBJC_ISA_AVAILABILITY;
 };
 
 typedef struct objc_object *id;
@@ -89,11 +89,11 @@ eg:
 ### 3.5 实例对象，类，元类对象的关系
 ⬆ 父类   -----> isa指针
 
-根类   object实例对象   ---->  object类对象 ----> 	NSObject元类
-								⬆						⬆
+根类   object实例对象   ---->  object类对象 ---->    NSObject元类
+                                ⬆                       ⬆
 父类   Person实例对象   ----> Person类对象  ---->    Person元类
-								⬆						⬆
-子类   Man实例对象	    ---->  man类对象    ---->	  Man元类
+                                ⬆                       ⬆
+子类   Man实例对象        ---->  man类对象    ---->    Man元类
 
 #### isa指针:
 - 1.水平方向:每一级中的实力对象的isa指针指向对应的类对象,而类对象的isa指针指向了对应的元类.而所有的元类isa指针最终指向了NSObject元类,因此NSObject也被成为根元类
@@ -112,9 +112,9 @@ objc/runtime.h中`objc_method`的`objc_method`的数据结构
 typedef struct objc_method *Method;
 
 struct objc_method {
-	SEL _Nonnull method_name       // 方法名
-	char * _Nullable method_types  // 方法类型
-	IMP _Nonnull method_imp        // 方法实现
+    SEL _Nonnull method_name       // 方法名
+    char * _Nullable method_types  // 方法类型
+    IMP _Nonnull method_imp        // 方法实现
 }
 ```
 
@@ -129,9 +129,9 @@ SEL是一个指向objc_selector结构体的指针,但是在runtime相关头文�
 #### 3.6.2.IMP method_imp
 ```
 #if !OBJC_OLD_DISPATCH_PROTOTYPES
-	typedef void (*IMP)(void /* id, SEL, ... */ ); 
+    typedef void (*IMP)(void /* id, SEL, ... */ ); 
 #else
-	typedef id _Nullable (*IMP)(id _Nonnull, SEL _Nonnull, ...); 
+    typedef id _Nullable (*IMP)(id _Nonnull, SEL _Nonnull, ...); 
 #endif
 ```
 IMP的实质是一个函数指针,所指向的就是方法的实现.IMP用来找函数地址,然后执行函数
@@ -339,9 +339,15 @@ struct class_ro_t {
 2.动态方法解析
 3.消息转发
 
-## 4.1 动态方法解析
+### 4.0
+**方法**：与一个类相关的一段实际代码，并给出一个特定的名字。例：- (int)meaning { return 42; }
+**消息**：发送给对象的名称和一组参数。示例：向0x12345678对象发送meaning并且没有参数。
+**选择器**：表示消息或方法名称的一种特殊方式，表示为类型SEL。选择器本质上就是不透明的字符串，它们被管理，因此可以使用简单的指针相等来比较它们，从而提高速度。（实现可能会有所不同，但这基本上是他们在外部看起来的样子。）例如：@selector(meaning)。
+**消息发**送：接收信息并查找和执行适当方法的过程。
+
+## 4.1 动态特性：方法解析和消息转发
 若找不到对应的selector,消息被转发或者临时向receiver添加这个selector对应的实现方法,否则就会发生崩溃.
-	当一个方法找不到的时候,Runtime提供了消息动态解析,消息接受者重定向,消息重定向等三步处理,具体流程如下:
+    当一个方法找不到的时候,Runtime提供了消息动态解析,消息接受者重定向,消息重定向等三步处理,具体流程如下:
 
 > +resolveInstanceMethod/+resolveClassMethod   
 
@@ -349,7 +355,7 @@ struct class_ro_t {
 
 > +methodSignatureForSelector/-methodSignatureForSelector
 
-### 4.1.2 动态方法解析
+### 4.1.2 动态方法解析: Method Resolution
 
 Objective-C运行时会调用`+resolveInstanceMethod`或者`+resolveClassMethod`,前者在对象方法未找到时,后者在类方法未找到时调用,可以通过重写这两个方法,添加其他函数实现,并返回YES,运行时系统会重新启动一次消息发送的过程.
 ```
@@ -365,7 +371,7 @@ BOOL class_addMethod(Class _Nullable cls, SEL _Nonnull name, IMP _Nonnull imp, c
 
 ```
 
-## 4.2 消息转发
+## 4.2 快速转发: Fast Rorwarding
 如果上一步中`+resolveInstanceMethod`或者`+resolveClassMethod`没有添加其他函数实现,运行时就会进行下一步:`消息接受者重定向`
 
 如果当前对象实现了`forwardingTargetForSelector`或者`forwardingTargetForSelector`方法,`Runtime`就会调用这个方法,允许我们将消息的接受者转发给其他对象.
@@ -434,9 +440,9 @@ Method(方法)就是objc_method结构体
 typedef struct objc_method *Method;
 
 struct objc_method {
-	SEL _Nonnull method_name;                    // 方法名
-	char * _Nullable method_types;               // 方法类型
-	IMP _Nonnull method_imp;                     // 方法实现
+    SEL _Nonnull method_name;                    // 方法名
+    char * _Nullable method_types;               // 方法类型
+    IMP _Nonnull method_imp;                     // 方法实现
 };
 ```
 
@@ -447,7 +453,7 @@ struct objc_method {
 假如当前类中有两个方法:-(void)originalFunction;和-(void)swizzlingFunction; 如果我们想要交换两个方法的实现,从而实现调用-(void)originalFunction;的时候实际上调用的是-(void)swizzlingFunction; ,而调用-(void)swizzlingFunction; 实际上是-(void)originalFunction;.
 
 ### 2.1 Method Swizzling 简单使用
-	在当前类+ (void)load;方法中添加Method Swizzling
+    在当前类+ (void)load;方法中添加Method Swizzling
 
 Method Swizzling 方法A -- 添加Method Swizzling 交换方法,用普通方式
 1. Method Swizzling 方法B -- 使用函数指针的方式。
@@ -494,9 +500,9 @@ MethodSwizzling影响的是全局状态,`+ (void)load`方法能保证在加载�
 所以被用于 Method Swizzling 的方法必须是当前类自身的方法，如果把继承父类来的 IMP 复制到自身上面可能会存在问题。如果 + load 方法调用顺序为：父类 -> 子类 -> 父类类别 -> 子类类别，那么造成的影响就是调用子类的替换方法并不能正确调起父类分类的替换方法
 
 ## 4.Method Swizzling 应用场景
-	4.1 全局页面统计功能
-	
-# 	三、Runtime Category
+    4.1 全局页面统计功能
+    
+#   三、Runtime Category
 
 ## 1.Category(分类)简介
 ### 1.1 什么是Category
@@ -519,12 +525,12 @@ Category主要作用是为已经存在的类添加方法.Category可以做到在
 typedef struct category_t *Category;
 
 struct category_t {
-	const char *name;                                // 类名
-	classref_t cls;                                  // 类，在运行时阶段通过 class_name（类名）对应到类对象
-	struct method_list_t *instanceMethods;           // Category 中所有添加的对象方法列表
-	struct method_list_t *classMethods;              // Category 中所有添加的类方法列表
-	struct protocol_list_t *protocols;               // Category 中实现的所有协议列表
-	struct property_list_t *instanceProperties;      // Category 中添加的所有属性
+    const char *name;                                // 类名
+    classref_t cls;                                  // 类，在运行时阶段通过 class_name（类名）对应到类对象
+    struct method_list_t *instanceMethods;           // Category 中所有添加的对象方法列表
+    struct method_list_t *classMethods;              // Category 中所有添加的类方法列表
+    struct protocol_list_t *protocols;               // Category 中实现的所有协议列表
+    struct property_list_t *instanceProperties;      // Category 中添加的所有属性
 };
 ```
 
@@ -539,12 +545,12 @@ struct category_t {
 Person 类的 Category 结构体
 ```
 struct _category_t {
-	const char *name;
-	struct _class_t *cls;
-	const struct _method_list_t *instance_methods;
-	const struct _method_list_t *class_methods;
-	const struct _protocol_list_t *protocols;
-	const struct _prop_list_t *properties;
+    const char *name;
+    struct _class_t *cls;
+    const struct _method_list_t *instance_methods;
+    const struct _method_list_t *class_methods;
+    const struct _protocol_list_t *protocols;
+    const struct _prop_list_t *properties;
 };
 ```
 
@@ -552,19 +558,19 @@ Person 类的 Category 结构体赋值
 ```
 static struct _category_t _OBJC_$_CATEGORY_Person_$_Addition __attribute__ ((used, section ("__DATA,__objc_const"))) = 
 {
-	"Person",
-	0, // &OBJC_CLASS_$_Person,
-	(const struct _method_list_t *)&_OBJC_$_CATEGORY_INSTANCE_METHODS_Person_$_Addition,
-	(const struct _method_list_t *)&_OBJC_$_CATEGORY_CLASS_METHODS_Person_$_Addition,
-	(const struct _protocol_list_t *)&_OBJC_CATEGORY_PROTOCOLS_$_Person_$_Addition,
-	(const struct _prop_list_t *)&_OBJC_$_PROP_LIST_Person_$_Addition,
+    "Person",
+    0, // &OBJC_CLASS_$_Person,
+    (const struct _method_list_t *)&_OBJC_$_CATEGORY_INSTANCE_METHODS_Person_$_Addition,
+    (const struct _method_list_t *)&_OBJC_$_CATEGORY_CLASS_METHODS_Person_$_Addition,
+    (const struct _protocol_list_t *)&_OBJC_CATEGORY_PROTOCOLS_$_Person_$_Addition,
+    (const struct _prop_list_t *)&_OBJC_$_PROP_LIST_Person_$_Addition,
 };
 ```
 
 Category 数组，如果 Person 有多个分类，则 Category 数组中对应多个 Category 
 ```
 static struct _category_t *L_OBJC_LABEL_CATEGORY_$ [1] __attribute__((used, section ("__DATA, __objc_catlist,regular,no_dead_strip")))= {
-	&_OBJC_$_CATEGORY_Person_$_Addition, 
+    &_OBJC_$_CATEGORY_Person_$_Addition, 
 };
 ```
 
@@ -577,7 +583,7 @@ static struct _category_t *L_OBJC_LABEL_CATEGORY_$ [1] __attribute__((used, sect
 `- (void)printName;` 对象方法的实现
 ```
 static void _I_Person_Addition_printName(Person * self, SEL _cmd) {
-	NSLog((NSString *)&__NSConstantStringImpl__var_folders_ct_0dyw1pvj6k16t5z8t0j0_ghw0000gn_T_Person_Addition_405207_mi_1);
+    NSLog((NSString *)&__NSConstantStringImpl__var_folders_ct_0dyw1pvj6k16t5z8t0j0_ghw0000gn_T_Person_Addition_405207_mi_1);
 }
 ```
 
@@ -591,14 +597,14 @@ static void _I_Person_Addition_forwardingTargetForSelectorpersonProtocolMethod(P
 `Person`分类中添加的『对象方法列表结构体』
 ```
 static struct /*_method_list_t*/ {
-	unsigned int entsize;  // sizeof(struct _objc_method)
-	unsigned int method_count;
-	struct _objc_method method_list[2];
+    unsigned int entsize;  // sizeof(struct _objc_method)
+    unsigned int method_count;
+    struct _objc_method method_list[2];
 } _OBJC_$_CATEGORY_INSTANCE_METHODS_Person_$_Addition __attribute__ ((used, section ("__DATA,__objc_const"))) = {
-	sizeof(_objc_method),
-	2,
-	{{(struct objc_selector *)"printName", "v16@0:8", (void *)_I_Person_Addition_printName},
-	{(struct objc_selector *)"personProtocolMethod", "v16@0:8", (void *)_I_Person_Addition_personProtocolMethod}}
+    sizeof(_objc_method),
+    2,
+    {{(struct objc_selector *)"printName", "v16@0:8", (void *)_I_Person_Addition_printName},
+    {(struct objc_selector *)"personProtocolMethod", "v16@0:8", (void *)_I_Person_Addition_personProtocolMethod}}
 };
 ```
 
@@ -612,7 +618,7 @@ static struct /*_method_list_t*/ {
 `+ (void)printClassName; `类方法的实现
 ```
 static void _C_Person_Addition_printClassName(Class self, SEL _cmd) {
-	NSLog((NSString *)&__NSConstantStringImpl__var_folders_ct_0dyw1pvj6k16t5z8t0j0_ghw0000gn_T_Person_Addition_c2e684_mi_0);
+    NSLog((NSString *)&__NSConstantStringImpl__var_folders_ct_0dyw1pvj6k16t5z8t0j0_ghw0000gn_T_Person_Addition_c2e684_mi_0);
 }
 ```
 
@@ -627,14 +633,14 @@ static void _C_Person_Addition_personProtocolClassMethod(Class self, SEL _cmd) {
 Person 分类中添加的『类方法列表结构体』
 ```
 static struct /*_method_list_t*/ {
-	unsigned int entsize;  // sizeof(struct _objc_method)
-	unsigned int method_count;
-	struct _objc_method method_list[2];
+    unsigned int entsize;  // sizeof(struct _objc_method)
+    unsigned int method_count;
+    struct _objc_method method_list[2];
 } _OBJC_$_CATEGORY_CLASS_METHODS_Person_$_Addition __attribute__ ((used, section ("__DATA,__objc_const"))) = {
-	sizeof(_objc_method),
-	2,
-	{{(struct objc_selector *)"printClassName", "v16@0:8", (void *)_C_Person_Addition_printClassName},
-	{(struct objc_selector *)"personProtocolClassMethod", "v16@0:8", (void *)_C_Person_Addition_personProtocolClassMethod}}
+    sizeof(_objc_method),
+    2,
+    {{(struct objc_selector *)"printClassName", "v16@0:8", (void *)_C_Person_Addition_printClassName},
+    {(struct objc_selector *)"personProtocolClassMethod", "v16@0:8", (void *)_C_Person_Addition_personProtocolClassMethod}}
 };
 ```
 
@@ -652,51 +658,51 @@ static struct /*_protocol_list_t*/ {
 long protocol_count;  // Note, this is 32/64 bit
 struct _protocol_t *super_protocols[1];
 } _OBJC_CATEGORY_PROTOCOLS_$_Person_$_Addition __attribute__ ((used, section ("__DATA,__objc_const"))) = {
-	1,
-	&_OBJC_PROTOCOL_PersonProtocol
+    1,
+    &_OBJC_PROTOCOL_PersonProtocol
 };
 ```
 
 协议列表 对象方法列表结构体
 ```
 static struct /*_method_list_t*/ {
-	unsigned int entsize;  // sizeof(struct _objc_method)
-	unsigned int method_count;
-	struct _objc_method method_list[1];
+    unsigned int entsize;  // sizeof(struct _objc_method)
+    unsigned int method_count;
+    struct _objc_method method_list[1];
 } _OBJC_PROTOCOL_INSTANCE_METHODS_PersonProtocol __attribute__ ((used, section ("__DATA,__objc_const"))) = {
-	sizeof(_objc_method),
-	1,
-	{{(struct objc_selector *)"personProtocolMethod", "v16@0:8", 0}}
+    sizeof(_objc_method),
+    1,
+    {{(struct objc_selector *)"personProtocolMethod", "v16@0:8", 0}}
 };
 ```
 
 协议列表 类方法列表结构体
 ```
 static struct /*_method_list_t*/ {
-	unsigned int entsize;  // sizeof(struct _objc_method)
-	unsigned int method_count;
-	struct _objc_method method_list[1];
+    unsigned int entsize;  // sizeof(struct _objc_method)
+    unsigned int method_count;
+    struct _objc_method method_list[1];
 } _OBJC_PROTOCOL_CLASS_METHODS_PersonProtocol __attribute__ ((used, section ("__DATA,__objc_const"))) = {
-	sizeof(_objc_method),
-	1,
-	{{(struct objc_selector *)"personProtocolClassMethod", "v16@0:8", 0}}
+    sizeof(_objc_method),
+    1,
+    {{(struct objc_selector *)"personProtocolClassMethod", "v16@0:8", 0}}
 };
 ```
 
 PersonProtocol 结构体赋值
 ```
 struct _protocol_t _OBJC_PROTOCOL_PersonProtocol __attribute__ ((used)) = {
-	0,
-	"PersonProtocol",
-	(const struct _protocol_list_t *)&_OBJC_PROTOCOL_REFS_PersonProtocol,
-	(const struct method_list_t *)&_OBJC_PROTOCOL_INSTANCE_METHODS_PersonProtocol,
-	(const struct method_list_t *)&_OBJC_PROTOCOL_CLASS_METHODS_PersonProtocol,
-	0,
-	0,
-	0,
-	sizeof(_protocol_t),
-	0,
-	(const char **)&_OBJC_PROTOCOL_METHOD_TYPES_PersonProtocol
+    0,
+    "PersonProtocol",
+    (const struct _protocol_list_t *)&_OBJC_PROTOCOL_REFS_PersonProtocol,
+    (const struct method_list_t *)&_OBJC_PROTOCOL_INSTANCE_METHODS_PersonProtocol,
+    (const struct method_list_t *)&_OBJC_PROTOCOL_CLASS_METHODS_PersonProtocol,
+    0,
+    0,
+    0,
+    sizeof(_protocol_t),
+    0,
+    (const char **)&_OBJC_PROTOCOL_METHOD_TYPES_PersonProtocol
 };
 struct _protocol_t *_OBJC_LABEL_PROTOCOL_$_PersonProtocol = &_OBJC_PROTOCOL_PersonProtocol;
 ```
@@ -707,17 +713,17 @@ struct _protocol_t *_OBJC_LABEL_PROTOCOL_$_PersonProtocol = &_OBJC_PROTOCOL_Pers
 > 3.协议列表 类方法列表结构体
 > 4.Personprotocol 协议结构体赋值语句
 
-#### 2.2.5 Category中	『属性列表结构体』
+#### 2.2.5 Category中    『属性列表结构体』
 Person 分类中添加的属性列表
 ```
 static struct /*_prop_list_t*/ {
-	unsigned int entsize;  // sizeof(struct _prop_t)
-	unsigned int count_of_properties;
-	struct _prop_t prop_list[1];
+    unsigned int entsize;  // sizeof(struct _prop_t)
+    unsigned int count_of_properties;
+    struct _prop_t prop_list[1];
 } _OBJC_$_PROP_LIST_Person_$_Addition __attribute__ ((used, section ("__DATA,__objc_const"))) = {
-	sizeof(_prop_t),
-	1,
-	{{"personName","T@\"NSString\",C,N"}}
+    sizeof(_prop_t),
+    1,
+    {{"personName","T@\"NSString\",C,N"}}
 };
 ```
 >  从『属性』列表结构体 中可以看到
@@ -742,8 +748,8 @@ dyld的大致流程:
 
 > `dyldbootstrap::start` ---> `dyld::_main` ---> `initializeMainExecutable` ---> `runInitializers` ---> `recursiveInitialization`---> `doInitialization` ---> `doModInitFunctions` ---> `_objc_init`
 > 在`_objc_init`这一步中,`Runtime`向`dyly`绑定了回调,当`image`加载到内存后,`dyld`会通知`Runtime`进行处理,Runtime接手后调用`map_images`做解析和处理,调用`_read_images`方法把`Category`的对象方法,协议,属性添加到类上,把`Category`的类方法,协议添加到类的`metaclass`上,接下来`load_images`中调用`call_load_methods`方法,遍历所有加载进来的class,按继承层级和编译顺序一次调用class的load方法和Category的load方法
-> 	加载Category的调用栈如下:
-> 	`_objc_init` ---> `map_images` ---> `map_images_nolock` ---> `_read_images`（加载分类） ---> `load_images`。
+>   加载Category的调用栈如下:
+>   `_objc_init` ---> `map_images` ---> `map_images_nolock` ---> `_read_images`（加载分类） ---> `load_images`。
 
 ### 3.2 Category 加载过程
 
@@ -765,10 +771,10 @@ for (i = 0; i < count; i++) {
     // 然后，如果实现了这个类，重建类的方法列表
     bool classExists = NO;
     if (cat->instanceMethods ||  cat->protocols   ||  cat->instanceProperties) {
-    	addUnattachedCategoryForClass(cat, cls, hi);  
+        addUnattachedCategoryForClass(cat, cls, hi);  
         if (cls->isRealized()) {
-    	    remethodizeClass(cls);
-    	    classExists = YES;
+            remethodizeClass(cls);
+            classExists = YES;
         }
     }   
 }
@@ -776,10 +782,10 @@ for (i = 0; i < count; i++) {
 
 ```
 if (cat->classMethods  ||  cat->protocols   ||  (hasClassProperties && cat->_classProperties))  {
-	addUnattachedCategoryForClass(cat, cls->ISA(), hi);
-	if (cls->ISA()->isRealized()) {
-		remethodizeClass(cls->ISA());
-	}
+    addUnattachedCategoryForClass(cat, cls->ISA(), hi);
+    if (cls->ISA()->isRealized()) {
+        remethodizeClass(cls->ISA());
+    }
 }
 ```
 
@@ -793,24 +799,24 @@ if (cat->classMethods  ||  cat->protocols   ||  (hasClassProperties && cat->_cla
 ```
 static void addUnattachedCategoryForClass(category_t *cat, Class cls,  header_info *catHeader)
 {
-	runtimeLock.assertLocked();
+    runtimeLock.assertLocked();
 
-	// 取得存储所有未依附分类的列表：cats
-	NXMapTable *cats = unattachedCategories();
-	category_list *list;
-	// 从 cats 列表中找到 cls 对应的未依附分类的列表：list
-	list = (category_list *)NXMapGet(cats, cls);
-	if (!list) {
-		list = (category_list *)
-		calloc(sizeof(*list) + sizeof(list->list[0]), 1);
-	} else {
-		list = (category_list *)
-		realloc(list, sizeof(*list) + sizeof(list->list[0]) * (list->count + 1));
-	}
-	// 将新增的分类 cat 添加 list 中
-	list->list[list->count++] = (locstamped_category_t){cat, catHeader};
-	// 将新生成的 list 添加重新插入 cats 中，会覆盖旧的 list
-	NXMapInsert(cats, cls, list);
+    // 取得存储所有未依附分类的列表：cats
+    NXMapTable *cats = unattachedCategories();
+    category_list *list;
+    // 从 cats 列表中找到 cls 对应的未依附分类的列表：list
+    list = (category_list *)NXMapGet(cats, cls);
+    if (!list) {
+        list = (category_list *)
+        calloc(sizeof(*list) + sizeof(list->list[0]), 1);
+    } else {
+        list = (category_list *)
+        realloc(list, sizeof(*list) + sizeof(list->list[0]) * (list->count + 1));
+    }
+    // 将新增的分类 cat 添加 list 中
+    list->list[list->count++] = (locstamped_category_t){cat, catHeader};
+    // 将新生成的 list 添加重新插入 cats 中，会覆盖旧的 list
+    NXMapInsert(cats, cls, list);
 }
 ```
 addUnattachedCategoryForClass(cat,cls,hi);的执行过程可以参考注释代码.执行完这个方法之后,系统将当前分类cat放到该类clas对应的未衣服分类的列表list中.把类和分类做了一个关联映射.
@@ -818,19 +824,19 @@ addUnattachedCategoryForClass(cat,cls,hi);的执行过程可以参考注释代�
 #### 3.2.3 remethodizeClas(cls)
 ```
 static void remethodizeClass(Class cls) {
-	category_list *cats;
-	bool isMeta;
+    category_list *cats;
+    bool isMeta;
 
-	runtimeLock.assertLocked();
+    runtimeLock.assertLocked();
 
-	isMeta = cls->isMetaClass();
+    isMeta = cls->isMetaClass();
 
-	// 取得 cls 类的未依附分类的列表：cats
-	if ((cats = unattachedCategoriesForClass(cls, false/*not realizing*/))) {
-		// 将未依附分类的列表 cats 附加到 cls 类上
-		attachCategories(cls, cats, true /*flush caches*/);        
-		free(cats);
-	}
+    // 取得 cls 类的未依附分类的列表：cats
+    if ((cats = unattachedCategoriesForClass(cls, false/*not realizing*/))) {
+        // 将未依附分类的列表 cats 附加到 cls 类上
+        attachCategories(cls, cats, true /*flush caches*/);        
+        free(cats);
+    }
 }
 ```
 remethodizeClas(cls);方法主要就做一件事,调用addachCategories(cls,cats,true)方法将未依附分类的列表cats附加到cls类上
@@ -908,9 +914,9 @@ static void  attachCategories(Class cls, category_list *cats, bool flush_caches)
 从 attachCategories(cls, cats, true); 方法的注释中可以看出这个方法就是存储分类的方法、属性、协议的核心代码。
 
 1.Category的方法,属性,协议只是添加到原有类上,并没有将原有类的方法、属性、协议进行完全替换
-	举个例子：假设原来类有MethodA方法，分类也拥有MethodA方法，那么加载完分类后，类的方法列表中会拥有两个MethodA方法。
+    举个例子：假设原来类有MethodA方法，分类也拥有MethodA方法，那么加载完分类后，类的方法列表中会拥有两个MethodA方法。
 2.Category的方法、属性、协议会被添加到原有类的方法列表、属性列表、协议列表的最前面，而原有类的方法，属性、协议则被移动到列表后面
-	因为在运行时查找的方法的时候是顺着方法列表的顺序依次查找的，所以Category的方法会被搜索到，然后直接执行，而原有类的方法则不被执行，
+    因为在运行时查找的方法的时候是顺着方法列表的顺序依次查找的，所以Category的方法会被搜索到，然后直接执行，而原有类的方法则不被执行，
 
 ## 4. Category（分类）和Class（类）的+load方法
 Category中的方法、属性、协议附加到类上的操作，是在load方法执行之前进行的,也就是说,在+load方法之前,类中就已经加载了category的方法、属性、协议
@@ -932,19 +938,19 @@ Category（分类）和Class（类）的+load方法的调用顺序规则如下�
 - id objc_getAssociatedObject(id object, const void *key);
 - 3.移除对象所关联的属性
 - void objc_removeAssociatedObjects(id object);
-	
+    
 # 四、Runtime 获取类详细属性、方法
 
 ## 1.获取类详细属性、方法
-	Runtime中为我们提供了一系列API来获取Class(类)的成员变量(iVar)、属性（Property）、方法（Method）、协议（Protocol ）等。我们可以通过这些方法来遍历一个类中的成员变量列表、属性列表、方法列表、协议列表。从而查找我们需要的变量和方法。
+    Runtime中为我们提供了一系列API来获取Class(类)的成员变量(iVar)、属性（Property）、方法（Method）、协议（Protocol ）等。我们可以通过这些方法来遍历一个类中的成员变量列表、属性列表、方法列表、协议列表。从而查找我们需要的变量和方法。
 
 ## 2.获取属性，成员变量，方法，协议
 
 ## 3.应用场景
 ### 3.1 修改私有方法 （UITextFiled 占位文字颜色和字号）
-	1.通过获取类的属性和成员变量列表的方法打印UITextField所有属性和成员变量
-	2.找到私有的成员变量_placeHolderLabel:
-	3.利用KVC对_placeholderLabel:进行修改
+    1.通过获取类的属性和成员变量列表的方法打印UITextField所有属性和成员变量
+    2.找到私有的成员变量_placeHolderLabel:
+    3.利用KVC对_placeholderLabel:进行修改
 
 ### 3.2 实现字典转模型
-			
+            
