@@ -80,6 +80,8 @@
     
     CFRelease(observer);
     
+    // RunLoop
+    
 //    CFRunLoopPerformBlock(<#CFRunLoopRef rl#>, <#CFTypeRef mode#>, <#^(void)block#>)
 }
 
