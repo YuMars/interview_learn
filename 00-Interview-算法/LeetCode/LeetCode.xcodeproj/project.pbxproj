@@ -17,6 +17,8 @@
 		EE1CC97228AE36B000C578D1 /* 0104_MaximumDepthofBinaryTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1CC97128AE36B000C578D1 /* 0104_MaximumDepthofBinaryTree.swift */; };
 		EE1CC97428AE38B300C578D1 /* 0111_MinimumDepthOfBinaryTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1CC97328AE38B300C578D1 /* 0111_MinimumDepthOfBinaryTree.swift */; };
 		EE1CC97628AF5B7C00C578D1 /* 0226_InvertBinaryTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1CC97528AF5B7C00C578D1 /* 0226_InvertBinaryTree.swift */; };
+		EE29DEDA28F556CA00DAC7C6 /* 0077_Combinations.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DED928F556CA00DAC7C6 /* 0077_Combinations.swift */; };
+		EE29DEDC28F5629C00DAC7C6 /* 0216_CombinationSum3.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DEDB28F5629C00DAC7C6 /* 0216_CombinationSum3.swift */; };
 		EE2D384428ADD8CF00BDEA18 /* 0429_N-aryTreeLevelOrderTraversal.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2D384328ADD8CF00BDEA18 /* 0429_N-aryTreeLevelOrderTraversal.swift */; };
 		EE2D384628ADEB9100BDEA18 /* 0515_FindLargestValueInEachTreeRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2D384528ADEB9100BDEA18 /* 0515_FindLargestValueInEachTreeRow.swift */; };
 		EE2D384828ADEF1A00BDEA18 /* 0116_PopulatingNextRightPointersInEachNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2D384728ADEF1A00BDEA18 /* 0116_PopulatingNextRightPointersInEachNode.swift */; };
@@ -89,6 +91,8 @@
 		EE1CC97128AE36B000C578D1 /* 0104_MaximumDepthofBinaryTree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0104_MaximumDepthofBinaryTree.swift; sourceTree = "<group>"; };
 		EE1CC97328AE38B300C578D1 /* 0111_MinimumDepthOfBinaryTree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0111_MinimumDepthOfBinaryTree.swift; sourceTree = "<group>"; };
 		EE1CC97528AF5B7C00C578D1 /* 0226_InvertBinaryTree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0226_InvertBinaryTree.swift; sourceTree = "<group>"; };
+		EE29DED928F556CA00DAC7C6 /* 0077_Combinations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0077_Combinations.swift; sourceTree = "<group>"; };
+		EE29DEDB28F5629C00DAC7C6 /* 0216_CombinationSum3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0216_CombinationSum3.swift; sourceTree = "<group>"; };
 		EE2D384328ADD8CF00BDEA18 /* 0429_N-aryTreeLevelOrderTraversal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "0429_N-aryTreeLevelOrderTraversal.swift"; sourceTree = "<group>"; };
 		EE2D384528ADEB9100BDEA18 /* 0515_FindLargestValueInEachTreeRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0515_FindLargestValueInEachTreeRow.swift; sourceTree = "<group>"; };
 		EE2D384728ADEF1A00BDEA18 /* 0116_PopulatingNextRightPointersInEachNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0116_PopulatingNextRightPointersInEachNode.swift; sourceTree = "<group>"; };
@@ -226,6 +230,8 @@
 				EE1CC97328AE38B300C578D1 /* 0111_MinimumDepthOfBinaryTree.swift */,
 				EE1CC97528AF5B7C00C578D1 /* 0226_InvertBinaryTree.swift */,
 				EE7250A228B8954400C9AFF8 /* 0101_SymmetricTree.swift */,
+				EE29DED928F556CA00DAC7C6 /* 0077_Combinations.swift */,
+				EE29DEDB28F5629C00DAC7C6 /* 0216_CombinationSum3.swift */,
 			);
 			path = LeetCode;
 			sourceTree = "<group>";
@@ -325,6 +331,7 @@
 				EEA0B2D528704421007FF6F9 /* ListNode.swift in Sources */,
 				EE5D5E0A288688C3007B12F3 /* 0202_HappyNum.swift in Sources */,
 				EEEC3DE327F1881200B69E57 /* 0704_BinarySearch.swift in Sources */,
+				EE29DEDA28F556CA00DAC7C6 /* 0077_Combinations.swift in Sources */,
 				EEB76E1027F0B9A900D8EA7B /* 0001_TwoSum.swift in Sources */,
 				EE056D4128AA16B10039402E /* 0145_BinaryTreePostorderTraversal.swift in Sources */,
 				EEED898A287EAF4800D5CEDA /* 0242_ValidAnagram.swift in Sources */,
@@ -332,6 +339,7 @@
 				EE1CC97428AE38B300C578D1 /* 0111_MinimumDepthOfBinaryTree.swift in Sources */,
 				EE5D5E0E2887A912007B12F3 /* 0383_RansomNote.swift in Sources */,
 				EEFC4E45286B3CCB002720EA /* 0209_MinimumSizeSubarraySum.swift in Sources */,
+				EE29DEDC28F5629C00DAC7C6 /* 0216_CombinationSum3.swift in Sources */,
 				EE1CC97628AF5B7C00C578D1 /* 0226_InvertBinaryTree.swift in Sources */,
 				EE1CC97228AE36B000C578D1 /* 0104_MaximumDepthofBinaryTree.swift in Sources */,
 				EEA9DAC02891873600D17FD1 /* 0020_ValidParentheses.swift in Sources */,
