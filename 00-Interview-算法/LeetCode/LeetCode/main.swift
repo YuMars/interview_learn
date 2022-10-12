@@ -102,3 +102,5 @@ print("SlidingWindowMaximum ",SlidingWindowMaximum.maxSlidingWindow([1,3,-1,-3,5
 print("TopKFrequentElement ",TopKFrequentElement.topKFrequent([1,1,1,2,2,3], 2))
 
 print("CombinationSum3 ",CombinationSum3.combinationSum3(9, 45))
+
+print("CombinationSum3 ",LetterCombinationsOfAPhoneNumber.letterCombinations("123"))
