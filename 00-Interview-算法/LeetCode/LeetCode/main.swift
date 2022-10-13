@@ -103,4 +103,7 @@ print("TopKFrequentElement ",TopKFrequentElement.topKFrequent([1,1,1,2,2,3], 2))
 
 print("CombinationSum3 ",CombinationSum3.combinationSum3(9, 45))
 
-print("CombinationSum3 ",LetterCombinationsOfAPhoneNumber.letterCombinations("123"))
+print("LetterCombinationsOfAPhoneNumber ",LetterCombinationsOfAPhoneNumber.letterCombinations("123"))
+
+print("CombinationSum ",CombinationSum.combinationSum([2,3,6,7], 7))
+print("CombinationSum2 ",CombinationSum2.combinationSum2([10,1,2,7,6,1,5], 8))
