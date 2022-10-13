@@ -22,6 +22,7 @@
 		EE29DEE928F6B1A900DAC7C6 /* 0017_LetterCombinationsOfAPhoneNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DEE828F6B1A900DAC7C6 /* 0017_LetterCombinationsOfAPhoneNumber.swift */; };
 		EE29DEEB28F7AB8100DAC7C6 /* 0039_CombinationSum.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DEEA28F7AB8100DAC7C6 /* 0039_CombinationSum.swift */; };
 		EE29DEED28F7DF5200DAC7C6 /* 0040_CombinationSum2.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DEEC28F7DF5200DAC7C6 /* 0040_CombinationSum2.swift */; };
+		EE29DEEF28F7F03600DAC7C6 /* 0125_ValidPalindrome.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE29DEEE28F7F03600DAC7C6 /* 0125_ValidPalindrome.swift */; };
 		EE2D384428ADD8CF00BDEA18 /* 0429_N-aryTreeLevelOrderTraversal.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2D384328ADD8CF00BDEA18 /* 0429_N-aryTreeLevelOrderTraversal.swift */; };
 		EE2D384628ADEB9100BDEA18 /* 0515_FindLargestValueInEachTreeRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2D384528ADEB9100BDEA18 /* 0515_FindLargestValueInEachTreeRow.swift */; };
 		EE2D384828ADEF1A00BDEA18 /* 0116_PopulatingNextRightPointersInEachNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2D384728ADEF1A00BDEA18 /* 0116_PopulatingNextRightPointersInEachNode.swift */; };
@@ -99,6 +100,7 @@
 		EE29DEE828F6B1A900DAC7C6 /* 0017_LetterCombinationsOfAPhoneNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0017_LetterCombinationsOfAPhoneNumber.swift; sourceTree = "<group>"; };
 		EE29DEEA28F7AB8100DAC7C6 /* 0039_CombinationSum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0039_CombinationSum.swift; sourceTree = "<group>"; };
 		EE29DEEC28F7DF5200DAC7C6 /* 0040_CombinationSum2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0040_CombinationSum2.swift; sourceTree = "<group>"; };
+		EE29DEEE28F7F03600DAC7C6 /* 0125_ValidPalindrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0125_ValidPalindrome.swift; sourceTree = "<group>"; };
 		EE2D384328ADD8CF00BDEA18 /* 0429_N-aryTreeLevelOrderTraversal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "0429_N-aryTreeLevelOrderTraversal.swift"; sourceTree = "<group>"; };
 		EE2D384528ADEB9100BDEA18 /* 0515_FindLargestValueInEachTreeRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0515_FindLargestValueInEachTreeRow.swift; sourceTree = "<group>"; };
 		EE2D384728ADEF1A00BDEA18 /* 0116_PopulatingNextRightPointersInEachNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0116_PopulatingNextRightPointersInEachNode.swift; sourceTree = "<group>"; };
@@ -241,6 +243,7 @@
 				EE29DEE828F6B1A900DAC7C6 /* 0017_LetterCombinationsOfAPhoneNumber.swift */,
 				EE29DEEA28F7AB8100DAC7C6 /* 0039_CombinationSum.swift */,
 				EE29DEEC28F7DF5200DAC7C6 /* 0040_CombinationSum2.swift */,
+				EE29DEEE28F7F03600DAC7C6 /* 0125_ValidPalindrome.swift */,
 			);
 			path = LeetCode;
 			sourceTree = "<group>";
@@ -335,6 +338,7 @@
 				EE29DEEB28F7AB8100DAC7C6 /* 0039_CombinationSum.swift in Sources */,
 				EE5D5E1228892373007B12F3 /* 0018_4Sum.swift in Sources */,
 				EE056D3D28A9F84B0039402E /* 0144_BinaryTreePreorderTraversal.swift in Sources */,
+				EE29DEEF28F7F03600DAC7C6 /* 0125_ValidPalindrome.swift in Sources */,
 				EEC450AC28696D6600904ADA /* 0977_SquaresOfASortArray.swift in Sources */,
 				EE056D4328AA1A950039402E /* 0094_BinaryTreeInorderTraversal.swift in Sources */,
 				EEE49CC0288FBFFA0035C8B0 /* 0028_ImplementStrStr.swift in Sources */,
