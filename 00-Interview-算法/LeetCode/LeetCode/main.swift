@@ -108,3 +108,5 @@ print("LetterCombinationsOfAPhoneNumber ",LetterCombinationsOfAPhoneNumber.lette
 print("CombinationSum ",CombinationSum.combinationSum([2,3,6,7], 7))
 print("CombinationSum2 ",CombinationSum2.combinationSum2([10,1,2,7,6,1,5], 8))
 print("ValidPalindrome ",ValidPalindrome.isPalindrome("race a car"))
+print("PalindromePartitioning ",PalindromePartitioning.partition("abccba"))
+print("RestoreIPAddresses ",RestoreIPAddresses.restoreIpAddresses("101023"))

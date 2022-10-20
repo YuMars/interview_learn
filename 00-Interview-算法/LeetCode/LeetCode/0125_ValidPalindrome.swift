@@ -18,7 +18,8 @@ public class ValidPalindrome {
     public class func isPalindrome(_ s: String) -> Bool {
         
         let s = s.lowercased()
-        if s.count == 0 || s.count == 1 { return true}
+        if s.count == 0 { return false }
+        if s.count == 1 { return true }
         let arr = Array(s)
         var left: Int = 0
         var right = s.count - 1

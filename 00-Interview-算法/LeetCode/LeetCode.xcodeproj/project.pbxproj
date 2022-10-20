@@ -69,6 +69,8 @@
 		EEED898A287EAF4800D5CEDA /* 0242_ValidAnagram.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEED8989287EAF4800D5CEDA /* 0242_ValidAnagram.swift */; };
 		EEEEF1AD27F3563E0030229F /* 0035_SearchInsertPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEEF1AC27F3563E0030229F /* 0035_SearchInsertPosition.swift */; };
 		EEFC4E45286B3CCB002720EA /* 0209_MinimumSizeSubarraySum.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFC4E44286B3CCB002720EA /* 0209_MinimumSizeSubarraySum.swift */; };
+		EEFFAF1D28F9369A0091975A /* 0131_PalindromePartitioning.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFFAF1C28F9369A0091975A /* 0131_PalindromePartitioning.swift */; };
+		EEFFAF2328FE87140091975A /* 0093_RestoreIPAddresses.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFFAF2228FE87140091975A /* 0093_RestoreIPAddresses.swift */; };
 		EEFFC2F22871B73300764E45 /* 0707_DesignLinkedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFFC2F12871B73300764E45 /* 0707_DesignLinkedList.swift */; };
 /* End PBXBuildFile section */
 
@@ -148,6 +150,8 @@
 		EEED8989287EAF4800D5CEDA /* 0242_ValidAnagram.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0242_ValidAnagram.swift; sourceTree = "<group>"; };
 		EEEEF1AC27F3563E0030229F /* 0035_SearchInsertPosition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0035_SearchInsertPosition.swift; sourceTree = "<group>"; };
 		EEFC4E44286B3CCB002720EA /* 0209_MinimumSizeSubarraySum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0209_MinimumSizeSubarraySum.swift; sourceTree = "<group>"; };
+		EEFFAF1C28F9369A0091975A /* 0131_PalindromePartitioning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0131_PalindromePartitioning.swift; sourceTree = "<group>"; };
+		EEFFAF2228FE87140091975A /* 0093_RestoreIPAddresses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0093_RestoreIPAddresses.swift; sourceTree = "<group>"; };
 		EEFFC2F12871B73300764E45 /* 0707_DesignLinkedList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0707_DesignLinkedList.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -244,6 +248,8 @@
 				EE29DEEA28F7AB8100DAC7C6 /* 0039_CombinationSum.swift */,
 				EE29DEEC28F7DF5200DAC7C6 /* 0040_CombinationSum2.swift */,
 				EE29DEEE28F7F03600DAC7C6 /* 0125_ValidPalindrome.swift */,
+				EEFFAF1C28F9369A0091975A /* 0131_PalindromePartitioning.swift */,
+				EEFFAF2228FE87140091975A /* 0093_RestoreIPAddresses.swift */,
 			);
 			path = LeetCode;
 			sourceTree = "<group>";
@@ -335,6 +341,7 @@
 				EE85F153288531F200D217CB /* 0349_IntersectionofTwoArrays.swift in Sources */,
 				EE5E23D028ACE23100AA53DB /* 0637_AverageofLevelsinBinaryTree.swift in Sources */,
 				EEC66F97288A537D00755A69 /* R_005_ReplaceSpace.swift in Sources */,
+				EEFFAF2328FE87140091975A /* 0093_RestoreIPAddresses.swift in Sources */,
 				EE29DEEB28F7AB8100DAC7C6 /* 0039_CombinationSum.swift in Sources */,
 				EE5D5E1228892373007B12F3 /* 0018_4Sum.swift in Sources */,
 				EE056D3D28A9F84B0039402E /* 0144_BinaryTreePreorderTraversal.swift in Sources */,
@@ -347,6 +354,7 @@
 				EEA0B2D528704421007FF6F9 /* ListNode.swift in Sources */,
 				EE5D5E0A288688C3007B12F3 /* 0202_HappyNum.swift in Sources */,
 				EEEC3DE327F1881200B69E57 /* 0704_BinarySearch.swift in Sources */,
+				EEFFAF1D28F9369A0091975A /* 0131_PalindromePartitioning.swift in Sources */,
 				EE29DEDA28F556CA00DAC7C6 /* 0077_Combinations.swift in Sources */,
 				EEB76E1027F0B9A900D8EA7B /* 0001_TwoSum.swift in Sources */,
 				EE056D4128AA16B10039402E /* 0145_BinaryTreePostorderTraversal.swift in Sources */,
