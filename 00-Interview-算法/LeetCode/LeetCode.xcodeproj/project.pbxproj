@@ -47,6 +47,7 @@
 		EEA0B2D1286DE744007FF6F9 /* 0904_FruitIntoBaskets.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0B2D0286DE744007FF6F9 /* 0904_FruitIntoBaskets.swift */; };
 		EEA0B2D3286E9E89007FF6F9 /* 0059_SpiralMatrix2.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0B2D2286E9E89007FF6F9 /* 0059_SpiralMatrix2.swift */; };
 		EEA0B2D528704421007FF6F9 /* ListNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0B2D428704421007FF6F9 /* ListNode.swift */; };
+		EEA58E2429012A0C004B2896 /* 0078_Subsets.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA58E2329012A0C004B2896 /* 0078_Subsets.swift */; };
 		EEA9DABC2891069C00D17FD1 /* 0232_ImplementQueueUsingStacks.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA9DABB2891069C00D17FD1 /* 0232_ImplementQueueUsingStacks.swift */; };
 		EEA9DABE289109A500D17FD1 /* 0225_ImplementStackUsingQueues.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA9DABD289109A500D17FD1 /* 0225_ImplementStackUsingQueues.swift */; };
 		EEA9DAC02891873600D17FD1 /* 0020_ValidParentheses.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA9DABF2891873600D17FD1 /* 0020_ValidParentheses.swift */; };
@@ -127,6 +128,7 @@
 		EEA0B2D0286DE744007FF6F9 /* 0904_FruitIntoBaskets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0904_FruitIntoBaskets.swift; sourceTree = "<group>"; };
 		EEA0B2D2286E9E89007FF6F9 /* 0059_SpiralMatrix2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0059_SpiralMatrix2.swift; sourceTree = "<group>"; };
 		EEA0B2D428704421007FF6F9 /* ListNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListNode.swift; sourceTree = "<group>"; };
+		EEA58E2329012A0C004B2896 /* 0078_Subsets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0078_Subsets.swift; sourceTree = "<group>"; };
 		EEA9DABB2891069C00D17FD1 /* 0232_ImplementQueueUsingStacks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0232_ImplementQueueUsingStacks.swift; sourceTree = "<group>"; };
 		EEA9DABD289109A500D17FD1 /* 0225_ImplementStackUsingQueues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0225_ImplementStackUsingQueues.swift; sourceTree = "<group>"; };
 		EEA9DABF2891873600D17FD1 /* 0020_ValidParentheses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0020_ValidParentheses.swift; sourceTree = "<group>"; };
@@ -250,6 +252,7 @@
 				EE29DEEE28F7F03600DAC7C6 /* 0125_ValidPalindrome.swift */,
 				EEFFAF1C28F9369A0091975A /* 0131_PalindromePartitioning.swift */,
 				EEFFAF2228FE87140091975A /* 0093_RestoreIPAddresses.swift */,
+				EEA58E2329012A0C004B2896 /* 0078_Subsets.swift */,
 			);
 			path = LeetCode;
 			sourceTree = "<group>";
@@ -346,6 +349,7 @@
 				EE5D5E1228892373007B12F3 /* 0018_4Sum.swift in Sources */,
 				EE056D3D28A9F84B0039402E /* 0144_BinaryTreePreorderTraversal.swift in Sources */,
 				EE29DEEF28F7F03600DAC7C6 /* 0125_ValidPalindrome.swift in Sources */,
+				EEA58E2429012A0C004B2896 /* 0078_Subsets.swift in Sources */,
 				EEC450AC28696D6600904ADA /* 0977_SquaresOfASortArray.swift in Sources */,
 				EE056D4328AA1A950039402E /* 0094_BinaryTreeInorderTraversal.swift in Sources */,
 				EEE49CC0288FBFFA0035C8B0 /* 0028_ImplementStrStr.swift in Sources */,
