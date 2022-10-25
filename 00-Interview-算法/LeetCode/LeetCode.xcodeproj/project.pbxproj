@@ -52,6 +52,7 @@
 		EEA58E2829027B4E004B2896 /* 0491_IncreasingSubsequences.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA58E2729027B4E004B2896 /* 0491_IncreasingSubsequences.swift */; };
 		EEA58E2A29065F5C004B2896 /* 0046_Permutations.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA58E2929065F5C004B2896 /* 0046_Permutations.swift */; };
 		EEA58E2C29066C64004B2896 /* 0047_Permutations3.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA58E2B29066C64004B2896 /* 0047_Permutations3.swift */; };
+		EEA58E2E2906941F004B2896 /* 0332_ReconstructItinerary.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA58E2D2906941F004B2896 /* 0332_ReconstructItinerary.swift */; };
 		EEA9DABC2891069C00D17FD1 /* 0232_ImplementQueueUsingStacks.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA9DABB2891069C00D17FD1 /* 0232_ImplementQueueUsingStacks.swift */; };
 		EEA9DABE289109A500D17FD1 /* 0225_ImplementStackUsingQueues.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA9DABD289109A500D17FD1 /* 0225_ImplementStackUsingQueues.swift */; };
 		EEA9DAC02891873600D17FD1 /* 0020_ValidParentheses.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA9DABF2891873600D17FD1 /* 0020_ValidParentheses.swift */; };
@@ -137,6 +138,7 @@
 		EEA58E2729027B4E004B2896 /* 0491_IncreasingSubsequences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0491_IncreasingSubsequences.swift; sourceTree = "<group>"; };
 		EEA58E2929065F5C004B2896 /* 0046_Permutations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0046_Permutations.swift; sourceTree = "<group>"; };
 		EEA58E2B29066C64004B2896 /* 0047_Permutations3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0047_Permutations3.swift; sourceTree = "<group>"; };
+		EEA58E2D2906941F004B2896 /* 0332_ReconstructItinerary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0332_ReconstructItinerary.swift; sourceTree = "<group>"; };
 		EEA9DABB2891069C00D17FD1 /* 0232_ImplementQueueUsingStacks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0232_ImplementQueueUsingStacks.swift; sourceTree = "<group>"; };
 		EEA9DABD289109A500D17FD1 /* 0225_ImplementStackUsingQueues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0225_ImplementStackUsingQueues.swift; sourceTree = "<group>"; };
 		EEA9DABF2891873600D17FD1 /* 0020_ValidParentheses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0020_ValidParentheses.swift; sourceTree = "<group>"; };
@@ -265,6 +267,7 @@
 				EEA58E2729027B4E004B2896 /* 0491_IncreasingSubsequences.swift */,
 				EEA58E2929065F5C004B2896 /* 0046_Permutations.swift */,
 				EEA58E2B29066C64004B2896 /* 0047_Permutations3.swift */,
+				EEA58E2D2906941F004B2896 /* 0332_ReconstructItinerary.swift */,
 			);
 			path = LeetCode;
 			sourceTree = "<group>";
@@ -337,6 +340,7 @@
 				EE5D5E1428893C54007B12F3 /* 0344_ReverseString.swift in Sources */,
 				EEA9DABE289109A500D17FD1 /* 0225_ImplementStackUsingQueues.swift in Sources */,
 				EE5562B3283F58BF00DB9C1E /* 0027_RemoveElement.swift in Sources */,
+				EEA58E2E2906941F004B2896 /* 0332_ReconstructItinerary.swift in Sources */,
 				EE66D32028A3AFAA00E36118 /* 0347_TopKFrequentElements.swift in Sources */,
 				EE5E23D228ACECA000AA53DB /* Node.swift in Sources */,
 				EEB76E0927F0B95A00D8EA7B /* main.swift in Sources */,
