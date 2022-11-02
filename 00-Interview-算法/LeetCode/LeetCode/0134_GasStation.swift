@@ -33,7 +33,44 @@ import Foundation
  */
 
 public class GasStation {
+    
     public class func canCompleteCircuit(_ gas:[Int], _ cost: [Int]) -> Int {
+        guard gas.count == cost.count, gas.count > 0, cost.count > 0 else { return -1 }
+        
+        var curSum = 0;
+        var gasSum = 0;
+        var start = 0;
+        for  i in 0 ..< gas.count {
+            curSum += gas[i] - cost[i];
+            gasSum += gas[i] - cost[i];
+            if (curSum < 0) {   // 当前累加rest[i]和 curSum一旦小于0
+                start = i + 1;  // 起始位置更新为i+1
+                curSum = 0;     // curSum从0开始
+            }
+        }
+        if (gasSum < 0) { return -1 }; // 总汽油少于消耗量说明怎么走都不可能跑一圈了
+        return start;
+    
+    }
+    
+    public class func canCompleteCircuit2(_ gas:[Int], _ cost: [Int]) -> Int {
+        guard gas.count == cost.count, gas.count > 0, cost.count > 0 else { return -1 }
+        
+        for i in 0 ..< gas.count {
+            var gasSurplus = gas[i] - cost[i]
+            var index = (i + 1) % cost.count
+            while gasSurplus > 0, index != i {
+                gasSurplus += gas[index] - cost[index]
+                index = (index + 1) % cost.count
+            }
+            if gasSurplus >= 0, index == i {
+                return i
+            }
+        }
+        return -1
+    }
+    
+    public class func canCompleteCircuit3(_ gas:[Int], _ cost: [Int]) -> Int {
         guard gas.count == cost.count, gas.count > 0, cost.count > 0 else { return -1 }
         
         for i in 0 ..< gas.count {

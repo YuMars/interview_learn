@@ -134,5 +134,20 @@ print("JumpGame ",JumpGame.canJump([1,0,0,2,3]))
 //print("JumpGame2 ",JumpGame2.jump([1,1,1,1]))
 print("JumpGame2 ",JumpGame2.jump([2,3,1,1,4]))
 print("MaximizeSumOfArrayAfterKNegations ",MaximizeSumOfArrayAfterKNegations.largestSumAfterKNegations([-4,-6,9,-2,2], 2))
-print("GasStation ",GasStation.canCompleteCircuit([2,3,4], [3,4,3]))
-//print("GasStation ",GasStation.canCompleteCircuit([1,2,3,4,5], [3,4,5,1,2]))
+//print("GasStation ",GasStation.canCompleteCircuit([2,3,4], [3,4,3]))
+print("GasStation ",GasStation.canCompleteCircuit([1,1,1,100,5,2], [3,5,5,1,2,3]))
+
+//let count: Int = 10000000
+//var index1:Int = 0
+//print("start for loop",Date().timeIntervalSince1970)
+//for _ in 0 ..< count {
+//    //index1 += 1
+//}
+//print("end for loop", Date().timeIntervalSince1970)
+//
+//var index2: Int = 0
+//print("start while loop", Date().timeIntervalSince1970)
+//while index2 < count {
+//    index2 += 1
+//}
+//print("start while loop", Date().timeIntervalSince1970)
