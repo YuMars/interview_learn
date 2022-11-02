@@ -114,3 +114,25 @@ print("SubSets ",SubSets.subsets([1,2,3]))
 print("SubSets2 ",Subsets2.subsetsWithDup([1,2,2]))
 print("IncreasingSubsequences ",IncreasingSubsequences.findSubsequences2([4,7,6,7]))
 print("RecontructItinerary ",RecontructItinerary.findItinerary([["AXA","EZE"],["EZE","AUA"],["ADL","JFK"],["ADL","TIA"],["AUA","AXA"],["EZE","TIA"],["EZE","TIA"],["AXA","EZE"],["EZE","ADL"],["ANU","EZE"],["TIA","EZE"],["JFK","ADL"],["AUA","JFK"],["JFK","EZE"],["EZE","ANU"],["ADL","AUA"],["ANU","AXA"],["AXA","ADL"],["AUA","JFK"],["EZE","ADL"],["ANU","TIA"],["AUA","JFK"],["TIA","JFK"],["EZE","AUA"],["AXA","EZE"],["AUA","ANU"],["ADL","AXA"],["EZE","ADL"],["AUA","ANU"],["AXA","EZE"],["TIA","AUA"],["AXA","EZE"],["AUA","SYD"],["ADL","JFK"],["EZE","AUA"],["ADL","ANU"],["AUA","TIA"],["ADL","EZE"],["TIA","JFK"],["AXA","ANU"],["JFK","AXA"],["JFK","ADL"],["ADL","EZE"],["AXA","TIA"],["JFK","AUA"],["ADL","EZE"],["JFK","ADL"],["ADL","AXA"],["TIA","AUA"],["AXA","JFK"],["ADL","AUA"],["TIA","JFK"],["JFK","ADL"],["JFK","ADL"],["ANU","AXA"],["TIA","AXA"],["EZE","JFK"],["EZE","AXA"],["ADL","TIA"],["JFK","AUA"],["TIA","EZE"],["EZE","ADL"],["JFK","ANU"],["TIA","AUA"],["EZE","ADL"],["ADL","JFK"],["ANU","AXA"],["AUA","AXA"],["ANU","EZE"],["ADL","AXA"],["ANU","AXA"],["TIA","ADL"],["JFK","ADL"],["JFK","TIA"],["AUA","ADL"],["AUA","TIA"],["TIA","JFK"],["EZE","JFK"],["AUA","ADL"],["ADL","AUA"],["EZE","ANU"],["ADL","ANU"],["AUA","AXA"],["AXA","TIA"],["AXA","TIA"],["ADL","AXA"],["EZE","AXA"],["AXA","JFK"],["JFK","AUA"],["ANU","ADL"],["AXA","TIA"],["ANU","AUA"],["JFK","EZE"],["AXA","ADL"],["TIA","EZE"],["JFK","AXA"],["AXA","ADL"],["EZE","AUA"],["AXA","ANU"],["ADL","EZE"],["AUA","EZE"]]))
+
+var arr: [[Character]]! = [
+    ["5","3",".",".","7",".",".",".","."],
+    ["6",".",".","1","9","5",".",".","."],
+    [".","9","8",".",".",".",".","6","."],
+    ["8",".",".",".","6",".",".",".","3"],
+    ["4",".",".","8",".","3",".",".","1"],
+    ["7",".",".",".","2",".",".",".","6"],
+    [".","6",".",".",".",".","2","8","."],
+    [".",".",".","4","1","9",".",".","5"],
+    [".",".",".",".","8",".",".","7","9"]]
+print("SudokuSolver ",SudokuSolver.solveSudoku2(&arr))
+print("AssignCookies ",AssignCookies.findContentChildren([1,2,3], [3]))
+print("WiggleSubsequence ",WiggleSubsequence.wiggleMaxLength2([2,2,2,]))
+
+print("MaximumSubarray ",MaximumSubarray.maxSubArray([-2,1,-3,4,-1,2,1,-5,4]))
+print("JumpGame ",JumpGame.canJump([1,0,0,2,3]))
+//print("JumpGame2 ",JumpGame2.jump([1,1,1,1]))
+print("JumpGame2 ",JumpGame2.jump([2,3,1,1,4]))
+print("MaximizeSumOfArrayAfterKNegations ",MaximizeSumOfArrayAfterKNegations.largestSumAfterKNegations([-4,-6,9,-2,2], 2))
+print("GasStation ",GasStation.canCompleteCircuit([2,3,4], [3,4,3]))
+//print("GasStation ",GasStation.canCompleteCircuit([1,2,3,4,5], [3,4,5,1,2]))
