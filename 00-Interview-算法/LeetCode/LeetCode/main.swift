@@ -136,12 +136,23 @@ print("JumpGame2 ",JumpGame2.jump([2,3,1,1,4]))
 print("MaximizeSumOfArrayAfterKNegations ",MaximizeSumOfArrayAfterKNegations.largestSumAfterKNegations([-4,-6,9,-2,2], 2))
 //print("GasStation ",GasStation.canCompleteCircuit([2,3,4], [3,4,3]))
 print("GasStation ",GasStation.canCompleteCircuit([1,1,1,100,5,2], [3,5,5,1,2,3]))
+//print("Candy ",Candy.candy([1,0,2,4,6,5,5,2,5]))
+//print("Candy ",Candy.candy([29,51,87,99,99,87,72,12]))
+//print("Candy ",Candy.candy([1,3,4,5,2]))
+print("Candy ",Candy.candy([1,2,3,1,0]))
 
-//let count: Int = 10000000
+//print("Candy ",Candy.candy([1,2,0,3,0,3,0,2,1,]))
+print("LemonadeChange ",LemonadeChange.lemonadeChange([5,5,10,10,20]))
+print("QueueReconstructionbyHeight ",QueueReconstructionbyHeight.reconstructQueue([[7,0],[4,4],[7,1],[5,0],[6,1],[5,2]]))
+
+print("MinimumNumberofArrowstoBurstBalloons ",MinimumNumberofArrowstoBurstBalloons.findMinArrowShots([[1,2],[2,3],[3,4],[4,5]]))
+
+//let count: Int = 10000
 //var index1:Int = 0
 //print("start for loop",Date().timeIntervalSince1970)
 //for _ in 0 ..< count {
-//    //index1 += 1
+//    index1 += 1
+//    print(index1)
 //}
 //print("end for loop", Date().timeIntervalSince1970)
 //
@@ -149,5 +160,6 @@ print("GasStation ",GasStation.canCompleteCircuit([1,1,1,100,5,2], [3,5,5,1,2,3]
 //print("start while loop", Date().timeIntervalSince1970)
 //while index2 < count {
 //    index2 += 1
+//    print(index2)
 //}
 //print("start while loop", Date().timeIntervalSince1970)
