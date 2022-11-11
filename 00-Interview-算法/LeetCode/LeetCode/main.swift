@@ -146,6 +146,9 @@ print("LemonadeChange ",LemonadeChange.lemonadeChange([5,5,10,10,20]))
 print("QueueReconstructionbyHeight ",QueueReconstructionbyHeight.reconstructQueue([[7,0],[4,4],[7,1],[5,0],[6,1],[5,2]]))
 
 print("MinimumNumberofArrowstoBurstBalloons ",MinimumNumberofArrowstoBurstBalloons.findMinArrowShots([[1,2],[2,3],[3,4],[4,5]]))
+print("PartitionLabels ",PartitionLabels.partitionLabels("ababcbacadefegdehijhklij"))
+print("MergeIntervals ",MergeIntervals.merge([[4,5],[1,4],[0,1]]))
+print("MonotoneIncreasingDigits ",MonotoneIncreasingDigits.monotoneIncreasingDigits(17743))
 
 //let count: Int = 10000
 //var index1:Int = 0
