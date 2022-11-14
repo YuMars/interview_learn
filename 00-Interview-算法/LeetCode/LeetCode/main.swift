@@ -150,19 +150,6 @@ print("PartitionLabels ",PartitionLabels.partitionLabels("ababcbacadefegdehijhkl
 print("MergeIntervals ",MergeIntervals.merge([[4,5],[1,4],[0,1]]))
 print("MonotoneIncreasingDigits ",MonotoneIncreasingDigits.monotoneIncreasingDigits(17743))
 
-//let count: Int = 10000
-//var index1:Int = 0
-//print("start for loop",Date().timeIntervalSince1970)
-//for _ in 0 ..< count {
-//    index1 += 1
-//    print(index1)
-//}
-//print("end for loop", Date().timeIntervalSince1970)
-//
-//var index2: Int = 0
-//print("start while loop", Date().timeIntervalSince1970)
-//while index2 < count {
-//    index2 += 1
-//    print(index2)
-//}
-//print("start while loop", Date().timeIntervalSince1970)
+print("BestTimeToBuyAndSellStockWithTransactionFee ",BestTimeToBuyAndSellStockWithTransactionFee.maxProfit([1,3,7,1,5,10,3], 3))
+print("BestTimeToBuyAndSellStock ",BestTimeToBuyAndSellStock.maxProfit([7,1,5,3,6,4]))
+print("CustomSortString ",CustomSortString.customSortString("cbafg", "abcd"))

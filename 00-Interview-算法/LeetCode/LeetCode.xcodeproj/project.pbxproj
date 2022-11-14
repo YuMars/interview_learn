@@ -35,6 +35,8 @@
 		EE4AC24A2873184600301517 /* 0024_SwapNodesInPairs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4AC2492873184600301517 /* 0024_SwapNodesInPairs.swift */; };
 		EE5562B3283F58BF00DB9C1E /* 0027_RemoveElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5562B2283F58BF00DB9C1E /* 0027_RemoveElement.swift */; };
 		EE567832291E8CDC00618CD8 /* 0714_BestTimeToBuyAndSellStockWithTransactionFee.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE567831291E8CDC00618CD8 /* 0714_BestTimeToBuyAndSellStockWithTransactionFee.swift */; };
+		EE567834291FE1D400618CD8 /* 0121_BestTimeToBuyAndSellStock.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE567833291FE1D400618CD8 /* 0121_BestTimeToBuyAndSellStock.swift */; };
+		EE56783629213F9900618CD8 /* 0791_CustomSortString.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE56783529213F9900618CD8 /* 0791_CustomSortString.swift */; };
 		EE5D5E0A288688C3007B12F3 /* 0202_HappyNum.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5D5E09288688C3007B12F3 /* 0202_HappyNum.swift */; };
 		EE5D5E0C28869B61007B12F3 /* 0454_4Sum.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5D5E0B28869B61007B12F3 /* 0454_4Sum.swift */; };
 		EE5D5E0E2887A912007B12F3 /* 0383_RansomNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5D5E0D2887A912007B12F3 /* 0383_RansomNote.swift */; };
@@ -139,6 +141,8 @@
 		EE4AC2492873184600301517 /* 0024_SwapNodesInPairs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0024_SwapNodesInPairs.swift; sourceTree = "<group>"; };
 		EE5562B2283F58BF00DB9C1E /* 0027_RemoveElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0027_RemoveElement.swift; sourceTree = "<group>"; };
 		EE567831291E8CDC00618CD8 /* 0714_BestTimeToBuyAndSellStockWithTransactionFee.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0714_BestTimeToBuyAndSellStockWithTransactionFee.swift; sourceTree = "<group>"; };
+		EE567833291FE1D400618CD8 /* 0121_BestTimeToBuyAndSellStock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0121_BestTimeToBuyAndSellStock.swift; sourceTree = "<group>"; };
+		EE56783529213F9900618CD8 /* 0791_CustomSortString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0791_CustomSortString.swift; sourceTree = "<group>"; };
 		EE5D5E09288688C3007B12F3 /* 0202_HappyNum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0202_HappyNum.swift; sourceTree = "<group>"; };
 		EE5D5E0B28869B61007B12F3 /* 0454_4Sum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0454_4Sum.swift; sourceTree = "<group>"; };
 		EE5D5E0D2887A912007B12F3 /* 0383_RansomNote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0383_RansomNote.swift; sourceTree = "<group>"; };
@@ -322,6 +326,8 @@
 				EED2815F291BE4E10023A000 /* 0056_MergeIntervals.swift */,
 				EE9D4241291D2AB600990A67 /* 0738_MonotoneIncreasingDigits.swift */,
 				EE567831291E8CDC00618CD8 /* 0714_BestTimeToBuyAndSellStockWithTransactionFee.swift */,
+				EE567833291FE1D400618CD8 /* 0121_BestTimeToBuyAndSellStock.swift */,
+				EE56783529213F9900618CD8 /* 0791_CustomSortString.swift */,
 			);
 			path = LeetCode;
 			sourceTree = "<group>";
@@ -389,6 +395,7 @@
 				EE5E23CE28ACD0B800AA53DB /* 0199_BinaryTreeRightSideView.swift in Sources */,
 				EEA58E2829027B4E004B2896 /* 0491_IncreasingSubsequences.swift in Sources */,
 				EEA58E2A29065F5C004B2896 /* 0046_Permutations.swift in Sources */,
+				EE567834291FE1D400618CD8 /* 0121_BestTimeToBuyAndSellStock.swift in Sources */,
 				EE29DEED28F7DF5200DAC7C6 /* 0040_CombinationSum2.swift in Sources */,
 				EEA58E2C29066C64004B2896 /* 0047_Permutations3.swift in Sources */,
 				EE5D5E162889456F007B12F3 /* 0541_ReverseString.swift in Sources */,
@@ -439,6 +446,7 @@
 				EEE49CC0288FBFFA0035C8B0 /* 0028_ImplementStrStr.swift in Sources */,
 				EEA9DAC22892208400D17FD1 /* 1047_RemoveAllAdjacentDuplicatesInString.swift in Sources */,
 				EE2D384828ADEF1A00BDEA18 /* 0116_PopulatingNextRightPointersInEachNode.swift in Sources */,
+				EE56783629213F9900618CD8 /* 0791_CustomSortString.swift in Sources */,
 				EEA0B2D528704421007FF6F9 /* ListNode.swift in Sources */,
 				EE5D5E0A288688C3007B12F3 /* 0202_HappyNum.swift in Sources */,
 				EEEC3DE327F1881200B69E57 /* 0704_BinarySearch.swift in Sources */,
