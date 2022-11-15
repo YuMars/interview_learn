@@ -153,3 +153,5 @@ print("MonotoneIncreasingDigits ",MonotoneIncreasingDigits.monotoneIncreasingDig
 print("BestTimeToBuyAndSellStockWithTransactionFee ",BestTimeToBuyAndSellStockWithTransactionFee.maxProfit([1,3,7,1,5,10,3], 3))
 print("BestTimeToBuyAndSellStock ",BestTimeToBuyAndSellStock.maxProfit([7,1,5,3,6,4]))
 print("CustomSortString ",CustomSortString.customSortString("cbafg", "abcd"))
+print("FibonacciNumber ",FibonacciNumber.fib(2))
+print("ClimbingStairs ",ClimbingStairs.climbStairs(8))
