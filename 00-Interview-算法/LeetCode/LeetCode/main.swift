@@ -155,3 +155,5 @@ print("BestTimeToBuyAndSellStock ",BestTimeToBuyAndSellStock.maxProfit([7,1,5,3,
 print("CustomSortString ",CustomSortString.customSortString("cbafg", "abcd"))
 print("FibonacciNumber ",FibonacciNumber.fib(2))
 print("ClimbingStairs ",ClimbingStairs.climbStairs(8))
+print("MinCostClimbingStairs ",MinCostClimbingStairs.minCostClimbingStairs([1,100,1,1,1,100,1,1,100,1]))
+print("UniquePath ",UniquePath.uniquePaths(3, 3))
