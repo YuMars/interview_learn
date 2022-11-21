@@ -16,6 +16,7 @@
 		EE056D4328AA1A950039402E /* 0094_BinaryTreeInorderTraversal.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE056D4228AA1A950039402E /* 0094_BinaryTreeInorderTraversal.swift */; };
 		EE0765032926554F0007F1F2 /* 0062_UniquePath.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0765022926554F0007F1F2 /* 0062_UniquePath.swift */; };
 		EE0765082927D0910007F1F2 /* 0063_UniquePath2.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0765072927D0910007F1F2 /* 0063_UniquePath2.swift */; };
+		EE07651A29291E890007F1F2 /* 01732_FindTheHighestAltitude.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE07651929291E890007F1F2 /* 01732_FindTheHighestAltitude.swift */; };
 		EE1118D52923B12C000383B0 /* 0509_FibonacciNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1118D42923B12C000383B0 /* 0509_FibonacciNumber.swift */; };
 		EE1118D72923B855000383B0 /* 0070_ClimbingStairs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1118D62923B855000383B0 /* 0070_ClimbingStairs.swift */; };
 		EE1B2B702917EF52008D4B84 /* 0860_LemonadeChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1B2B6F2917EF52008D4B84 /* 0860_LemonadeChange.swift */; };
@@ -128,6 +129,7 @@
 		EE056D4228AA1A950039402E /* 0094_BinaryTreeInorderTraversal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0094_BinaryTreeInorderTraversal.swift; sourceTree = "<group>"; };
 		EE0765022926554F0007F1F2 /* 0062_UniquePath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0062_UniquePath.swift; sourceTree = "<group>"; };
 		EE0765072927D0910007F1F2 /* 0063_UniquePath2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0063_UniquePath2.swift; sourceTree = "<group>"; };
+		EE07651929291E890007F1F2 /* 01732_FindTheHighestAltitude.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 01732_FindTheHighestAltitude.swift; sourceTree = "<group>"; };
 		EE1118D42923B12C000383B0 /* 0509_FibonacciNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0509_FibonacciNumber.swift; sourceTree = "<group>"; };
 		EE1118D62923B855000383B0 /* 0070_ClimbingStairs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0070_ClimbingStairs.swift; sourceTree = "<group>"; };
 		EE1B2B6F2917EF52008D4B84 /* 0860_LemonadeChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0860_LemonadeChange.swift; sourceTree = "<group>"; };
@@ -346,6 +348,7 @@
 				EE8F33CB292501E400E5186B /* 746.MinCostClimbingStairs.swift */,
 				EE0765022926554F0007F1F2 /* 0062_UniquePath.swift */,
 				EE0765072927D0910007F1F2 /* 0063_UniquePath2.swift */,
+				EE07651929291E890007F1F2 /* 01732_FindTheHighestAltitude.swift */,
 			);
 			path = LeetCode;
 			sourceTree = "<group>";
@@ -413,6 +416,7 @@
 				EECC9ACB29225FE100AC2EFE /* 0968_BinaryTreeCameras.swift in Sources */,
 				EE5E23CE28ACD0B800AA53DB /* 0199_BinaryTreeRightSideView.swift in Sources */,
 				EEA58E2829027B4E004B2896 /* 0491_IncreasingSubsequences.swift in Sources */,
+				EE07651A29291E890007F1F2 /* 01732_FindTheHighestAltitude.swift in Sources */,
 				EEA58E2A29065F5C004B2896 /* 0046_Permutations.swift in Sources */,
 				EE567834291FE1D400618CD8 /* 0121_BestTimeToBuyAndSellStock.swift in Sources */,
 				EE29DEED28F7DF5200DAC7C6 /* 0040_CombinationSum2.swift in Sources */,
