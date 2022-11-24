@@ -19,7 +19,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
+    NSString *string = @"";
+    @autoreleasepool {
+        string = @"1";
+        NSLog(@"%@", string);
+    }
+    NSLog(@"%@", string);
 }
 
 - (IBAction)pushNextVC:(id)sender {

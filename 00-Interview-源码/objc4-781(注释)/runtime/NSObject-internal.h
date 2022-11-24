@@ -129,8 +129,9 @@ struct AutoreleasePoolPageData
 	AutoreleasePoolPage * const parent;
 	AutoreleasePoolPage *child;
 	uint32_t const depth;
-	uint32_t hiwat;
+	uint32_t hiwat; // 56个字节
 
+    
 	AutoreleasePoolPageData(__unsafe_unretained id* _next, pthread_t _thread, AutoreleasePoolPage* _parent, uint32_t _depth, uint32_t _hiwat)
 		: magic(), next(_next), thread(_thread),
 		  parent(_parent), child(nil),

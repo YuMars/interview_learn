@@ -22,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EE18011E292E1F2400C2442F /* ViewController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ViewController.cpp; sourceTree = "<group>"; };
 		EECC4A15282BAA0100A6D065 /* 09-Interview-Memory.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "09-Interview-Memory.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EECC4A18282BAA0100A6D065 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		EECC4A19282BAA0100A6D065 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -77,6 +78,7 @@
 		EECC4A17282BAA0100A6D065 /* 09-Interview-Memory */ = {
 			isa = PBXGroup;
 			children = (
+				EE18011E292E1F2400C2442F /* ViewController.cpp */,
 				EECC4A31282BAA8500A6D065 /* Memory.md */,
 				EECC4A18282BAA0100A6D065 /* AppDelegate.h */,
 				EECC4A19282BAA0100A6D065 /* AppDelegate.m */,
