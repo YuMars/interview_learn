@@ -26,6 +26,9 @@
         NSLog(@"%@", string);
     }
     NSLog(@"%@", string);
+    
+    NSLog(@"%@",[NSRunLoop currentRunLoop]);
+    
 }
 
 - (IBAction)pushNextVC:(id)sender {

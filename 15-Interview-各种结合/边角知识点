@@ -1,0 +1,11 @@
+边角知识点
+
+fastpath()
+slowpath()
+
+#define fastpath(x) (__builtin_expect(bool(x), 1))
+#define slowpath(x) (__builtin_expect(bool(x), 0))
+
+__builtin_expect() 是 GCC (version >= 2.96）提供给程序员使用的，目的是将“分支转移”的信息提供给编译器，这样编译器可以对代码进行优化，以减少指令跳转带来的性能下降。
+__builtin_expect((x),1)表示 x 的值为真的可能性更大；
+__builtin_expect((x),0)表示 x 的值为假的可能性更大。

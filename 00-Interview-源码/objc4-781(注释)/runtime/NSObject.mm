@@ -771,6 +771,7 @@ private:
         // Not recursive: we don't want to blow out the stack 
         // if a thread accumulates a stupendous amount of garbage
         
+        // 释放内存
         while (this->next != stop) {
             // Restart from hotPage() every time, in case -release 
             // autoreleased more objects

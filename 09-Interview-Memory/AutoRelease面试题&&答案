@@ -1,0 +1,30 @@
+1.AutoRelease是什么时候自动释放
+
+AutoRelease释放对象是由RunLoop控制的，在所属的那次RunLoop休眠之前Release  
+
+iOS在主线程的Runloop注册了2个observer
+1.第一个observer监听kCFRunLoopEntry事件，会调用objc_autoreleasePoolPush()
+2.第二个observer监听
+kCFRunLoopBeforeWaiting  会调用 objc_autoreleasePoolPop、objc_autoreleasePoolPush
+kCFRunLoopExit  会调用 objc_autoreleasePoolPop
+
+//0x1 = 1
+"<CFRunLoopObserver 0x600000958000 [0x1b87d7c60]>{valid = Yes, activities = 0x1, repeats = Yes, order = 0, callout = _wrapRunLoopWithAutoreleasePoolHandler (0x1078cc39c), context = <CFRunLoopObserver context 0x600000a5c000>}",
+
+// 0xa0 = 160   kCFRunLoopBeforeWaiting | kCFRunLoopExit
+"<CFRunLoopObserver 0x600000958000 [0x1b87d7c60]>{valid = Yes, activities = 0xa0, repeats = Yes, order = 0, callout = _wrapRunLoopWithAutoreleasePoolHandler (0x1078cc39c), context = <CFRunLoopObserver context 0x600000a5c000>}",
+
+typedef CF_OPTIONS(CFOptionFlags, CFRunLoopActivity) {
+    kCFRunLoopEntry = (1UL << 0),             //1
+    kCFRunLoopBeforeTimers = (1UL << 1),      //2
+    kCFRunLoopBeforeSources = (1UL << 2),     //4
+    kCFRunLoopBeforeWaiting = (1UL << 5),     //32
+    kCFRunLoopAfterWaiting = (1UL << 6),      //64
+    kCFRunLoopExit = (1UL << 7),              //128
+    kCFRunLoopAllActivities = 0x0FFFFFFFU
+};
+
+2.方法里面有局部对象，出了方法会立即释放吗
+如果是AutoReleasePool，则会在那次RunLoop休眠前释放
+如果是release的话，会立即释放
+

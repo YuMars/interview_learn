@@ -158,3 +158,6 @@ print("ClimbingStairs ",ClimbingStairs.climbStairs(8))
 print("MinCostClimbingStairs ",MinCostClimbingStairs.minCostClimbingStairs([1,100,1,1,1,100,1,1,100,1]))
 print("UniquePath ",UniquePath.uniquePaths(3, 3))
 print("IntgerBreak ",IntgerBreak.integerBreak(10))
+print("DivideTwoIntegers ",DivideTwoIntegers.divide(-2147483648, -1))
+
+print("SwordBinaryPlus ",SwordBinaryPlus.addBinary("11", "10"))
