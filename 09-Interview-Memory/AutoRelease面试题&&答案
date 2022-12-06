@@ -28,3 +28,18 @@ typedef CF_OPTIONS(CFOptionFlags, CFRunLoopActivity) {
 如果是AutoReleasePool，则会在那次RunLoop休眠前释放
 如果是release的话，会立即释放
 
+3.AutoRelease的原理？所使用的数据结构是什么？
+
+@AutoReleasePool {
+    object
+    // 对象
+}
+
+主要底层的数据结构是：
+objc_autoreleasePoolPush()
+objc_autoreleasePoolPop(atautoreleasepoolobj)
+
+
+4.
+
+

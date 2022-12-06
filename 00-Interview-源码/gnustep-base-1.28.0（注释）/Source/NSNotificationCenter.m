@@ -149,8 +149,8 @@ struct	NCTbl;		/* Notification Center Table structure	*/
  */
 
 typedef	struct	Obs {
-  id		observer;	/* Object to receive message.	*/
-  SEL		selector;	/* Method selector.		*/
+  id		observer;	/* Object to receive message.	观察者*/
+  SEL		selector;	/* Method selector.		响应方法*/
   struct Obs	*next;		/* Next item in linked list.	*/
   int		retained;	/* Retain count for structure.	*/
   struct NCTbl	*link;		/* Pointer back to chunk table	*/
@@ -247,9 +247,9 @@ static void obsFree(Observation *o);
 #define	CHUNKSIZE	128
 #define	CACHESIZE	16
 typedef struct NCTbl {
-  Observation		*wildcard;	/* Get ALL messages.		*/
-  GSIMapTable		nameless;	/* Get messages for any name.	*/
-  GSIMapTable		named;		/* Getting named messages only.	*/
+  Observation		*wildcard;	/* Get ALL messages.链表结构，保存既没有name也没有object的通知 		*/
+  GSIMapTable		nameless;	/* Get messages for any name. 存储没有name但是有object的通知	*/
+  GSIMapTable		named;		/* Getting named messages only. 存储带有name的通知，不管有没有object	*/
   unsigned		lockCount;	/* Count recursive operations.	*/
   NSRecursiveLock	*_lock;		/* Lock out other threads.	*/
   Observation		*freeList;
@@ -772,11 +772,12 @@ static NSNotificationCenter *default_center = nil;
                 name: (NSString*)name
 	      object: (id)object
 {
-  Observation	*list;
+  Observation	*list; // 保存既没有name也没有object的通知
   Observation	*o;
-  GSIMapTable	m;
-  GSIMapNode	n;
+  GSIMapTable	m;    // Map 存储带有name的通知，不管有没有object
+  GSIMapNode	n;    // Node
 
+    // 容错判断
   if (observer == nil)
     [NSException raise: NSInvalidArgumentException
 		format: @"Nil observer passed to addObserver ..."];
@@ -795,6 +796,7 @@ static NSNotificationCenter *default_center = nil;
 
   lockNCTable(TABLE);
 
+    // 创建Observation对象，持有观察者和SEL，下面进行的逻辑就是为了存储它
   o = obsNew(TABLE, selector, observer);
 
   /*
@@ -805,36 +807,52 @@ static NSNotificationCenter *default_center = nil;
    * the notification is posted... odd, but the MacOS-X docs specify this.
    */
 
-  if (name)
+  if (name) // name存在
     {
+        
+        /*
+         named表（maptable） |----------key（name）
+                            |----------value（maptable） |----------key（object）
+                                                        |----------value（Observation对象）
+         */
+        
+        /* --- 存的过程 ---*/
+        //1.以name为key，从named字典中取出n（这个n被MapNode包装了一层），这个n还是个字典
+        //2.以object为key，从字典n中取出对应的值，这个值就是Observation类型的链表，然后把刚创建的obs对象o存储进去
+        
+        /* --- 取的过程 ---*/
+        //1.以name为key，从named字典中取出n（这个n被MapNode包装了一层），这个n还是个字典
+        //2.以object为key，从字典n中取出对应的值，这个值就是Observation类型的链表，然后把刚创建的obs对象o存储进去
+        
       /*
        * Locate the map table for this name - create it if not present.
        */
-      n = GSIMapNodeForKey(NAMED, (GSIMapKey)(id)name);
-      if (n == 0)
+      n = GSIMapNodeForKey(NAMED, (GSIMapKey)(id)name); // 以name为key，从named表中获取对应的mapTable
+      if (n == 0) // 没有node,创建node
 	{
-	  m = mapNew(TABLE);
+	  m = mapNew(TABLE); // 先取缓存，如果缓存没有则新建一个map
 	  /*
 	   * As this is the first observation for the given name, we take a
 	   * copy of the name so it cannot be mutated while in the map.
 	   */
 	  name = [name copyWithZone: NSDefaultMallocZone()];
-	  GSIMapAddPair(NAMED, (GSIMapKey)(id)name, (GSIMapVal)(void*)m);
+	  GSIMapAddPair(NAMED, (GSIMapKey)(id)name, (GSIMapVal)(void*)m); // 将key和value对存储在maptable中
 	  GS_CONSUMED(name)
 	}
       else
 	{
-	  m = (GSIMapTable)n->value.ptr;
+	  m = (GSIMapTable)n->value.ptr; // 存在则把值取出来 赋值给m
 	}
 
       /*
        * Add the observation to the list for the correct object.
        */
+        //以object为key，从字典m中取出对应的value，其实value被MapNode的结构包装了一层
       n = GSIMapNodeForSimpleKey(m, (GSIMapKey)object);
-      if (n == 0)
+      if (n == 0) // 不存在，则创建
 	{
 	  o->next = ENDOBS;
-	  GSIMapAddPair(m, (GSIMapKey)object, (GSIMapVal)o);
+	  GSIMapAddPair(m, (GSIMapKey)object, (GSIMapVal)o); // key:object和value:o存储在maptable中
 	}
       else
 	{
@@ -843,10 +861,11 @@ static NSNotificationCenter *default_center = nil;
 	  list->next = o;
 	}
     }
-  else if (object)
+  else if (object) // 无name有object
     {
+        //以object为key，从nameless字典中取出对应的value，value是个链表结构
       n = GSIMapNodeForSimpleKey(NAMELESS, (GSIMapKey)object);
-      if (n == 0)
+      if (n == 0) // 不存在则新建链表，并存到map中
 	{
 	  o->next = ENDOBS;
 	  GSIMapAddPair(NAMELESS, (GSIMapKey)object, (GSIMapVal)o);
@@ -858,7 +877,7 @@ static NSNotificationCenter *default_center = nil;
 	  list->next = o;
 	}
     }
-  else
+  else // name 和 object 都为空 则存储到wildcard链表中
     {
       o->next = WILDCARD;
       WILDCARD = o;

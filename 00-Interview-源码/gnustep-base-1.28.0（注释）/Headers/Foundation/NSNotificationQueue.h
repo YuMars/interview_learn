@@ -67,9 +67,9 @@ extern "C" {
  *  to an [NSNotificationQueue]:
  <example>
 {
-  NSPostWhenIdle,	// post when runloop is idle
-  NSPostASAP,		// post soon
-  NSPostNow		// post synchronously
+  NSPostWhenIdle,	// post when runloop is idle // runloop空闲时
+  NSPostASAP,		// post soon 尽快发送，这种情况稍微复杂，这种时机是穿插在每次事件完成期间来做的
+  NSPostNow		// post synchronously // 立刻发送或者合并通知完成之后发送
 }
  </example>
  */
@@ -92,9 +92,9 @@ typedef NSUInteger NSPostingStyle;
  </example>
  */
 enum {
-  NSNotificationNoCoalescing = 0,
-  NSNotificationCoalescingOnName = 1,
-  NSNotificationCoalescingOnSender = 2
+  NSNotificationNoCoalescing = 0, // 默认不合并
+  NSNotificationCoalescingOnName = 1, // 只要name相同，默认是相同通知
+  NSNotificationCoalescingOnSender = 2 // object相同
 };
 typedef NSUInteger NSNotificationCoalescing;
 
@@ -126,9 +126,11 @@ GS_EXPORT_CLASS
 
 /* Inserting and Removing Notifications From a Queue */
 
+// 删除通知，把满足合并条件的通知从队列中删除
 - (void) dequeueNotificationsMatching: (NSNotification*)notification
 			 coalesceMask: (NSUInteger)coalesceMask;
 
+// 把通知添加到队列中
 - (void) enqueueNotification: (NSNotification*)notification
 	        postingStyle: (NSPostingStyle)postingStyle;
 
