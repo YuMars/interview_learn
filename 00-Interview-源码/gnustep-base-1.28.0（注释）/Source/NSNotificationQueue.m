@@ -397,6 +397,9 @@ static NSArray	*defaultMode = nil;
   id					name   = [notification name];
   id					object = [notification object];
 
+    // 根据是name合并还是oject合并
+    // 删除asap和idlequeue里面的item
+    // 删除是通过链表的尾部开始删，往前删
   if ((coalesceMask & NSNotificationCoalescingOnName)
     && (coalesceMask & NSNotificationCoalescingOnSender))
     {
@@ -512,7 +515,8 @@ static NSArray	*defaultMode = nil;
     {
       modes = defaultMode;
     }
-  if (coalesceMask != NSNotificationNoCoalescing)
+    // 判断是否需要合并通知
+  if (coalesceMask != NSNotificationNoCoalescing) // 合并发送->删除_asapQueue（尽快发送队列）和_idleQueue（runloop空闲时发送队列）里面的notification
     {
       [self dequeueNotificationsMatching: notification
 			    coalesceMask: coalesceMask];
@@ -526,16 +530,19 @@ static NSArray	*defaultMode = nil;
 	  mode = [[NSRunLoop currentRunLoop] currentMode];
 	  if (mode == nil || [modes indexOfObject: mode] != NSNotFound)
 	    {
+            // 如果是立马发送，则调用NSNotificationCenter进行发送
 	      [_center postNotification: notification];
 	    }
 	}
 	break;
 
       case NSPostASAP:
+            // 添加到_asapQueue队列，等待发送
 	add_to_queue(_asapQueue, notification, modes, _zone);
 	break;
 
       case NSPostWhenIdle:
+            // 添加到_idleQueue队列，等待发送
 	add_to_queue(_idleQueue, notification, modes, _zone);
 	break;
     }
@@ -563,6 +570,7 @@ notify(NSNotificationCenter *center, NSNotificationQueueList *list,
   unsigned				pos = 0;
   NSNotificationQueueRegistration	*item = list->head;
 
+    // 收集匹配的通知，放入缓冲区（需要重新分配内存）
   /* Gather matching items into a buffer.
    */
   while (item != 0)
@@ -620,6 +628,7 @@ notify(NSNotificationCenter *center, NSNotificationQueueList *list,
        */
       for (pos = 0; pos < len; pos++)
 	{
+        // 发送NSNotification通知
 	  NSNotification	*n = (NSNotification*)ptr[pos];
 
 	  [center postNotification: n];
@@ -643,12 +652,14 @@ GSPrivateNotifyASAP(NSString *mode)
 {
   NotificationQueueList	*item;
 
+    // 检查任务
   GSPrivateCheckTasks();
 
   for (item = currentList(); item; item = item->next)
     {
       if (item->queue)
 	{
+        // 发送通知
 	  notify(item->queue->_center,
 	    item->queue->_asapQueue,
 	    mode,

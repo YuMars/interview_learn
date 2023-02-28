@@ -810,19 +810,19 @@ static NSNotificationCenter *default_center = nil;
   if (name) // name存在
     {
         
+        /* --- 存的过程(注册通知的过程) ---*/
+        //1.以name为key，从named字典中取出n（这个n被MapNode包装了一层），这个n还是个字典
+        //2.以object为key，从字典n中取出对应的值，这个值就是Observation类型的链表，然后把刚创建的obs对象o存储进去
+        
         /*
          named表（maptable） |----------key（name）
                             |----------value（maptable） |----------key（object）
                                                         |----------value（Observation对象）
-         */
+        */
         
-        /* --- 存的过程 ---*/
-        //1.以name为key，从named字典中取出n（这个n被MapNode包装了一层），这个n还是个字典
-        //2.以object为key，从字典n中取出对应的值，这个值就是Observation类型的链表，然后把刚创建的obs对象o存储进去
-        
-        /* --- 取的过程 ---*/
-        //1.以name为key，从named字典中取出n（这个n被MapNode包装了一层），这个n还是个字典
-        //2.以object为key，从字典n中取出对应的值，这个值就是Observation类型的链表，然后把刚创建的obs对象o存储进去
+        // 1.找到NCTable中的named表，这个表中存储了还有name的通知
+        // 2.以name作为key，找到value，这个value依然是个map
+        // 3.map的结构是以object作为key，obs对象作为value，这个obs主要存储了observer && sel
         
       /*
        * Locate the map table for this name - create it if not present.
@@ -863,6 +863,15 @@ static NSNotificationCenter *default_center = nil;
     }
   else if (object) // 无name有object
     {
+        /*
+         1.以object作为key，从nameless字典中取出value，此value是个obs类型的链表
+         2.把创建的obs类型对象o存储到链表中
+         
+         nameless表（maptable）   |----------key（object）
+                                 |----------value（Observation对象-链表）
+         
+         只存在object时存储只有一层，那就是object和obs对象之间的映射
+        */
         //以object为key，从nameless字典中取出对应的value，value是个链表结构
       n = GSIMapNodeForSimpleKey(NAMELESS, (GSIMapKey)object);
       if (n == 0) // 不存在则新建链表，并存到map中
@@ -904,6 +913,9 @@ static NSNotificationCenter *default_center = nil;
                     queue: (NSOperationQueue *)queue 
                usingBlock: (GSNotificationBlock)block
 {
+    // 创建一个GSNotificationObserver类型的对象observer，并把queue和block保存下来
+    // 调用接口1进行通知的注册
+    // 接收到通知时会响应observer的didReceiveNotification:方法，然后在didReceiveNotification:中把block抛给指定的queue去执行
 	GSNotificationObserver *observer = 
 		[[GSNotificationObserver alloc] initWithQueue: queue block: block];
 
@@ -938,11 +950,13 @@ static NSNotificationCenter *default_center = nil;
 
   lockNCTable(TABLE);
 
+    // step1.先移除WILDCARD
   if (name == nil && object == nil)
     {
       WILDCARD = listPurge(WILDCARD, observer);
     }
 
+    // step2.先移除没有name只有object的
   if (name == nil)
     {
       GSIMapEnumerator_t	e0;
@@ -1027,7 +1041,7 @@ static NSNotificationCenter *default_center = nil;
 	    }
 	}
     }
-  else
+  else // step3.移除有name和object的maptable
     {
       GSIMapTable		m;
       GSIMapEnumerator_t	e0;
@@ -1104,6 +1118,7 @@ static NSNotificationCenter *default_center = nil;
   GSIArray_t	b;
   GSIArray	a = &b;
 
+    //step1: 从named、nameless、wildcard表中查找对应的通知
   if (name == nil)
     {
       RELEASE(notification);
@@ -1123,7 +1138,12 @@ static NSNotificationCenter *default_center = nil;
    */
   GSIArrayInitWithZoneAndStaticCapacity(a, _zone, 64, i);
   lockNCTable(TABLE);
+    
+    // 1.通过name && object 查找到所有的obs对象(保存了observer和sel)，放到数组中
+    // 2.通过performSelector：逐一调用sel，这是个同步操作
+    // 3.释放notification对象
 
+    // 查找顺序1.先找没有name和没有object（WILDCARD类型）
   /*
    * Find all the observers that specified neither NAME nor OBJECT.
    */
@@ -1131,11 +1151,13 @@ static NSNotificationCenter *default_center = nil;
     {
       GSIArrayAddItem(a, (GSIArrayItem)o);
     }
-
+    
+    
+    // 查找顺序2.找只有object的（NAMELESS类型）
   /*
    * Find the observers that specified OBJECT, but didn't specify NAME.
    */
-  if (object)
+  if (object) //
     {
       n = GSIMapNodeForSimpleKey(NAMELESS, (GSIMapKey)object);
       if (n != 0)
@@ -1149,6 +1171,7 @@ static NSNotificationCenter *default_center = nil;
 	}
     }
 
+    // 查找顺序3.找name和object都有的maptable（NAMED类型）
   /*
    * Find the observers of NAME, except those observers with a non-nil OBJECT
    * that doesn't match the notification's OBJECT).
@@ -1185,7 +1208,7 @@ static NSNotificationCenter *default_center = nil;
 	      /*
 	       * Now observers with a nil object.
 	       */
-	      n = GSIMapNodeForSimpleKey(m, (GSIMapKey)nil);
+            n = GSIMapNodeForSimpleKey(m, (GSIMapKey)(id)nil);
 	      if (n != 0)
 		{
 	          o = purgeCollectedFromMapNode(m, n);
@@ -1214,6 +1237,7 @@ static NSNotificationCenter *default_center = nil;
 	{
           NS_DURING
             {
+                //step2：执行发送，即调用performSelector执行响应方法，从这里可以看出是同步的
               [o->observer performSelector: o->selector
                                 withObject: notification];
             }
@@ -1243,6 +1267,7 @@ static NSNotificationCenter *default_center = nil;
   GSIArrayEmpty(a);
   unlockNCTable(TABLE);
 
+    //step3: 释放资源
   RELEASE(notification);
 }
 
@@ -1283,12 +1308,15 @@ static NSNotificationCenter *default_center = nil;
 		       object: (id)object
 		     userInfo: (NSDictionary*)info
 {
+    // 构造一个GSNotification对象， GSNotification继承了NSNotification
   GSNotification	*notification;
 
   notification = (id)NSAllocateObject(concrete, 0, NSDefaultMallocZone());
   notification->_name = [name copyWithZone: [self zone]];
   notification->_object = [object retain];
   notification->_info = [info retain];
+    
+    // 进行发送操作
   [self _postAndRelease: notification];
 }
 

@@ -74,9 +74,9 @@ extern "C" {
  </example>
  */
 enum {
-  NSPostWhenIdle = 1,
-  NSPostASAP = 2,
-  NSPostNow = 3
+  NSPostWhenIdle = 1, // runloop空闲时发送通知
+  NSPostASAP = 2, //as soon as possible  // 尽快发送，这种情况稍微复杂，这种时机是穿插在每次事件完成期间来做的
+  NSPostNow = 3 // 立刻发送或者合并通知完成之后发送
 };
 typedef NSUInteger NSPostingStyle;
 
@@ -113,8 +113,8 @@ GS_EXPORT_CLASS
 #if	GS_EXPOSE(NSNotificationQueue)
 @public
   NSNotificationCenter			*_center;
-  struct _NSNotificationQueueList	*_asapQueue;
-  struct _NSNotificationQueueList	*_idleQueue;
+  struct _NSNotificationQueueList	*_asapQueue; // 尽快发送
+  struct _NSNotificationQueueList	*_idleQueue; // runloop空闲时候发
   NSZone				*_zone;
 #endif
 }

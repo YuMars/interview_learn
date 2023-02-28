@@ -1039,6 +1039,7 @@ updateTimer(NSTimer *t, NSDate *d, NSTimeInterval now)
             {
               GSIArrayRemoveItemAtIndexNoRelease(timers, i);
               [t fire];
+                // 尽快发送队列发送通知
               GSPrivateNotifyASAP(_currentMode);
               IF_NO_GC([arp emptyPool];)
               if (updateTimer(t, d, now) == YES)
@@ -1199,6 +1200,7 @@ updateTimer(NSTimer *t, NSDate *d, NSTimeInterval now)
             {
               NSDebugMLLog(@"NSRunLoop",
                 @"no inputs or timers in mode %@", mode);
+                // 发送Notification通知
               GSPrivateNotifyASAP(_currentMode);
               GSPrivateNotifyIdle(_currentMode);
               /* Pause until the limit date or until we might have
