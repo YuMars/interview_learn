@@ -474,10 +474,10 @@ _objc_pthread_data *_objc_fetch_pthread_data(bool create)
     _objc_pthread_data *data;
 
     data = (_objc_pthread_data *)tls_get(_objc_pthread_key);
-    if (!data  &&  create) {
+    if (!data  &&  create) { // 没data 且 是create == true，calloc一个data
         data = (_objc_pthread_data *)
             calloc(1, sizeof(_objc_pthread_data));
-        tls_set(_objc_pthread_key, data);
+        tls_set(_objc_pthread_key, data);  // _objc_pthread_key为key，data为value
     }
 
     return data;

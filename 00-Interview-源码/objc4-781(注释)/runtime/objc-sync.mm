@@ -31,10 +31,10 @@
 
 
 typedef struct alignas(CacheLineSize) SyncData {
-    struct SyncData* nextData;
-    DisguisedPtr<objc_object> object;
-    int32_t threadCount;  // number of THREADS using this block
-    recursive_mutex_t mutex;
+    struct SyncData* nextData; // 指向下⼀个 SyncData 节点，作⽤类似链表
+    DisguisedPtr<objc_object> object; // 绑定的作为 key 的对象
+    int32_t threadCount;  // number of THREADS using this block 使⽤当前 obj 作为 key 的线程数
+    recursive_mutex_t mutex; // 递归锁，根据源码继承链其实是 apple ⾃⼰封装了os_unfair_lock 实现的递归锁
 } SyncData;
 
 typedef struct {
@@ -43,9 +43,9 @@ typedef struct {
 } SyncCacheItem;
 
 typedef struct SyncCache {
-    unsigned int allocated;
-    unsigned int used;
-    SyncCacheItem list[0];
+    unsigned int allocated; // 已经被分配
+    unsigned int used; // 已经被占用
+    SyncCacheItem list[0]; // 个数
 } SyncCache;
 
 /*
@@ -56,9 +56,10 @@ typedef struct SyncCache {
   SYNC_COUNT_DIRECT_KEY == SyncCacheItem.lockCount
  */
 
+// SyncList 作为表中的⾸节点存在，存储着 SyncData 链表的头结点
 struct SyncList {
-    SyncData *data;
-    spinlock_t lock;
+    SyncData *data;// 指向的 SyncData 对象
+    spinlock_t lock; // 操作 SyncList 时防⽌多线程资源竞争的锁，这⾥要和 SyncData 中的 mutex 区分开作⽤，SyncData 中的 mutex 才是实际代码块加锁使⽤的
 
     constexpr SyncList() : data(nil), lock(fork_unsafe_lock) { }
 };
@@ -66,7 +67,7 @@ struct SyncList {
 // Use multiple parallel lists to decrease contention among unrelated objects.
 #define LOCK_FOR_OBJ(obj) sDataLists[obj].lock
 #define LIST_FOR_OBJ(obj) sDataLists[obj].data
-static StripedMap<SyncList> sDataLists;
+static StripedMap<SyncList> sDataLists;  // 哈希表，以关联的 obj 内存地址作为 key，value是 SyncList 类 型
 
 
 enum usage { ACQUIRE, RELEASE, CHECK };
@@ -75,7 +76,7 @@ static SyncCache *fetch_cache(bool create)
 {
     _objc_pthread_data *data;
     
-    data = _objc_fetch_pthread_data(create);
+    data = _objc_fetch_pthread_data(create); // 线程内拿出一个data
     if (!data) return NULL;
 
     if (!data->syncCache) {
@@ -84,13 +85,13 @@ static SyncCache *fetch_cache(bool create)
         } else {
             int count = 4;
             data->syncCache = (SyncCache *)
-                calloc(1, sizeof(SyncCache) + count*sizeof(SyncCacheItem));
+                calloc(1, sizeof(SyncCache) + count*sizeof(SyncCacheItem)); // 根据count分配内存大小
             data->syncCache->allocated = count;
         }
     }
 
     // Make sure there's at least one open slot in the list.
-    if (data->syncCache->allocated == data->syncCache->used) {
+    if (data->syncCache->allocated == data->syncCache->used) { // 已经初始化的大小和已经占用的大小相同-> 2倍扩容
         data->syncCache->allocated *= 2;
         data->syncCache = (SyncCache *)
             realloc(data->syncCache, sizeof(SyncCache) 
@@ -113,14 +114,15 @@ static SyncData* id2data(id object, enum usage why)
     SyncData **listp = &LIST_FOR_OBJ(object);
     SyncData* result = NULL;
 
+    // 1.快速缓存方案
 #if SUPPORT_DIRECT_THREAD_KEYS
     // Check per-thread single-entry fast cache for matching object
-    bool fastCacheOccupied = NO;
-    SyncData *data = (SyncData *)tls_get_direct(SYNC_DATA_DIRECT_KEY);
+    bool fastCacheOccupied = NO; // 快速缓存是否被占用
+    SyncData *data = (SyncData *)tls_get_direct(SYNC_DATA_DIRECT_KEY); // ⾸先判断是否命中 TLS 快速缓存
     if (data) {
         fastCacheOccupied = YES;
 
-        if (data->object == object) {
+        if (data->object == object) { // 命中快速缓存 且 命中的快速缓存的object是传入的object
             // Found a match in fast cache.
             uintptr_t lockCount;
 
@@ -130,7 +132,7 @@ static SyncData* id2data(id object, enum usage why)
                 _objc_fatal("id2data fastcache is buggy");
             }
 
-            switch(why) {
+            switch(why) { // 根据传入的usage 枚举，对lockCount做加减
             case ACQUIRE: {
                 lockCount++;
                 tls_set_direct(SYNC_COUNT_DIRECT_KEY, (void*)lockCount);
@@ -139,11 +141,11 @@ static SyncData* id2data(id object, enum usage why)
             case RELEASE:
                 lockCount--;
                 tls_set_direct(SYNC_COUNT_DIRECT_KEY, (void*)lockCount);
-                if (lockCount == 0) {
+                if (lockCount == 0) { // 如果lockCount == 0，快速缓存中的lockCount为NULL，
                     // remove from fast cache
                     tls_set_direct(SYNC_DATA_DIRECT_KEY, NULL);
-                    // atomic because may collide with concurrent ACQUIRE
-                    OSAtomicDecrement32Barrier(&result->threadCount);
+                    // atomic because may collide with concurrent ACQUIRE 原子性因为可能并发ACQUIRE
+                    OSAtomicDecrement32Barrier(&result->threadCount); // 减少线程数量
                 }
                 break;
             case CHECK:
@@ -156,6 +158,7 @@ static SyncData* id2data(id object, enum usage why)
     }
 #endif
 
+    // 2.缓存方案(二级缓存)
     // Check per-thread cache of already-owned locks for matching object
     SyncCache *cache = fetch_cache(NO);
     if (cache) {
