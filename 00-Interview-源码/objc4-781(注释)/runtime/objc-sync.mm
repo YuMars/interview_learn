@@ -111,14 +111,14 @@ void _destroySyncCache(struct SyncCache *cache)
 static SyncData* id2data(id object, enum usage why)
 {
     spinlock_t *lockp = &LOCK_FOR_OBJ(object);
-    SyncData **listp = &LIST_FOR_OBJ(object);
+    SyncData **listp = &LIST_FOR_OBJ(object); // object作为key，通过hash map维护一个递归锁
     SyncData* result = NULL;
 
-    // 1.快速缓存方案
+    // 1.快速缓存方案(TLS Cache)
 #if SUPPORT_DIRECT_THREAD_KEYS
     // Check per-thread single-entry fast cache for matching object
     bool fastCacheOccupied = NO; // 快速缓存是否被占用
-    SyncData *data = (SyncData *)tls_get_direct(SYNC_DATA_DIRECT_KEY); // ⾸先判断是否命中 TLS 快速缓存
+    SyncData *data = (SyncData *)tls_get_direct(SYNC_DATA_DIRECT_KEY); // ⾸先判断是否命中 TLS(线程局部存储-thread local storage) 快速缓存
     if (data) {
         fastCacheOccupied = YES;
 
@@ -127,12 +127,12 @@ static SyncData* id2data(id object, enum usage why)
             uintptr_t lockCount;
 
             result = data;
-            lockCount = (uintptr_t)tls_get_direct(SYNC_COUNT_DIRECT_KEY);
+            lockCount = (uintptr_t)tls_get_direct(SYNC_COUNT_DIRECT_KEY); //
             if (result->threadCount <= 0  ||  lockCount <= 0) {
                 _objc_fatal("id2data fastcache is buggy");
             }
 
-            switch(why) { // 根据传入的usage 枚举，对lockCount做加减
+            switch(why) { // 根据传入的usage 枚举，对lockCount做加减。
             case ACQUIRE: {
                 lockCount++;
                 tls_set_direct(SYNC_COUNT_DIRECT_KEY, (void*)lockCount);
@@ -158,7 +158,7 @@ static SyncData* id2data(id object, enum usage why)
     }
 #endif
 
-    // 2.缓存方案(二级缓存)
+    // 2.缓存方案(二级缓存 hash map)
     // Check per-thread cache of already-owned locks for matching object
     SyncCache *cache = fetch_cache(NO);
     if (cache) {
@@ -169,7 +169,7 @@ static SyncData* id2data(id object, enum usage why)
 
             // Found a match.
             result = item->data;
-            if (result->threadCount <= 0  ||  item->lockCount <= 0) {
+            if (result->threadCount <= 0  ||  item->lockCount <= 0) { // threadCount当前SyncData被使用的线程数，lockCount当前线程被锁的次数
                 _objc_fatal("id2data cache is buggy");
             }
                 
@@ -202,8 +202,15 @@ static SyncData* id2data(id object, enum usage why)
     // We could keep the nodes in some hash table if we find that there are
     // more than 20 or so distinct locks active, but we don't do that now.
     
+    // 线程缓存没有找到任何东西。
+    // 遍历使用列表查找匹配对象
+    // 自旋锁阻止多个线程创建多个线程
+    // 锁定相同的新对象。
+    // 我们可以将节点保存在某个哈希表中，如果我们发现有,超过20个不同的锁处于活动状态，但我们现在不这样做。
+    
     lockp->lock();
 
+    // 3.两个缓存都没有命中，遍历全局表SyncDataList。为了防止多线程影响，使用了SyncList结构中的lock加锁
     {
         SyncData* p;
         SyncData* firstUnused = NULL;
@@ -223,7 +230,7 @@ static SyncData* id2data(id object, enum usage why)
             goto done;
     
         // an unused one was found, use it
-        if ( firstUnused != NULL ) {
+        if ( firstUnused != NULL ) { // 找到SyncData，加锁，lockCount = 1
             result = firstUnused;
             result->object = (objc_object *)object;
             result->threadCount = 1;
@@ -235,6 +242,8 @@ static SyncData* id2data(id object, enum usage why)
     // XXX allocating memory with a global lock held is bad practice,
     // might be worth releasing the lock, allocating, and searching again.
     // But since we never free these guys we won't be stuck in allocation very often.
+    
+    // 没找到SyncData，则生成一个SyncData
     posix_memalign((void **)&result, alignof(SyncData), sizeof(SyncData));
     result->object = (objc_object *)object;
     result->threadCount = 1;
@@ -281,6 +290,7 @@ BREAKPOINT_FUNCTION(
 );
 
 
+// 为传入的obj对象分配了一个递归锁
 // Begin synchronizing on 'obj'. 
 // Allocates recursive mutex associated with 'obj' if needed.
 // Returns OBJC_SYNC_SUCCESS once lock is acquired.  
@@ -310,7 +320,7 @@ BOOL objc_sync_try_enter(id obj)
     if (obj) {
         SyncData* data = id2data(obj, ACQUIRE);
         ASSERT(data);
-        result = data->mutex.tryLock();
+        result = data->mutex.tryLock(); // 找到SyncData后厂家加锁
     } else {
         // @synchronized(nil) does nothing
         if (DebugNilSync) {

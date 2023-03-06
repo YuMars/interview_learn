@@ -1,0 +1,30 @@
+1.app如何接收到触摸事件的
+
+
+2.为什么只有主线程的runloop是开启的
+
+
+3.为什么只在主线程刷新UI
+
+
+4.PerformSelector和runloop的关系
+
+
+5.如何使线程保活
+
+
+
+6.讲讲 RunLoop，项目中有用到吗？
+    
+7.runloop内部实现逻辑？
+    
+8.runloop和线程的关系？
+
+9.timer 与 runloop 的关系？
+    
+    
+10.runloop 是怎么响应用户操作的， 具体流程是什么样的？
+    
+11.说说runLoop的几种状态
+    
+12.runloop的mode作用是什么？

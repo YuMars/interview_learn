@@ -1,0 +1,26 @@
+1. sychronized 是如何与传⼊的对象关联上的？
+由sDataLists结构看出，是通过传入的object对象地址关联的。通过object对象地址，查找SyncList对应的SyncData
+
+
+2. 是否会对传⼊的对象有强引⽤关系？
+没有。StripedMap的代码中
+
+static unsigned int indexForPointer(const void *p) {// 散列函数，通过对象地址计算出对应 PaddedT在数组中的下标
+    uintptr_t addr = reinterpret_cast<uintptr_t>(p);
+    return ((addr >> 4) ^ (addr >> 9)) % StripeCount;
+}
+没有强引用，只是将内存地址作为key传入，没有指针指向传入的key
+
+
+3. 如果 synchronized 传⼊ nil 会有什么问题？
+无法找到SyncData对象，会执行BREAKPOINT_FUNCTION( void objc_sync_nil(void) );
+BREAKPOINT_FUNCTION（asm("")） 空汇编指令。
+最终结果是不执行加锁，所以这样来看synchroinzed并不是线程安全的
+
+
+4. 当做key的对象在 synchronized 内部被释放会有什么问题？
+在objc_sync_exit()中，不做任何事情，导致锁也没被释放掉，一直处于锁定状态。并且导致后续异步线程在执行objc_sync_enter()，线程犹豫上一个锁没有被释放，一直处于等待状态
+
+
+5. synchronized 是否是可重⼊的,即是否可以作为递归锁使⽤？
+可以是递归锁。因为SyncData内部是recursive_mutex_t（OS_UNFAIR_RECURSIVE_LOCK_INIT）可以递归

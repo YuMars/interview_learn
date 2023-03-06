@@ -832,7 +832,7 @@ class StripedMap {
 #if TARGET_OS_IPHONE && !TARGET_OS_SIMULATOR
     enum { StripeCount = 8 }; // 真机是8
 #else
-    enum { StripeCount = 64 };// 模拟器是64
+    enum { StripeCount = 64 };// 模拟器或者是64
 #endif
 
     struct PaddedT {
