@@ -854,7 +854,7 @@ static NSNotificationCenter *default_center = nil;
 	  o->next = ENDOBS;
 	  GSIMapAddPair(m, (GSIMapKey)object, (GSIMapVal)o); // key:object和value:o存储在maptable中
 	}
-      else
+      else // 存在，则在list添加一个Node，指针往后
 	{
 	  list = (Observation*)n->value.ptr;
 	  o->next = list->next;
@@ -1108,167 +1108,167 @@ static NSNotificationCenter *default_center = nil;
  */
 - (void) _postAndRelease: (NSNotification*)notification
 {
-  Observation	*o;
-  unsigned	count;
-  NSString	*name = [notification name];
-  id		object;
-  GSIMapNode	n;
-  GSIMapTable	m;
-  GSIArrayItem	i[64];
-  GSIArray_t	b;
-  GSIArray	a = &b;
-
+    Observation	*o;
+    unsigned	count;
+    NSString	*name = [notification name];
+    id		object;
+    GSIMapNode	n;
+    GSIMapTable	m;
+    GSIArrayItem	i[64];
+    GSIArray_t	b;
+    GSIArray	a = &b;
+    
     //step1: 从named、nameless、wildcard表中查找对应的通知
-  if (name == nil)
+    if (name == nil)
     {
-      RELEASE(notification);
-      [NSException raise: NSInvalidArgumentException
-		  format: @"Tried to post a notification with no name."];
+        RELEASE(notification);
+        [NSException raise: NSInvalidArgumentException
+                    format: @"Tried to post a notification with no name."];
     }
-  object = [notification object];
-
-  /*
-   * Lock the table of observations while we traverse it.
-   *
-   * The table of observations contains weak pointers which are zeroed when
-   * the observers get garbage collected.  So to avoid consistency problems
-   * we disable gc while we copy all the observations we are interested in.
-   * We use scanned memory in the array in the case where there are more
-   * than the 64 observers we allowed room for on the stack.
-   */
-  GSIArrayInitWithZoneAndStaticCapacity(a, _zone, 64, i);
-  lockNCTable(TABLE);
+    object = [notification object];
+    
+    /*
+     * Lock the table of observations while we traverse it.
+     *
+     * The table of observations contains weak pointers which are zeroed when
+     * the observers get garbage collected.  So to avoid consistency problems
+     * we disable gc while we copy all the observations we are interested in.
+     * We use scanned memory in the array in the case where there are more
+     * than the 64 observers we allowed room for on the stack.
+     */
+    GSIArrayInitWithZoneAndStaticCapacity(a, _zone, 64, i);
+    lockNCTable(TABLE);
     
     // 1.通过name && object 查找到所有的obs对象(保存了observer和sel)，放到数组中
     // 2.通过performSelector：逐一调用sel，这是个同步操作
     // 3.释放notification对象
-
+    
     // 查找顺序1.先找没有name和没有object（WILDCARD类型）
-  /*
-   * Find all the observers that specified neither NAME nor OBJECT.
-   */
-  for (o = WILDCARD = purgeCollected(WILDCARD); o != ENDOBS; o = o->next)
+    /*
+     * Find all the observers that specified neither NAME nor OBJECT.
+     */
+    for (o = WILDCARD = purgeCollected(WILDCARD); o != ENDOBS; o = o->next)
     {
-      GSIArrayAddItem(a, (GSIArrayItem)o);
+        GSIArrayAddItem(a, (GSIArrayItem)o);
     }
     
     
     // 查找顺序2.找只有object的（NAMELESS类型）
-  /*
-   * Find the observers that specified OBJECT, but didn't specify NAME.
-   */
-  if (object) //
+    /*
+     * Find the observers that specified OBJECT, but didn't specify NAME.
+     */
+    if (object) //
     {
-      n = GSIMapNodeForSimpleKey(NAMELESS, (GSIMapKey)object);
-      if (n != 0)
-	{
-	  o = purgeCollectedFromMapNode(NAMELESS, n);
-	  while (o != ENDOBS)
-	    {
-	      GSIArrayAddItem(a, (GSIArrayItem)o);
-	      o = o->next;
-	    }
-	}
+        n = GSIMapNodeForSimpleKey(NAMELESS, (GSIMapKey)object);
+        if (n != 0)
+        {
+            o = purgeCollectedFromMapNode(NAMELESS, n);
+            while (o != ENDOBS)
+            {
+                GSIArrayAddItem(a, (GSIArrayItem)o);
+                o = o->next;
+            }
+        }
     }
-
+    
     // 查找顺序3.找name和object都有的maptable（NAMED类型）
-  /*
-   * Find the observers of NAME, except those observers with a non-nil OBJECT
-   * that doesn't match the notification's OBJECT).
-   */
-  if (name)
+    /*
+     * Find the observers of NAME, except those observers with a non-nil OBJECT
+     * that doesn't match the notification's OBJECT).
+     */
+    if (name)
     {
-      n = GSIMapNodeForKey(NAMED, (GSIMapKey)((id)name));
-      if (n)
-	{
-	  m = (GSIMapTable)n->value.ptr;
-	}
-      else
-	{
-	  m = 0;
-	}
-      if (m != 0)
-	{
-	  /*
-	   * First, observers with a matching object.
-	   */
-	  n = GSIMapNodeForSimpleKey(m, (GSIMapKey)object);
-	  if (n != 0)
-	    {
-	      o = purgeCollectedFromMapNode(m, n);
-	      while (o != ENDOBS)
-		{
-		  GSIArrayAddItem(a, (GSIArrayItem)o);
-		  o = o->next;
-		}
-	    }
-
-	  if (object != nil)
-	    {
-	      /*
-	       * Now observers with a nil object.
-	       */
-            n = GSIMapNodeForSimpleKey(m, (GSIMapKey)(id)nil);
-	      if (n != 0)
-		{
-	          o = purgeCollectedFromMapNode(m, n);
-		  while (o != ENDOBS)
-		    {
-		      GSIArrayAddItem(a, (GSIArrayItem)o);
-		      o = o->next;
-		    }
-		}
-	    }
-	}
+        n = GSIMapNodeForKey(NAMED, (GSIMapKey)((id)name));
+        if (n)
+        {
+            m = (GSIMapTable)n->value.ptr;
+        }
+        else
+        {
+            m = 0;
+        }
+        if (m != 0)
+        {
+            /*
+             * First, observers with a matching object.
+             */
+            n = GSIMapNodeForSimpleKey(m, (GSIMapKey)object);
+            if (n != 0)
+            {
+                o = purgeCollectedFromMapNode(m, n);
+                while (o != ENDOBS)
+                {
+                    GSIArrayAddItem(a, (GSIArrayItem)o);
+                    o = o->next;
+                }
+            }
+            
+            if (object != nil)
+            {
+                /*
+                 * Now observers with a nil object.
+                 */
+                n = GSIMapNodeForSimpleKey(m, (GSIMapKey)(id)nil);
+                if (n != 0)
+                {
+                    o = purgeCollectedFromMapNode(m, n);
+                    while (o != ENDOBS)
+                    {
+                        GSIArrayAddItem(a, (GSIArrayItem)o);
+                        o = o->next;
+                    }
+                }
+            }
+        }
     }
-
-  /* Finished with the table ... we can unlock it,
-   */
-  unlockNCTable(TABLE);
-
-  /*
-   * Now send all the notifications.
-   */
-  count = GSIArrayCount(a);
-  while (count-- > 0)
+    
+    /* Finished with the table ... we can unlock it,
+     */
+    unlockNCTable(TABLE);
+    
+    /*
+     * Now send all the notifications.
+     */
+    count = GSIArrayCount(a);
+    while (count-- > 0)
     {
-      o = GSIArrayItemAtIndex(a, count).ext;
-      if (o->next != 0)
-	{
-          NS_DURING
+        o = GSIArrayItemAtIndex(a, count).ext;
+        if (o->next != 0)
+        {
+            NS_DURING
             {
                 //step2：执行发送，即调用performSelector执行响应方法，从这里可以看出是同步的
-              [o->observer performSelector: o->selector
-                                withObject: notification];
+                [o->observer performSelector: o->selector
+                                  withObject: notification];
             }
-          NS_HANDLER
+            NS_HANDLER
             {
-	      BOOL	logged;
-
-	      /* Try to report the notification along with the exception,
-	       * but if there's a problem with the notification itself,
-	       * we just log the exception.
-	       */
-	      NS_DURING
-		NSLog(@"Problem posting %@: %@", notification, localException);
-		logged = YES;
-	      NS_HANDLER
-		logged = NO;
-	      NS_ENDHANDLER
-  	      if (NO == logged)
-		{ 
-		  NSLog(@"Problem posting notification: %@", localException);
-		}  
+                BOOL	logged;
+                
+                /* Try to report the notification along with the exception,
+                 * but if there's a problem with the notification itself,
+                 * we just log the exception.
+                 */
+                NS_DURING
+                NSLog(@"Problem posting %@: %@", notification, localException);
+                logged = YES;
+                NS_HANDLER
+                logged = NO;
+                NS_ENDHANDLER
+                if (NO == logged)
+                {
+                    NSLog(@"Problem posting notification: %@", localException);
+                }
             }
-          NS_ENDHANDLER
-	}
+            NS_ENDHANDLER
+        }
     }
-  lockNCTable(TABLE);
-  GSIArrayEmpty(a);
-  unlockNCTable(TABLE);
-
+    lockNCTable(TABLE);
+    GSIArrayEmpty(a);
+    unlockNCTable(TABLE);
+    
     //step3: 释放资源
-  RELEASE(notification);
+    RELEASE(notification);
 }
 
 
