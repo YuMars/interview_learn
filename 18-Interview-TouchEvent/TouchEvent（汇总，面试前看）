@@ -1,0 +1,152 @@
+iOS点击触摸事件
+
+iOS的事件有好几种：
+	Touch Events(触摸事件)
+	Motion Events(运动事件，比如重力感应和摇一摇等)、
+	Remote Events(远程事件，比如用耳机上得按键来控制手机)
+
+# 响应链是什么时候怎样构建的
+无论是哪种事件，其传递和响应都与响应链息息相关，那么响应链到底是一个什么样的东西呢？ 
+在UIKit中有一个类：UIResponder，我们可以看看头文件的几个属性和方法：
+
+@interface UIResponder : NSObject <UIResponderStandardEditActions>
+@property(nonatomic, readonly, nullable) UIResponder *nextResponder;
+@property(nonatomic, readonly) BOOL canBecomeFirstResponder;    // default is NO
+- (BOOL)becomeFirstResponder;
+@property(nonatomic, readonly) BOOL canResignFirstResponder;    // default is YES
+- (BOOL)resignFirstResponder;
+@property(nonatomic, readonly) BOOL isFirstResponder;
+// Generally, all responders which do custom touch handling should override all four of these methods.
+// Your responder will receive either touchesEnded:withEvent: or touchesCancelled:withEvent: for each
+// touch it is handling (those touches it received in touchesBegan:withEvent:).
+// *** You must handle cancelled touches to ensure correct behavior in your application.  Failure to
+// do so is very likely to lead to incorrect behavior or crashes.
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(nullable UIEvent *)event;
+- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(nullable UIEvent *)event;
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(nullable UIEvent *)event;
+- (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(nullable UIEvent *)event;
+- (void)touchesEstimatedPropertiesUpdated:(NSSet<UITouch *> *)touches API_AVAILABLE(ios(9.1));
+
+UIResponder是所有可以响应事件的类的基类，其中最常见的UIView、UIViewController、UIApplication都是其子类或者说是响应事件的载体。
+响应链的传递，UIResponder做了很多事情。在app中，所有视图都是按照一定的结构组织起来的，即树状层次结构，每个view都有自己的superview，包括controller的topmost view。当一个view被add到superview上，他的nextresponder属性就指向他的superview。controller的self.view指向其对应的controller，controller的nextrespond指向self.view的superview。这样app就通过nextresponder串成一条链，也就是我们说的响应链。响应链就是一条虚拟的链，并没有一个对象来专门存储这样的一条链，而是通过UIResponder的属性串连起来的。
+initial view -> view -> View Controller -> Window -> Application
+initial view -> view -> View Controller -> view -> Window -> Application
+
+事件传递中UIWindow会根据不同的event，用不同的方式寻找initial object，initial object决定与当前事件类型。比如Touch Event，UIWindow会首先通过hitTest:withEvent:尝试把事件传递给事件发生的View。对于Motion和Remote Event，这里先按下不表。
+有了事件响应链，接下来是寻找响应事件的具体响应者Hit-Testing View，寻找这个view的过程成为Hit-Test。具体就是下面UIView的函数
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event; 
+- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event;
+
+
+# 事件第一个响应者是怎么确定的
+手指触摸屏幕，UIApplication接收到手指事件，调用UIWindow的hitTest:withEvevt:，判断是否在window内，并且继续调用subview的hitTest:withEvevt:方法，知道找到最后的view。调用结束并且确定hit-test view后，view和view上的手势汇合一个UITouch对象关联起来，UITouch作为事件传递的参数，里面有view和gestureRecongizer属性。
+下面来看看hit-test递归调用流程
+
+
+上图左边所示图层关系。
+如果点击viewB1和viewA2。递归方式如下图
+
+hitTest:withEvevt:从Window开始，判断当前位置是否在window内，如果在则遍历subview，然后依次对subview发送hitTest:withEvevt:（subview的index越大越先被访问）。如果point没有在view上，subview也不会进行遍历，直到没有subview了，那么这个就是我们要找到hittest-view
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    // 1.视图可交互、未隐藏
+    if (self.userInteractionEnabled == NO ||
+        self.hidden == YES ||
+        self.alpha <= 0.01) {
+        return nil;
+    }
+    
+    // 2.判断点击事件在视图内
+    if ([self pointInside:point withEvent:event] == NO) {
+        return nil;
+    }
+    
+    // 3.已经确定当前视图可以响应的前提下，询问子视图
+    NSUInteger count = self.subviews.count;
+    for (int i = 0; i < count; i++) {
+        UIView *childV = self.subviews[i];
+        CGPoint childPoint = [self convertPoint:point toView:childV];
+        UIView *fitView = [childV hitTest:childPoint withEvent:event];
+        
+        if (fitView) {
+            return fitView;
+        }
+    }
+    
+    return self;
+}
+
+（这里可以通过hitTest扩大按钮的手势区域）
+
+
+#事件第一个响应者确定后，系统是怎样传递事件的
+
+通过响应链，找到第一响应事件的对象，将消息发送给这个响应者，UIApplication、UIWindow、UIControl有sendEvent:方法，UIApplication通过这个方法发给UIWindow，然后UIWindow通过sendEvent:把事件发送给hit-test view
+
+* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
+* frame #0： 0x800000010275164c TouchEvent’-[HitTestview hitTest:withEvent:1(se1f=0x800000156de5dde，
+_cmd-"hitTest:withEvent:", point=(x = 148.66666666666666, y = 258.33333333333331),
+event=0x0000600003270680） at HitTestView.m：14:9
+frame #1: 0x000000010a088b4 UIKitCore'-[UIView(Geometry) _hitTest:withEvent:windowServerHitTestwindow:] +
+80
+frame #2: 0x000000010a087a8 UIKitCore'
+_38-[UIView (Geometry) hitTest:withEvent: ]_block_invoke + 108
+frame #3: 0x0000000180376d94 CoreFoundation*_-NSARRAY_IS_CALLING_OUT_TO_A_BLOCK_.
++ 16
+frame #4: 0x00000001802f904 CoreFoundation'-[__NSArrayM enumerateObjectsWithOptions:usingBlock:] + 460
+frame #5: 0x000000010a0e851c UIKitCore'-[UIView(Geometry) hitTest:withEvent: ] + 680
+frame #6: 0x000000010a088b4 UIKitCore'-[UIView(Geometry) _hitTest:withEvent :windowServerHitTestWindow:] + 80 frame #7: 0x000000010a0e87a8 UIKitCore'
+_38-[UIView (Geometry) hitTest:withEvent:]_block_invoke + 108
+frame #8: 0×0000000180376d94 CoreFoundation'
+_NSARRAY_IS_CALLING_OUT_TO_A_BLOCK_
++ 16
+frame #9: 0×00000001802d904 CoreFoundation'-[_
+_NSArrayM enumerateObjectsWithOptions:usingBlock: ] + 460
+frame #10: 0x000000010a0e851c UIKitCore
+-[UIView(Geometry) hitTest:withEvent:] +680
+frame #11: 0x000000010a0b6c20 UIKitcore’-[UIDropShadowview hitTest:withEvent:]+ 216
+frame #12: 0x00e000010a0e88b4 UIKitcore’-[UIview(Geometry)_hitTest:withEvent:windowserverHitTestwindow：] + 8
+rame #13: Bx000000019aGe87a8 UIkitcore’-_38-[UTView(Geometry) hitTest: withEvent:1_block_invoke + 108
+frame #14： 9x0060060180376d94 coreFoundation’-_NSARRAY _IS_CALLING_OUT_TO_A_BLOCK_-+16
+frame #15: 0x9eee0001802fd994 CoreFoundation’-[ NSArrayM enumerateObjectsWithoptions: usingBlock:]+460
+frame #16: 日xeeee00010aee851c UIKitCore'-[UIview( Geometry) hitTest:withEvent: ] + 680
+frame #17: 0x000000010a0cac70 UIKitCore
+-[UITransitionview hitTest: withEvent:] +
+48
+frame #18: 0x000000010a0e884 UIKitCore
+‘-[UIview( Geometry) _hitTest :withEvent:windowserverHitTestwindow：] +80
+frame #19: 0x000000010a087a8 UIKitCore'
+_38-[UIView (Geometry) hitTest:withEvent:1_block_invoke + 108
+frame #20: 0x0000000180376d94 CoreFoundation*__NSARRAY_IS_CALLING_OUT_TO_A_BLOCK_- + 16
+frame #21: 0x00000001802d904 CoreFoundation'-[__NSArrayM enumerateObjectsWithOptions:usingBlock:] + 460
+frame #22: 0x000000010a0851c UIKitCore*-[UIView(Geometry) hitTest:withEvent:] + 680 frame #23: 0x000000010a088b4 UIKitCore*-[UIView(Geometry)
+_hitTest:withEvent:windowServerHitTestWindow:]+ 80
+frame #24: 0x0000000109cab960 UIKitCore'-[UIWindow _hitTestLocation: sceneLocationz: inScene:withWindowServerHitTestwindow:event:] + 92 frame #25: 0x0000000109cab7d0 UIKitCore'
+--75+[UIWindow _hitTestToPoint:scenePointz:forEvent:windowserverHitTestwindow:J_block_invoke + 64
+frame #26: 0x0000000109e93804 UIKitCore
+__64-[UIWindowScene _topVisibleWindownumeratingAsCopy:passingTest:1_block_invoke + 108
+frame #27: 0x0000000109939c0 UIKitCore'-[UIWindowScene_enumerateWindowsIncludingInternalWindows:onlyVisibleWindows:asCopy:stopped:withBlock:]+308
+frame #28： 0x0ece00610ge93718 UIKitcore’-[UIwindowscene _topvisiblewindowEnumeratingAsCopy :passing Test: ] + 372
+frame #29: 0x0000000109cab73c UIKitcore'+[UIWindow _hitTestToPoint:scenePointz：forEvent:windowserverHitTestwindow： ] + 192
+frame #30: 0x00e0000109caba40 UIKitcore’-[UIwindow _targetwindowForPathIndex:atPoint:scenePointz:forEvent:windowServerHitTestwindow：] +184
+frame #31: 0x0000000109c5d8 UIKitCore
+-updateToucheswithDigitizerEventAndDetermineIfshouldsend_block_invoke.27 +5380
+frame #32: 0x0000000109d05f50 UIKitCore
+UIEventHIDEnumerateChildren + 160
+frame #33: 0x0000000109cf877c UIKitCore _-dispatchPreprocessedEventFromEventQueue + 2232 frame #34: 0x0000000109cf5d0 UIKitCore' __processEventQueue + 5612 frame #35: 0x0000000109cf44ac UIKitCore' _eventFetcherSourceCallback + 220 frame #36: 0×000000018037318c CoreFoundation'
+__CFRUNLOOP_IS_CALLING_OUT_TO_A_SOURCE0_PERFORM_FUNCTION_.
+_ + 24
+frame #37: 0x00000001803730d4 CoreFoundation'
+__CFRunLoopDoSource + 172
+frame #38: 0x0000000180372844 CoreFoundation'
+__ CFRunLoopDoSources® + 232
+frame
+#39: 0x000000018036ceb0 CoreFoundation'
+CFRunLoopRun + 756
+frame #40: 0x000000018036c7a4 CoreFoundation'CFRunLoopRunSpecific + 584
+frame #41: 0x0000000188f7c98 GraphicsServices'GSEventRunModal+160
+frame #42: 0x0000000109c6237c UIKitCore'-[UIApplication_run]+ 868
+frame #43： 0x9000900109c66374 UIKitcore'UIApplicationMain + 124
+frame #44: Qx0000000102751af4 TouchEvent'main(argc=1, argv=0x000000016d6adbf8) at main.m:17:12
+frame #45: 0x0000000102a6dfa0 dvld sim start sim + 20
+frame #46: 0x000ggg0102859e50 dvld start +2544
