@@ -1,0 +1,139 @@
+CALayer显示动画、隐式动画
+
+Core Animation的一个非常显著的特性是就是实现动画，而且它支持隐式动画和显式动画两种形式。
+
+一、何为隐式动画？
+屏幕上任何东西都可以做动画，它并不需要手动打开，但是需要明确什么关闭，否则动画会一直存在。所谓隐式动画，是我们可以再不设定任何动画类型的情况下，仅仅改变CALayer的一个可以做动画的属性，就能实现动画效果。
+```
+- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    _colorLayer = [[CALayer alloc] init];
+    _colorLayer.frame = CGRectMake(30, 30, kDeviceWidth - 60, 60);
+    [self.view.layer addSublayer:_colorLayer];
+}
+
+- (IBAction)changeColor:(UIButton *)sender{
+    CGFloat red = arc4random() % 255 / 255.0;
+    CGFloat green = arc4random() % 255 / 255.0;
+    CGFloat blue = arc4random() % 255 / 255.0;
+    UIColor *randomColor = [UIColor colorWithRed:red green:green blue:blue alpha:1];
+    
+    _colorLayer.backgroundColor = randomColor.CGColor;
+}
+```
+
+上面是通过按钮修改view背景色，可以看到每次设置颜色的时候并不是直接就变换成一种新的颜色，而是平滑的过度到新的值，这一切都是默认行为，这就是隐式动画。
+
+二、隐式动画的原理
+当我们改变一个CALayer属性时，动画执行的时间取决于当前事务的设置时间，动画类型则取决于图层行为。
+
+1.事务（CATransaction）
+事务是Core Animation用来包含一系列属性动画集合的机制，通过指定事务来改变图层的可动画属性，这些变化都不是立刻发生变化的，而是在事务被提交的时候才启动一个动画过渡到新值。任何可以做动画的图层属性都会被添加到栈顶的事务。CATransaction没有属性和实例方法，
+```
+//1.动画属性的入栈
++ (void)begin;
+//2.动画属性出栈
++ (void)commit;
+//3.设置当前事务的动画时间
++ (void)setAnimationDuration:(CFTimeInterval)dur;
+//4.获取当前事务的动画时间
++ (CFTimeInterval)animationDuration;
+//5.在动画结束时提供一个完成的动作
++ (void)setCompletionBlock:(nullable void (^)(void))block;
+```
+Core Animation在每个Runloop周期中会自动开始一次新的事务，即使不显示的使用[CATransaction begin],在一次Runloop中会集中起来执行，默认执行时间0.25s
+```
+- (IBAction)changeColor:(UIButton *)sender{
+    [CATransaction begin];  //入栈
+    //1.设置动画执行时间
+    [CATransaction setAnimationDuration:3];
+    //2.设置动画执行完毕后的操作：颜色渐变之后再旋转90度
+    [CATransaction setCompletionBlock:^{
+        CGAffineTransform transform = self.colorLayer.affineTransform;
+        transform  = CGAffineTransformRotate(transform, M_PI_2);
+        self.colorLayer.affineTransform = transform;
+    }];
+    
+    CGFloat red = arc4random() % 255 / 255.0;
+    CGFloat green = arc4random() % 255 / 255.0;
+    CGFloat blue = arc4random() % 255 / 255.0;
+    UIColor *randomColor = [UIColor colorWithRed:red green:green blue:blue alpha:1];
+    _colorLayer.backgroundColor = randomColor.CGColor;
+    [CATransaction commit];  //出栈
+}
+```
+上面的动画可以看到view的背景色变化时间变成了3s，但是旋转动画仍然以0.25s执行
+
+2.图层行为
+如果直接对UIView或者CALayer关联的图层layer改变动画属性，是没有隐式动画效果的，这说明Core Animation对所有的CALayer动画属性设置的隐式动画，但UIView把它关联的图层特性给关了。当CALayer的属性被修改时，它会调用-actionForKey:方法传递属性名称，我们可以找到这个方法的具体说明如下：
+	1、图层会首先检测它是否有委托，并且是否实现CALayerDelegate协议指定的-actionForLayer:forKey方法；如果有，就直接调用并返回结果。
+	2、如果没有委托或者委托没有实现-actionForLayer:forKey方法，图层将会检查包含属性名称对应行为映射的actions字典
+	3、如果actions字典没有包含对应的属性，图层接着在它的style字典里搜索属性名.
+	4、最后，如果在style也找不到对应的行为，那么图层将会直接调用定义了每个属性的标准行为的+defaultActionForKey:方法
+从流程上分析来看，经过一次完整的搜索动画之后，-actionForLayer:forKey要么返回空，要么返回遵循的CAAction协议对象，那么UIKit是如何禁用隐式动画的：
+	每个UIView对他关联的图层都遵循CALayerDelegate协议，并且实现了-actionForLayer:forKey方法。当不在一个动画块中修改动画属性时，UIView对所有图层行为都返回为nil，但是在动画Block范围就返回了非空值，下面通过一段代码来验证：
+```
+
+@property (nonatomic, weak) UIView *layerView;
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+   //测试图层行为：UIKit默认关闭了自身关联图层的隐式动画
+    NSLog(@"OutSide:%@",[self.layerView actionForLayer:self.layerView.layer forKey:@"backgroundColor"]);
+   
+    [UIView beginAnimations:nil context:nil];
+    NSLog(@"InSide:%@",[self.layerView actionForLayer:self.layerView.layer forKey:@"backgroundColor"]);
+    [UIView commitAnimations];
+}
+
+//OutSide:<null>
+//InSide:<CABasicAnimation: 0x600001703100>
+```
+由此得出结论：当属性在动画块之外发生变化，UIView直接通过返回nil来禁用隐式动画。但是如果在动画块范围内，UIView则会根据动画具体类型返回响应的属性，
+
+三、关闭和开启隐式动画
+-actionForLayer:forKey:返回nil并不是禁用隐式动画的唯一方式，CATransaction也为我们提供了具体方法，可以用来对所有属性打开或者关闭隐式动画，
+```
++ (void)setDisableActions:(BOOL)flag;
+```
+UIView关联的图层禁用了隐式动画，那么对这种图层做动画的方法有了一下集中方法：
+1.使用UIView的动画函数(而不是依赖CATransaction)
+2.继承UIView，并覆盖-actionForLayer:forKey:方法
+3.直接创建显示动画
+对于单独存在的图层，我们也可以通过实现图层的-actionforLayer:forkey:方法，或者提供一个actions字典来控制隐式动画
+
+四、自定义图层行为
+图层行为其实是被Core Animation隐式调用的显示动画对象。我们可以发现改变隐式动画的这种图层行为有两种方式：
+1.给layer设置自定义的actions字典
+2.实现委托代理，返回遵循CAAction协议的动画对象
+实现代码如下：
+```
+@property (nonatomic,strong) CALayer *colorLayer;
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    _colorLayer = [[CALayer alloc] init];
+    _colorLayer.frame = CGRectMake(30, 30, kDeviceWidth - 60, 60);
+    _colorLayer.backgroundColor = [UIColor orangeColor].CGColor;
+    //自定义动画对象
+    CATransition *transition = [CATransition animation];
+    transition.type = kCATransitionPush;
+    transition.subtype = kCATransitionFromLeft;
+    _colorLayer.actions = @{@"backgroundColor":transition};
+    [self.view.layer addSublayer:_colorLayer];
+}
+
+- (IBAction)changeColor:(UIButton *)sender{
+    CGFloat red = arc4random() % 255 / 255.0;
+    CGFloat green = arc4random() % 255 / 255.0;
+    CGFloat blue = arc4random() % 255 / 255.0;
+    UIColor *randomColor = [UIColor colorWithRed:red green:green blue:blue alpha:1];
+    _colorLayer.backgroundColor = randomColor.CGColor;
+}
+```
+
+
+
+
