@@ -1,0 +1,269 @@
+图片解码（decode）
+
+# 为什么图像在显示到屏幕上之前要进行解码
+我们使用的JPG和PNG，图像数据不是位图（BitMap）。（位图就是一个像素数组，数组中的每个像素就代表着图片中的一个点）。而是经过编码压缩后的数据，需要先讲其转码成位图数据，才能把位图渲染到屏幕上。
+使用UIImage或者CGImageSource的方法创建图片时，图片数据不会理解解码。图片设置到UIImageView或者CALayer.contents中，并且CALayer被提交到GPU前，CGImage中的数据才会得到解码，并且这一步是在主线程执行。
+
+# 图片加载的工作流
+从磁盘加载图片显示到屏幕上的流程：
+	1.假设我们使用 +imageWithContentsOfFile: 方法从磁盘中加载一张图片，这个时候的图片并没有解压缩；
+	2.将生成的UIImage赋值给UIImageView
+	3.Runloop捕捉，通过CATransaction隐式的捕获到了UIImageView图层树的变化
+	4.在主线程的下一个Runloop到来时，Core Animation提交了这个隐式的事务，这个过程可能对图片进行copy操作，而收图片是否字节对齐等因素的影响，这个copy操作可能会涉及以下的全部或者部分步骤：
+		1.分配内存缓存区用于管理文件IO和解压操作
+		2.将文件数据从磁盘读到内存中
+		3.将压缩的图片数据解码成未压缩的位图格式，这是一个非常耗时的CPU操作
+		4.最右Core Animation使用未压缩的位图数据渲染UIImageView的图层
+上面的流程，默认是在主线程执行，解压缩图片是一个非常耗时的操作，所以需要加载的图片非常多时，就会对app的性能造成严重的影响，尤其是在快速滑动的列表上。
+
+# 图像的解码
+解码操作是比较耗时的，并且没有GPU硬解码，只能通过CPU，iOS默认会在主线程对图像进行解码。解码过程是一个相当复杂的任务，需要消耗非常多的时间。(60FPS ≈ 0.01666s per frame = 16.7ms per frame)主线程超过16.7ms的任务都会引起掉帧。很多库都解决了图片解码的问题，不过由于解码后的图像太大，一般不会缓存到磁盘，SDWebImage的做法是把解码操作从主线程移到子线程，让耗时的解码操作不占用主线程的时间。
+
+对于PNG图片来说，因为文件可能更大，所以加载会比JPEG更长，但是解码会相对较快，而且Xcode会把PNG图片进行解码优化之后引入工程。JPEG图片更小，加载更快，但是解压的步骤要消耗更长的时间，因为JPEG解压算法比基于zip的PNG算法更加复杂。
+
+# 图像解码的核心方法CGBitmapContextCreate（https://developer.apple.com/documentation/coregraphics/1455939-cgbitmapcontextcreate?language=occ）
+```
+CGContextRef CGBitmapContextCreate(
+void * data,  // 指向内存的指针，用于存储被绘制的图形，这块内存的size不能小于bytesPerRow*height（图形每行的字节数乘以图形的高度），传递NULL意味着由这个函数来管理图形的内存，这可以减少内存泄漏的问题；
+size_t width, // 图形的width
+size_t height,// 图形的height
+size_t bitsPerComponent,  // 像素的每个颜色分量使用的 bit 数，在 RGB 颜色空间下指定 8 即可；
+size_t bytesPerRow,  // 位图的每一行使用的字节数，大小至少为 width * bytes per pixel 字节。当我们指定 0/NULL 时，系统不仅会为我们自动计算，而且还会进行 cache line alignment 的优化
+CGColorSpaceRef  _Nullable space,  // 就是我们前面提到的颜色空间，一般使用 RGB 即可；
+uint32_t bitmapInfo) // 位图的布局信息.kCGImageAlphaPremultipliedFirst
+```
+
+# Pixel Format
+位图是一个像素数组，像素格式是描述每个像素的组成格式（https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/dq_images/dq_images.html#//apple_ref/doc/uid/TP30001066-CH212-CJBECCFG）
+
+	·Bits per component ：一个像素中每个独立的颜色分量使用的 bit 数；
+	·Bits per pixel ：一个像素使用的总 bit 数；
+	·Bytes per row ：位图中的每一行使用的字节数。
+
+有一点需要注意的是，对于位图来说，像素格式并不是随意组合的，目前只支持以下有限的 17 种特定组合（https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/dq_context/dq_context.html#//apple_ref/doc/uid/TP30001066-CH203-BCIBHHBB）：
+【图1]
+
+
+# Color Spaces
+
+在 Quartz 中，一个颜色是由一组值来表示的，比如 0, 0, 1 。而颜色空间则是用来说明如何解析这些值的，离开了颜色空间，它们将变得毫无意义。比如，下面的值都表示蓝色：
+[图2]
+
+如果不知道颜色空间，那么我们根本无法知道这些值所代表的颜色。比如 0, 0, 1 在 RGB 下代表蓝色，而在 BGR 下则代表的是红色。在 RGB 和 BGR 两种颜色空间下，绿色是相同的，而红色和蓝色则相互对调了。因此，对于同一张图片，使用 RGB 和 BGR 两种颜色空间可能会得到两种不一样的效果：
+
+# Color Spaces and Bitmap Layout
+要想确保 Quartz 能够正确地解析这些 bit 所代表的含义，我们还需要提供位图的布局信息（https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/dq_images/dq_images.html#//apple_ref/doc/uid/TP30001066-CH212-CJBHEGIB）
+
+
+	## CGBitmapInfo(https://developer.apple.com/documentation/coregraphics/cgbitmapinfo?language=objc)
+```
+typedef CF_OPTIONS(uint32_t, CGBitmapInfo) {
+    kCGBitmapAlphaInfoMask = 0x1F,
+
+    kCGBitmapFloatInfoMask = 0xF00,
+    kCGBitmapFloatComponents = (1 << 8),
+
+    kCGBitmapByteOrderMask     = kCGImageByteOrderMask,
+    kCGBitmapByteOrderDefault  = (0 << 12),
+    kCGBitmapByteOrder16Little = kCGImageByteOrder16Little,
+    kCGBitmapByteOrder32Little = kCGImageByteOrder32Little,
+    kCGBitmapByteOrder16Big    = kCGImageByteOrder16Big,
+    kCGBitmapByteOrder32Big    = kCGImageByteOrder32Big
+} CG_AVAILABLE_STARTING(__MAC_10_0, __IPHONE_2_0);
+```
+
+它主要提供了三个方面的布局信息：
+	alpha 的信息；
+	颜色分量是否为浮点数；
+	像素格式的字节顺序。
+其中，alpha 的信息由枚举值 CGImageAlphaInfo（https://developer.apple.com/documentation/coregraphics/cgimagealphainfo?language=objc）来表示：
+```
+typedef CF_ENUM(uint32_t, CGImageAlphaInfo) {
+    kCGImageAlphaNone,               /* For example, RGB. */
+    kCGImageAlphaPremultipliedLast,  /* For example, premultiplied RGBA */
+    kCGImageAlphaPremultipliedFirst, /* For example, premultiplied ARGB */
+    kCGImageAlphaLast,               /* For example, non-premultiplied RGBA */
+    kCGImageAlphaFirst,              /* For example, non-premultiplied ARGB */
+    kCGImageAlphaNoneSkipLast,       /* For example, RBGX. */
+    kCGImageAlphaNoneSkipFirst,      /* For example, XRGB. */
+    kCGImageAlphaOnly                /* No color data, alpha data only */
+};
+```
+同样也提供了三个方面的 alpha 信息：
+	是否包含 alpha ；
+	如果包含 alpha ，那么 alpha 信息所处的位置，在像素的最低有效位，比如 RGBA ，还是最高有效位，比如 ARGB ；
+	如果包含 alpha ，那么每个颜色分量是否已经乘以 alpha 的值，这种做法可以加速图片的渲染时间，因为它避免了渲染时的额外乘法运算。比如，对于 RGB 颜色空间，用已经乘以 alpha 的数据来渲染图片，每个像素都可以避免 3 次乘法运算，红色乘以 alpha ，绿色乘以 alpha 和蓝色乘以 alpha 。
+在解压缩图片的时候应该使用Which CGImageAlphaInfo should we use(https://stackoverflow.com/questions/23723564/which-cgimagealphainfo-should-we-use)和官方文档中对 UIGraphicsBeginImageContextWithOptions 函数的讨论：
+> You use this function to configure the drawing environment for rendering into a bitmap. The format for the bitmap is a ARGB 32-bit integer pixel format using host-byte order. If the opaque parameter is YES, the alpha channel is ignored and the bitmap is treated as fully opaque (kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Host). Otherwise, each pixel uses a premultipled ARGB format (kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host).
+
+我们可以知道，当图片不包含 alpha 的时候使用 kCGImageAlphaNoneSkipFirst ，否则使用 kCGImageAlphaPremultipliedFirst 。另外，这里也提到了字节顺序应该使用 32 位的主机字节顺序 kCGBitmapByteOrder32Host ，而这个值具体是什么，我们后面再讨论。
+至于颜色分量是否为浮点数，这个就比较简单了，直接逻辑或 kCGBitmapFloatComponents 就可以了。更详细的内容就不展开了，因为我们一般用不上这个值。
+接下来，我们来简单地了解下像素格式的字节顺序(https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFMemoryMgmt/Concepts/ByteOrdering.html#//apple_ref/doc/uid/20001150-CJBEJBHH)，它是由枚举值 CGImageByteOrderInfo 来表示的：
+```
+typedef CF_ENUM(uint32_t, CGImageByteOrderInfo) {
+    kCGImageByteOrderMask     = 0x7000,
+    kCGImageByteOrder16Little = (1 << 12),
+    kCGImageByteOrder32Little = (2 << 12),
+    kCGImageByteOrder16Big    = (3 << 12),
+    kCGImageByteOrder32Big    = (4 << 12)
+} CG_AVAILABLE_STARTING(__MAC_10_12, __IPHONE_10_0);
+```
+它主要提供了两个方面的字节顺序信息：
+	小端模式还是大端模式；
+	数据以 16 位还是 32 位为单位。
+对于 iPhone 来说，采用的是小端模式，但是为了保证应用的向后兼容性，我们可以使用系统提供的宏，来避免 Hardcoding ：
+```
+#ifdef __BIG_ENDIAN__
+    #define kCGBitmapByteOrder16Host kCGBitmapByteOrder16Big
+    #define kCGBitmapByteOrder32Host kCGBitmapByteOrder32Big
+#else /* Little endian. */
+    #define kCGBitmapByteOrder16Host kCGBitmapByteOrder16Little
+    #define kCGBitmapByteOrder32Host kCGBitmapByteOrder32Little
+#endif
+```
+根据前面的讨论，我们知道字节顺序的值应该使用的是 32 位的主机字节顺序 kCGBitmapByteOrder32Host ，这样的话不管当前设备采用的是小端模式还是大端模式，字节顺序始终与其保持一致。
+下面，我们来看一张图，它非常形象地展示了在使用 16 或 32 位像素格式的 CMYK 和 RGB 颜色空间下，一个像素是如何被表示的：
+【图3】
+我们从图中可以看出，在 32 位像素格式下，每个颜色分量使用 8 位；而在 16 位像素格式下，每个颜色分量则使用 5 位。
+我们再回过头来看看 CGBitmapContextCreate 函数中每个参数所代表的具体含义：
+	data ：如果不为 NULL ，那么它应该指向一块大小至少为 bytesPerRow * height 字节的内存；如果 为 NULL ，那么系统就会为我们自动分配和释放所需的内存，所以一般指定 NULL 即可；
+	width 和 height ：位图的宽度和高度，分别赋值为图片的像素宽度和像素高度即可；
+	bitsPerComponent ：像素的每个颜色分量使用的 bit 数，在 RGB 颜色空间下指定 8 即可；
+	bytesPerRow ：位图的每一行使用的字节数，大小至少为 width * bytes per pixel 字节。有意思的是，当我们指定 0 时，系统不仅会为我们自动计算，而且还会进行 cache line alignment 的优化，更多信息可以查看 what is byte alignment (cache line alignment) for Core Animation? Why it matters? 和 Why is my image’s Bytes per Row more than its Bytes per Pixel times its Width? ，亲测可用；
+	space ：就是我们前面提到的颜色空间，一般使用 RGB 即可；
+	bitmapInfo ：就是我们前面提到的位图的布局信息。
+
+
+## +imageNamed：
+通过 imageNamed 创建 UIImage 时，当 UIImage 第一次显示到屏幕上时，其内部的解码方法才会被调用，并且内存中自动缓存解压后的图片。当APP第一次退到后台和收到内存警告时，缓存才会被自动清空。
+
+## +imageWithContentsOfFile:
+这个方法不会缓存解压后的图片，也就是说每次调用时都会对文件进行加载和解压。iOS通常会延迟解压图片，为了提升性能，在屏幕绘制前可以强制解压。
+有两种方法可以强制解压：
+	1.将图片的一个像素绘制成一个像素大小的CGContext。这样仍然会解压整张图片，但是绘制本身并没有消耗任何时间。这样的好处在于加载的图片并不会在特定的设备上为绘制做优化，所以可以在任何时间点绘制出来。同样iOS也就可以丢弃解压后的图片来节省内存了。
+	```
+		//解压缩这个image，即时它只有一个像素。
+		- (void)decompressImage:(UIImage *)image
+		{
+		UIGraphicsBeginImageContext(CGSizeMake(1, 1));
+		[image drawAtPoint:CGPointZero];
+		UIGraphicsEndImageContext();
+		}
+	```
+	2.将整张图片绘制到CGContext中，丢弃原始的图片，并且用一个从上下文内容中新的图片来代替。这样比绘制单一像素那样需要更加复杂的计算，但是因此产生的图片将会为绘制做优化，而且由于原始压缩图片被抛弃了，iOS就不能够随时丢弃任何解压后的图片来节省内存了。
+	```
+	- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+	    //dequeue cell
+	    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
+	    ...
+	    //切换到子线程
+	    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+	        //load image
+	        NSInteger index = indexPath.row;
+	        NSString *imagePath = self.imagePaths[index];
+	        UIImage *image = [UIImage imageWithContentsOfFile:imagePath];
+	        //redraw image using device context
+	        UIGraphicsBeginImageContextWithOptions(imageView.bounds.size, YES, 0);
+	        [image drawInRect:imageView.bounds];
+	        image = UIGraphicsGetImageFromCurrentImageContext();
+	        UIGraphicsEndImageContext();
+	        //set image on main thread, but only if index still matches up
+	        dispatch_async(dispatch_get_main_queue(), ^{
+	            if (index == cell.tag) {
+	                imageView.image = image;
+	            }
+	        });
+	    });
+	    return cell;
+	}
+	```
+
+# Large Image Downsizing(缩小)
+SDWebImage解码的方法在SDWebImageDecoder这个类里。这个类里有两个方法，decodedImageWithImage是直接对图片解码，decodedAndScaledDownImageWithImage这个方法里会先判断图片的要解压缩的图片大小是否超过60M，没超过的话会调用decodedImageWithImage这个方法直接解码图片，否则会对原图片进行缩放以减少占用内存空间，并且解码图片时会把原始的图片数据分成多个tail进行解码。这个过程应该是参考了apple的 Large Image Downsizing(https://developer.apple.com/library/archive/samplecode/LargeImageDownsizing/Introduction/Intro.html)
+在这个demo里，有一张large_leaves_70mp.jpg的图片，它在磁盘上的大小是8.3M，但它的像素是7033x10110的，也就是说图片解码后显示在屏幕上时所占的内存是7033x10110x4byte（一个像素是4byte），也就是271MB，这样一张图片，通过通常方法(imageView.image=image)是无法正常显示的。
+demo里原始图片进行了缩放，并且对把原始图片分成多个tail进行解码。
+缩放的主要代码：
+```
+///原始图片的在像素上的宽高：
+sourceResolution.width = CGImageGetWidth(sourceImage.CGImage);
+sourceResolution.height = CGImageGetHeight(sourceImage.CGImage);
+/// 计算缩放比例
+imageScale = destTotalPixels / sourceTotalPixels;
+// 计算缩放目标图片的宽高
+ destResolution.width = (int)( sourceResolution.width * imageScale );
+ destResolution.height = (int)( sourceResolution.height * imageScale );
+// 创建缩放目标图片的context：
+// create the output bitmap context
+destContext = CGBitmapContextCreate( destBitmapData, destResolution.width, destResolution.height, 8, bytesPerRow, colorSpace, kCGImageAlphaPremultipliedLast );
+
+```
+虽然我们对超大图片进行了缩放，但是依然较大，特别是在绘制的时候，非常耗性能。所以Sample中的方法是将该图的绘制分成多个Tile来进行，在该Sample中这张图片被分成了14个Tile。sourceTile表示从原图上截取的Tile尺寸，destTile表示最终绘制到界面上的Tile尺寸。
+demo里通过宏tileTotalPixels定义了一个tile的总的尺寸，然后计算了原图片一个tile的高度
+```
+sourceTile.size.width = sourceResolution.width;
+    // the source tile height is dynamic. Since we specified the size
+    // of the source tile in MB, see how many rows of pixels high it
+    // can be given the input image width.
+    sourceTile.size.height = (int)( tileTotalPixels / sourceTile.size.width );  
+
+/// 然后根据比例计算目标tile的高度：
+destTile.size.height = sourceTile.size.height * imageScale;      
+// 计算原图片tile的个数：
+int iterations = (int)( sourceResolution.height / sourceTile.size.height );
+int remainder = (int)sourceResolution.height % (int)sourceTile.size.height; if( remainder ) iterations++;
+// 根据tile的个数进行循环，把每一个原始图片的tile绘制到context中，代码里的注释提到了，CGContextDrawImage调用时数据会被解码。
+for( int y = 0; y < iterations; ++y ) {
+        // create an autorelease pool to catch calls to -autorelease made within the downsize loop.
+        NSAutoreleasePool* pool2 = [[NSAutoreleasePool alloc] init];
+        NSLog(@"iteration %d of %d",y+1,iterations);
+        sourceTile.origin.y = y * sourceTileHeightMinusOverlap + sourceSeemOverlap; 
+        destTile.origin.y = ( destResolution.height ) - ( ( y + 1 ) * sourceTileHeightMinusOverlap * imageScale + destSeemOverlap ); 
+        // create a reference to the source image with its context clipped to the argument rect.
+        sourceTileImageRef = CGImageCreateWithImageInRect(sourceImage.CGImage, sourceTile);
+        // if this is the last tile, it's size may be smaller than the source tile height.
+        // adjust the dest tile size to account for that difference.
+        if( y == iterations - 1 && remainder ) {
+            float dify = destTile.size.height;
+            destTile.size.height = CGImageGetHeight( sourceTileImageRef ) * imageScale;
+            dify -= destTile.size.height;
+            destTile.origin.y += dify;
+        }
+        // read and write a tile sized portion of pixels from the input image to the output image. 
+        CGContextDrawImage( destContext, destTile, sourceTileImageRef );
+        /* release the source tile portion pixel data. note,
+         releasing the sourceTileImageRef doesn't actually release the tile portion pixel
+         data that we just drew, but the call afterward does. */
+        CGImageRelease(sourceTileImageRef);
+        /* while CGImageCreateWithImageInRect lazily loads just the image data defined by the argument rect, 
+         that data is finally decoded from disk to mem when CGContextDrawImage is called. sourceTileImageRef 
+         maintains internally a reference to the original image, and that original image both, houses and 
+         caches that portion of decoded mem. Thus the following call to release the source image. */
+        [sourceImage release];
+        // free all objects that were sent -autorelease within the scope of this loop.
+        [pool2 drain];     
+        // we reallocate the source image after the pool is drained since UIImage -imageNamed
+        // returns us an autoreleased object.         
+        if( y < iterations - 1 ) {            
+            sourceImage = [[UIImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:kImageFilename ofType:nil]];
+            [self performSelectorOnMainThread:@selector(updateScrollView:) withObject:nil waitUntilDone:YES];
+        }
+    }
+```
+
+
+
+
+
+https://www.jianshu.com/p/4da6981a746c
+
+
+
+
+
+
+
+
+
+
+
+
