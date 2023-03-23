@@ -38,9 +38,9 @@
 [Mac-O](https://developer.apple.com/library/content/documentation/DeveloperTools/Conceptual/MachOTopics/0-Introduction/introduction.html)
 一个Mach-O文件包含3个主要区域：
 	1.Header：保存文件的基本信息，如文件类型、CPU架构信息、加载命令个数等。
-	2.Load commands：根据这里的数据确定内存分布(本身不包含数据，类似于一个指针)。
+	2.Load commands：根据这里的数据确定内存分布(本身不包含数据，类似于一个指针索引)。
 	3.Raw segement data：存放具体的代码和数据，是Mach-O文件真正的内容数据。
-
+[图2]
 ## 如何查看Mach-O的结构
 	1.file:查看Mach-O的文件类型
 		```
@@ -52,3 +52,111 @@
 		3.2、导出某种特定架构：lipo 文件路径 -thin 架构类型 -output 输出文件路径
 		3.3、合并多种架构：lipo 文件路径1 文件路径2 -output 输出文件路径
 	4.GUI工具 MachOView（https://github.com/gdbinit/MachOView）
+
+### MachOView
+	使用MachOView
+		file->open->xxx打开一个.xcodeproj项目的Product下面的工程文件->显示包内容->选择exec文件
+	由于默认加载的Mach-O是一个fat二进制文件，包含了2个架构，一个arm64.一个armv7。fat二进制回避单框架的mach-O多个Fat Header。
+	[图3]
+	上图所示，这个段从右侧的数据可以看到保存了每个架构的一些信息，比如cup type， subtype ，偏移量offset和大小size等。
+	分离架构后可以查看对应的单架构Mach-O内容
+	```
+	lipo -thin arm64（架构，也可以使用armv7） XXX(胖二进制文件路径) -output XXX（输出路径）
+	```
+	[图4]
+	重新打开瘦身后的Mach-O文件，可以看到具体内容:Magic Num、CPU Type、CPU SubType
+	在MachOView的load.h文件看到每个内容的意思
+	```
+	struct mach_header_64 {
+	uint32_t	magic;		/* mach magic number identifier */
+	cpu_type_t	cputype;	/* cpu specifier */
+	cpu_subtype_t	cpusubtype;	/* machine specifier */
+	uint32_t	filetype;	/* type of file */
+	uint32_t	ncmds;		/* number of load commands Load Command的数量 */ 
+	uint32_t	sizeofcmds;	/* the size of all the load commands Load Command的大小 */
+	uint32_t	flags;		/* flags */
+	uint32_t	reserved;	/* reserved */
+	};
+	```
+	[图5]
+	Load Commands段解析：（可以在MachOView项目中看到对应注释）
+		__PAGEZERO：__PAGEZERO是一个特殊的段，主要目的是将低地址占用，防止用户空间访问。个人理解这是对空指针引用类型漏洞的一种缓解措施（即常见的ESC_BAD_ACCESS错误）。
+		__TEXT段：一般用来存放不可修改的数据，比如代码和const字符串。
+		__DATA：数据段，一般包括可读写的内容，我们定义的静态变量，全局变量等都存储在这个段。
+		LC_LOAD_DYLIB（XXX）：代表mach-o内部用到了这些库，需要进行链接，绑定
+		[图6]
+	Load Commands是mach-o的一个全部内容的索引，也是体现mach-o拓展性的地方，每个 command 的头两个word分别表示类型和大小。
+	```
+	struct load_command {
+		uint32_t cmd;		/* type of load command */
+		uint32_t cmdsize;	/* total size of command in bytes */
+	};
+	```
+
+	LC_SEGMENT_64结构体
+	```
+	/*
+	 * The 64-bit segment load command indicates that a part of this file is to be
+	 * mapped into a 64-bit task's address space.  If the 64-bit segment has
+	 * sections then section_64 structures directly follow the 64-bit segment
+	 * command and their size is reflected in cmdsize.
+	 */
+	struct segment_command_64 { /* for 64-bit architectures */
+		uint32_t	cmd;		/* LC_SEGMENT_64 LC_对应的段 */ 
+		uint32_t	cmdsize;	/* includes sizeof section_64 structs 当前段的大小 */ 
+		char		segname[16];	/* segment name 当前段的别名，即括号内的内容，例如__PAGEZERO */
+		uint64_t	vmaddr;		/* memory address of this segment 当前段在虚拟内存中的地址 */
+		uint64_t	vmsize;		/* memory size of this segment 虚拟内存的大小 */
+		uint64_t	fileoff;	/* file offset of this segment 当前段映射到内存中在mach-o文件中的偏移量 */
+		uint64_t	filesize;	/* amount to map from the file 当前段在mach-o文件中占用空间的大小 */
+		vm_prot_t	maxprot;	/* maximum VM protection  当前段的权限，比如read、write、execute等 */
+		vm_prot_t	initprot;	/* initial VM protection */
+		uint32_t	nsects;		/* number of sections in segment  当前段包含多少个sections，只有__TEXT、__DATA这2个段才有sections*/
+		uint32_t	flags;		/* flags 一些标志位 */
+	};
+	```
+	下面通过实际来查看上述segment_command_64每个成员变量的意义
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
