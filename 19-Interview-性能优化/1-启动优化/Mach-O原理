@@ -1,0 +1,363 @@
+启动优化
+
+# Mach-O
+	Mach-O（Mach object） 是Mac\iOS上用于存储程序、库的标准格式,是针对不同运行时可执行文件的文件类型。
+```
+#define MH_OBJECT   0x1     /* Target 文件：编译器对源码编译后得到的中间结果 */
+#define MH_EXECUTE  0x2     /* 可执行二进制文件 */
+#define MH_FVMLIB   0x3     /* VM 共享库文件（还不清楚是什么东西） */
+#define MH_CORE     0x4     /* Core 文件，一般在 App Crash 产生 */
+#define MH_PRELOAD  0x5     /* preloaded executable file */
+#define MH_DYLIB    0x6     /* 动态库 */
+#define MH_DYLINKER 0x7     /* 动态连接器 /usr/lib/dyld */
+#define MH_BUNDLE   0x8     /* 非独立的二进制文件，往往通过 gcc-bundle 生成 */
+#define MH_DYLIB_STUB   0x9     /* 静态链接文件（还不清楚是什么东西） */
+#define MH_DSYM     0xa     /* 符号文件以及调试信息，在解析堆栈符号中常用 */
+#define MH_KEXT_BUNDLE  0xb     /* x86_64 内核扩展 */
+```
+## 常见Mach-O文件类型
+	MH_OBJECT
+		1.目标文件（.o）
+		2.静态库文件(.a），静态库其实就是N个.o合并在一起的
+	MH_EXECUTE:可执行文件
+		.app/xx
+	MH_DYLIB:动态库文件
+		.dylib
+		.framework/xx
+	MH_DYLINKER:动态链接编辑器
+		/usr/lib/dyld
+	MH_DSYM:存储着二进制文件符号信息的文件
+		.dSYM/Contents/Resources/DWARF/xx（常用于分析APP的崩溃信息）
+只有MH_EXECUTE、MH_DYLIB、MH_BUNDLE这3种类型的mach-o才能被dyld加载，其余的类型都会抛出错误。
+
+.o文件编译生成过程：
+[图1]
+
+## Mach-O基本结构
+[Mac-O](https://developer.apple.com/library/content/documentation/DeveloperTools/Conceptual/MachOTopics/0-Introduction/introduction.html)
+一个Mach-O文件包含3个主要区域：
+	1.Header：保存文件的基本信息，如文件类型、CPU架构信息、加载命令个数等。
+	2.Load commands：根据这里的数据确定内存分布(本身不包含数据，类似于一个指针索引)。
+	3.Raw segement data：存放具体的代码和数据，是Mach-O文件真正的内容数据。
+[图2]
+## 如何查看Mach-O的结构
+	1.file:查看Mach-O的文件类型
+		```
+		file 文件路径
+		```
+	2.otool:查看Mach-O特定部分和段的内容
+	3.lipo：常用语多框架Mach-O文件处理
+		3.1、查看架构信息：lipo -info 文件路径
+		3.2、导出某种特定架构：lipo 文件路径 -thin 架构类型 -output 输出文件路径
+		3.3、合并多种架构：lipo 文件路径1 文件路径2 -output 输出文件路径
+	4.GUI工具 MachOView（https://github.com/gdbinit/MachOView）
+
+### MachOView
+	使用MachOView
+		file->open->xxx打开一个.xcodeproj项目的Product下面的工程文件->显示包内容->选择exec文件
+	由于默认加载的Mach-O是一个fat二进制文件，包含了2个架构，一个arm64.一个armv7。fat二进制回避单框架的mach-O多个Fat Header。
+	[图3]
+	上图所示，这个段从右侧的数据可以看到保存了每个架构的一些信息，比如cup type， subtype ，偏移量offset和大小size等。
+	分离架构后可以查看对应的单架构Mach-O内容
+	```
+	lipo -thin arm64（架构，也可以使用armv7） XXX(胖二进制文件路径) -output XXX（输出路径）
+	```
+	[图4]
+	重新打开瘦身后的Mach-O文件，可以看到具体内容:Magic Num、CPU Type、CPU SubType
+	在MachOView的load.h文件看到每个内容的意思
+	```
+	struct mach_header_64 {
+	uint32_t	magic;		/* mach magic number identifier */
+	cpu_type_t	cputype;	/* cpu specifier */
+	cpu_subtype_t	cpusubtype;	/* machine specifier */
+	uint32_t	filetype;	/* type of file */
+	uint32_t	ncmds;		/* number of load commands Load Command的数量 */ 
+	uint32_t	sizeofcmds;	/* the size of all the load commands Load Command的大小 */
+	uint32_t	flags;		/* flags */
+	uint32_t	reserved;	/* reserved */
+	};
+	```
+	[图5]
+	Load Commands段解析：（可以在MachOView项目中看到对应注释）
+		__PAGEZERO：__PAGEZERO是一个特殊的段，主要目的是将低地址占用，防止用户空间访问。个人理解这是对空指针引用类型漏洞的一种缓解措施（即常见的ESC_BAD_ACCESS错误）。
+		__TEXT段：一般用来存放不可修改的数据，比如代码和const字符串。
+		__DATA：数据段，一般包括可读写的内容，我们定义的静态变量，全局变量等都存储在这个段。
+		LC_LOAD_DYLIB（XXX）：代表mach-o内部用到了这些库，需要进行链接，绑定
+		[图6]
+	Load Commands是mach-o的一个全部内容的索引，也是体现mach-o拓展性的地方，每个 command 的头两个word分别表示类型和大小。
+	```
+	struct load_command {
+		uint32_t cmd;		/* type of load command */
+		uint32_t cmdsize;	/* total size of command in bytes */
+	};
+	```
+
+	LC_SEGMENT_64结构体
+	```
+	/*
+	 * The 64-bit segment load command indicates that a part of this file is to be
+	 * mapped into a 64-bit task's address space.  If the 64-bit segment has
+	 * sections then section_64 structures directly follow the 64-bit segment
+	 * command and their size is reflected in cmdsize.
+	 */
+	struct segment_command_64 { /* for 64-bit architectures */
+		uint32_t	cmd;		/* LC_SEGMENT_64 LC_对应的段 */ 
+		uint32_t	cmdsize;	/* includes sizeof section_64 structs 当前段的大小 */ 
+		char		segname[16];	/* segment name 当前段的别名，即括号内的内容，例如__PAGEZERO */
+		uint64_t	vmaddr;		/* memory address of this segment 当前段在虚拟内存中的地址 */
+		uint64_t	vmsize;		/* memory size of this segment 虚拟内存的大小 */
+		uint64_t	fileoff;	/* file offset of this segment 当前段映射到内存中在mach-o文件中的偏移量 */
+		uint64_t	filesize;	/* amount to map from the file 当前段在mach-o文件中占用空间的大小 */
+		vm_prot_t	maxprot;	/* maximum VM protection  当前段的权限，比如read、write、execute等 */
+		vm_prot_t	initprot;	/* initial VM protection */
+		uint32_t	nsects;		/* number of sections in segment  当前段包含多少个sections，只有__TEXT、__DATA这2个段才有sections*/
+		uint32_t	flags;		/* flags 一些标志位 */
+	};
+	```
+	下面根据__TEXT来查看上述segment_command_64每个成员变量的意义
+	[图7]
+	cmd(command):LC_SEGMENT_64
+	cmdsize:1032->当前SEGMENt的总大小（上图，offset：00000068，转成16进制0x68，1032转成16进制是x408,x068+x408=x470,表示下一个段的__DATA起点）
+	[图8]
+	segname：__TEXT -> 当前段的名字
+	vmaddr：4294967296 -> 映射到内存的大小，4294967296/1024/1024/1024=4G
+	vmsize:
+		看上图，在下方Section64（__DATA,__got）段的起始地址就是00F58000，是不是和vmsize一致？
+		再注意看__DATA段的上面那个段，是__TEXT段，请注意，Section64（XXX）段代表的是真正存放数据的段，与LC_xxx段有着本质的区别，LC_XXX段是索引，不存放具体的数据。
+		而vmaddr是什么呢？其实是Mach-o文件加载到虚拟内存的地址的起始位置，在这里每个mach-o文件都是固定的数值。读者肯定会有疑惑，如果内存起始地址写死在文件里，那就相当于我可以根据地址随意访问mach-o中的任意数据了吗？
+		苹果为了防止出现这种情况，对真实的内存地址是做了随机偏移的，也就是传说中的ASLR，全称为：Address Space Layout Randomization，也就是说，真实的地址 = vmaddr + ASLR的偏移量
+	fileoff：全0。TEXT段映射的时候会将文件头部也映射到进程空间。__TEXT段从0开始，__DATA的起始位置地址就是__TEXT的大小。fileoff+filesize=下一个段的虚拟内存开始
+	filesize：0000000000F58000，前面已经分析过了，__TEXT段到__DATA段的长度就是这个长度。
+	maxprot、initprot：VM_PROT_READ、VM_PROT_EXECUTE，表示__TEXT段可读，数据允许执行。（__DATA段是VM_PROT_READ、VM_PROT_WRITE，表示可读可写）
+	nsects：值为12，说明__TEXT段有12个section。注意：只有__TEXT、__DATA这2个段才有sections
+	flags：空
+
+	Section_64结构体
+	SEGMENT包含了一个后者多个section，那么在segment结构体之后紧跟着各个section头，总大小也包括在cmdsize中,section和segment很多成员变量的都相似，其含义也差不多相同
+	```
+	struct section_64 { /* for 64-bit architectures */
+		char		sectname[16];	/* name of this section */
+		char		segname[16];	/* segment this section goes in */
+		uint64_t	addr;		/* memory address of this section */
+		uint64_t	size;		/* size in bytes of this section */
+		uint32_t	offset;		/* file offset of this section */
+		uint32_t	align;		/* section alignment (power of 2) */
+		uint32_t	reloff;		/* file offset of relocation entries */
+		uint32_t	nreloc;		/* number of relocation entries */
+		uint32_t	flags;		/* flags (section type and attributes)*/
+		uint32_t	reserved1;	/* reserved (for offset or index) */
+		uint32_t	reserved2;	/* reserved (for count or sizeof) */
+		uint32_t	reserved3;	/* reserved */
+	};
+	```
+	[图9]
+	section_64其实是个索引，真正存放数据的位置不在这，那么在哪呢？看上图右侧，offset的值为00005940，真正的代码数据起始地址就在mach-o偏移00005940的位置。我们滑动鼠标滚轮往下找到Section64（__TEXT，__text）来验证一下。
+	[图10]
+	将鼠标点到Assembly，可以看到一个一个汇编指令，这是app的代码在被编译的时候会被编译成机器语言也就是汇编语言存储在mach-o中，所以上图验证了__TEXT段存储的就是我们写的代码。
+
+	__TEXT每个section的含义：
+	[图11]
+	__text: 可执行文件的代码区域
+	__objc_methname: 方法名
+	__objc_classname: 类名
+	__objc_methtype: 方法签名
+	__cstring: 类 C 风格的字符串
+
+	LC_DYLD_INFO_ONLY结构体
+	这个command主要提供动态链接器dyld，目的是为了给dyld提供能够加载目标Mach-O所需的必要信息：
+		1、因为可能加载到随机地址，所以需要rebase信息；
+		2、如果进程依赖其他镜像的符号，则绑定需要bind信息；
+		3、对于C++程序而言可能需要weak bind实现代码/数据复用；
+		4、对于一些外部符号不需要立即绑定的可以延时加载，这就需要lazy bind信息；
+		5、对于导出符号也需要对应的export信息。
+	```
+	struct dyld_info_command {
+	   uint32_t   cmd;		/* LC_DYLD_INFO or LC_DYLD_INFO_ONLY */
+	   uint32_t   cmdsize;		/* sizeof(struct dyld_info_command) */
+	    uint32_t   rebase_off;	/* file offset to rebase info  */
+	    uint32_t   rebase_size;	/* size of rebase info   */
+	    uint32_t   bind_off;	/* file offset to binding info   */
+	    uint32_t   bind_size;	/* size of binding info  */
+	    uint32_t   weak_bind_off;	/* file offset to weak binding info   */
+	    uint32_t   weak_bind_size;  /* size of weak binding info  */
+	    uint32_t   lazy_bind_off;	/* file offset to lazy binding info */
+	    uint32_t   lazy_bind_size;  /* size of lazy binding infs */
+	    uint32_t   export_off;	/* file offset to lazy binding info */
+	    uint32_t   export_size;	/* size of lazy binding infs */
+	};
+	```
+	xxx_off代表该信息在Mach-O中的偏移位置，根据这个偏移值，可以在Mach-O下的Dynamic Load Info里找到具体信息
+	[图12]
+	D我们完全可以这样理解：LC_DYLD_INFO_ONLY是Dynamic Load Info段的索引。
+
+	rebase/bind:
+		为了描述rebase/bind信息，dyly定义了一套伪指令，用来描述具体的操作（opcode）及其操作数据。以延时绑定为例，我们从操作符看：
+		[图13]
+		name：_AUGraphInitialize
+		set：uleb128编码的值 0xC006，如果我们直接以0xC006这个地址去查找，会发现找到的信息是不对的。因为uleb128编码的数据是不能直接使用的，需要经过转换才能使用。
+			对于uleb128编码来说，其特点如下：
+			1）一个uleb128编码的整形值，其占用的字节数是不确定的，长度有可能在1到5个字节之间变化；
+			2）一个uleb128编码的整形值，是以字节中最高位是否为0来表示字节流有没有结束的。
+			转换方法如下，以0xC006为例，先将其从小端转换成大端，得到0x06C0。然后再展开成二进制的01数据：0000 0110 1100 0000，然后从低位往高位算，以1为起始开始，每第8位的值删除，然后再将删除后的所有7位组合起来。以0x06C0为例：源数据：0000 0110 1100 0000 ，删除第8位：  0000 0110 100 0000  --  转换成16进制为 0x340。加上一个起始地址才能找到真实存放地址。
+			数据段存放的是可以读写的数据，而rebase和bind是不是需要对指针重新计算，所以这些数据都是存放在__DATA段的，那这个起始位置就很清楚了，就是__DATA段的起始位置。上文已经查到__DATA的起始地址是0xF58000。那么加上转换得到的值0x340，即得到真实数据的地址0xF58340。
+			验证如下：找到__DATA段的地址验证：
+			[图14]
+			而且从上图不难发现，所有的symbol数据都是存放在（__DATA,__got）和（__DATA,__la_symbol_ptr）这两个段的。
+			（__DATA,__got）这个段是存放非懒加载的符号指针，即在加载阶段就已经绑定好了符号地址，比如dyld_stub_binder，这个函数是用于动态绑定函数符号地址的。
+			（__DATA,__la_symbol_ptr）是存放懒加载的符号指针的，即在运行过程中再进行动态查找具体的函数地址。
+
+	Binding
+	看上图_AUGraphInitialize符号存放的数据：00000000 100BD6948。这是一段地址，我们来找找这个地址在哪个段，最后发现在Section64（__TEXT,__stub_helper）段
+	[图15]
+	不难发现，这个地址存放的是一段汇编指令，但是他真实要执行的指令不是00BD6948，而是00BD694C，因为寄存器存放指令的地址也要算上，也就是说，要加寄存器的内存，一条指令占4个字节，所以要加上4个字节，即得到100BD694C，这条指令是 b #0x100bd690c，b是跳转的意思，意思是跳转到0x100bd690c这个地址去执行。再看上面00BD6940的指令，也是b #0x100bd690c，这条指令其实就是其他符号被调用的时候执行的汇编代码。也就是说所有需要binging的符号都会执行到这条指令，这其实就是binging的中间跳板。然后通过这个地址的命令去寻址真实地址，通过dyld_stub_binder函数获取，dyld_stub_binder这个函数的符号是非延迟绑定的，会在dyld进行加载的时候就进行绑定（该函数符号存放在Section(__DATA,__got)段的最末尾）。最后会将通过dyld_stub_binder找到的真实地址写入到（__DATA,__la_symbol_ptr）或者（__DATA,__got）对应函数符号地址的data中。下次再调用这个函数的时候就可以根据这个存入的数据直接调用了。
+	以上就是Binging的具体过程了。
+
+	Rebase
+	那么Rebase的过程又是怎么样的呢？这就要提到Section64（__TEXT,__stubs)这个段了，这个段存放的全都是以 101CXXXXXXXXXXXX 开头的数据。101C其实就是汇编指令adrp。事实上在代码执行到需要rebase的函数时，会跳转到
+	[图16]
+	__stub段该函数的地址。然后经过一系列的地址计算，计算结果就是Section(__DATA,__la_symbol_ptr)中该函数的地址。然后按照上述Binging的过程就能查找到具体的地址了。
+	[深入理解Mach-O文件中的Rebase和Bind](http://blog.cocosdever.com/2020/09/13/2020-09-13-understanding-rebase-and-bind/)
+
+	LC_SYMTAB
+	```
+	/*
+	 * The symtab_command contains the offsets and sizes of the link-edit 4.3BSD
+	 * "stab" style symbol table information as described in the header files
+	 * <nlist.h> and <stab.h>.
+	 */
+	struct symtab_command {
+		uint32_t	cmd;		/* LC_SYMTAB */
+		uint32_t	cmdsize;	/* sizeof(struct symtab_command) */
+		uint32_t	symoff;		/* symbol table offset */
+		uint32_t	nsyms;		/* number of symbol table entries */
+		uint32_t	stroff;		/* string table offset */
+		uint32_t	strsize;	/* string table size in bytes */
+	};
+	```
+
+	LC_DYSYMTAB（动态符号表）
+	```
+	struct dysymtab_command {
+	    uint32_t cmd;	/* LC_DYSYMTAB */
+	    uint32_t cmdsize;	/* sizeof(struct dysymtab_command) */
+	    uint32_t ilocalsym;	/* index to local symbols */
+	    uint32_t nlocalsym;	/* number of local symbols */
+	    uint32_t iextdefsym;/* index to externally defined symbols */
+	    uint32_t nextdefsym;/* number of externally defined symbols */
+	    uint32_t iundefsym;	/* index to undefined symbols */
+	    uint32_t nundefsym;	/* number of undefined symbols */
+	    uint32_t tocoff;	/* file offset to table of contents */
+	    uint32_t ntoc;	/* number of entries in table of contents */
+	    uint32_t modtaboff;	/* file offset to module table */
+	    uint32_t nmodtab;	/* number of module table entries */
+	    uint32_t extrefsymoff;	/* offset to referenced symbol table */
+	    uint32_t nextrefsyms;	/* number of referenced symbol table entries */
+	    uint32_t indirectsymoff; /* file offset to the indirect symbol table */
+	    uint32_t nindirectsyms;  /* number of indirect symbol table entries */
+	    uint32_t extreloff;	/* offset to external relocation entries */
+	    uint32_t nextrel;	/* number of external relocation entries */
+	    uint32_t locreloff;	/* offset to local relocation entries */
+	    uint32_t nlocrel;	/* number of local relocation entries */
+	}
+	```
+	动态符号command定义了各种符号的偏移量和各种符号的个数(9种)。
+
+	LC_UUID
+	```
+	struct uuid_command {
+	    uint32_t	cmd;		/* LC_UUID */
+	    uint32_t	cmdsize;	/* sizeof(struct uuid_command) */
+	    uint8_t	uuid[16];	/* the 128-bit uuid */
+	};
+	```
+	LC_UUID 用来标识唯一APP，每个可执行程序都有一个uuid，这样根据不同的uuid能确定包。比如崩溃日志中就会包含uuid字段。表示是哪个包崩溃了
+
+	LC_LOAD_DYLINKER
+	该段定义了加载动态库的工具dyld，并且保存了dyld的物理地址
+	[图17]
+
+	LC_XXX_DYLIB
+	LC_XXX_WEAK_DYLIB,用来告诉内核(实际上是dyld)当前可执行文件需要使用哪些动态库，而其结构如下:
+	```
+	struct dylib {
+	    union lc_str  name;			/* library's path name */
+	    uint32_t timestamp;			/* library's build time stamp */
+	    uint32_t current_version;		/* library's current version number */
+	    uint32_t compatibility_version;	/* library's compatibility vers number*/
+	};
+	struct dylib_command {
+		uint32_t	cmd;		/* LC_ID_DYLIB, LC_LOAD_{,WEAK_}DYLIB, LC_REEXPORT_DYLIB */
+		uint32_t	cmdsize;	/* includes pathname string */
+		struct dylib	dylib;		/* the library identification */
+	};
+	```
+	动态库(filetype为MH_DYLIB)中会包含LC_ID_DYLIBcommand 来说明自己是个什么库，包括名称、版本、时间戳等信息。需要注意的是lc_str并不是字符串本身，而是字符串的偏移值，字符串信息在command的内容之后，该偏移指的是距离command起始位置的偏移。
+
+	LC_VERSION_MIN_IPHONEOS：存储着最低支持的iOS系统版本。
+	LC_MAIN:保存了main函数的进入地址。
+	LC_PATH:保存Xcode上设置的相关路径。
+	LC_FUNCTION_STARTS:存储着方法的起始偏移地址。
+	LC_DATA_IN_CODE:存储运行中代码的存储空间，即栈和堆空间的offset
+	LC_CODE_SIGNATURE:存储mach-o文件以及代码签名在文件中的offset。
+
+	_DATA段
+	__nl_symbol_ptr: 非懒加载指针表,dyld 加载会立即绑定
+	__ls_symbol_ptr: 懒加载指针表
+	__mod_init_func: constructor 函数
+	__mod_term_func: destructor 函数
+	__objc_classlist: 类列表
+	__objc_nlclslist: 实现了 load 方法的类
+	__objc_protolist: protocol的列表
+	__objc_classrefs: 被引用的类列表
+	__objc _catlist: Category列表
+
+	Symbol Table符号表
+	Dynamic Symbol Table 动态符号表
+		这个是重点中的重点，符号表是将地址和符号联系起来的桥梁。符号表并不能直接存储符号，而是存储符号位于字符串表的位置。
+	String Table 字符串表
+		String表顺序列出了二进制mach-O文件的中的所有可见字符串。串之间通过0x00分隔。可以通过相对String表起始位置的偏移量随机访问String表中的字符串。符号表结构中的n_strx指定的就是String表中的偏移量。通过这个偏移量可以访问到符号对应的具体字符串。
+		所有的变量名、函数名等，都以字符串的形式存储在字符串表中
+
+
+总结
+[图18]
+
+名称解释
+[优化APP的启动时间](http://yulingtianxia.com/blog/2016/10/30/Optimizing-App-Startup-Time/)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+https://www.jianshu.com/p/ff4f0b59e99b
