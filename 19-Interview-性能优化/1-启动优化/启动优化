@@ -1,11 +1,73 @@
 启动优化
 
 启动时间分两部分：
-	main()之前
+	main()之前:也叫pre-main()时间
 	main()之后
 
 	main之前启动做的事情：
 		Load dylibs -> Rebase -> Bind -> Objc -> Initializers
 	main()之后：
 		main()到didFinishLauching或者到第一个ViewController的viewDidLoad
+
+Xcode计算pre-main时间
+	Edit scheme -> Run -> Arguments 中将环境变量 DYLD_PRINT_STATISTICS 设为 1，
+	```
+	Total pre-main time: 341.32 milliseconds (100.0%)
+	         dylib loading time: 154.88 milliseconds (45.3%)
+	        rebase/binding time:  37.20 milliseconds (10.8%)
+	            ObjC setup time:  52.62 milliseconds (15.4%)
+	           initializer time:  96.50 milliseconds (28.2%)
+	           slowest intializers :
+	               libSystem.dylib :   4.07 milliseconds (1.1%)
+	    libMainThreadChecker.dylib :  30.75 milliseconds (9.0%)
+	                  AFNetworking :  19.08 milliseconds (5.5%)
+	                        LDXLog :  10.06 milliseconds (2.9%)
+	                        Bigger :   7.05 milliseconds (2.0%)
+	```
+
+	还有一个方法获取更详细的时间，只需将环境变量 DYLD_PRINT_STATISTICS_DETAILS 设为 1 就可以。
+	```
+	total time: 1.0 seconds (100.0%)
+	  total images loaded:  243 (0 from dyld shared cache)
+	  total segments mapped: 721, into 93608 pages with 6173 pages pre-fetched
+	  total images loading time: 817.51 milliseconds (78.3%)
+	  total load time in ObjC:  63.02 milliseconds (6.0%)
+	  total debugger pause time: 683.67 milliseconds (65.5%)
+	  total dtrace DOF registration time:   0.07 milliseconds (0.0%)
+	  total rebase fixups:  2,131,938
+	  total rebase fixups time:  37.54 milliseconds (3.5%)
+	  total binding fixups: 243,422
+	  total binding fixups time:  29.60 milliseconds (2.8%)
+	  total weak binding fixups time:   1.75 milliseconds (0.1%)
+	  total redo shared cached bindings time:  29.32 milliseconds (2.8%)
+	  total bindings lazily fixed up: 0 of 0
+	  total time in initializers and ObjC +load:  93.76 milliseconds (8.9%)
+	                           libSystem.dylib :   2.58 milliseconds (0.2%)
+	               libBacktraceRecording.dylib :   3.06 milliseconds (0.2%)
+	                            CoreFoundation :   1.85 milliseconds (0.1%)
+	                                Foundation :   2.61 milliseconds (0.2%)
+	                libMainThreadChecker.dylib :  42.73 milliseconds (4.0%)
+	                                   ModelIO :   1.93 milliseconds (0.1%)
+	                              AFNetworking :  18.76 milliseconds (1.7%)
+	                                    LDXLog :   9.46 milliseconds (0.9%)
+	                        libswiftCore.dylib :   1.16 milliseconds (0.1%)
+	                   libswiftCoreImage.dylib :   1.51 milliseconds (0.1%)
+	                                    Bigger :   3.91 milliseconds (0.3%)
+	                              Reachability :   1.48 milliseconds (0.1%)
+	                             ReactiveCocoa :   1.56 milliseconds (0.1%)
+	                                SDWebImage :   1.41 milliseconds (0.1%)
+	                             SVProgressHUD :   1.23 milliseconds (0.1%)
+	total symbol trie searches:    133246
+	total symbol table binary searches:    0
+	total images defining weak symbols:  30
+	total images using weak symbols:  69
+	```
+
+线上度量pre-main时间
+不依靠Xcode度量pre-main时间，可以通过Initialzier段处理C++静态对象的initializer、Objc Load方法执行进行来度量
+[图1-1]
+
+度量Objc Load方法
+通过拦截打点的方式进行计算时间，可以通过dyld的源码看到，整个初始化过程都是从initializeMainExecutable方法开始的。dyld会先初始化动态库，然后初始化app的可执行文件
+
 
