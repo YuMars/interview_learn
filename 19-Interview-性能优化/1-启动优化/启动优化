@@ -1,0 +1,11 @@
+启动优化
+
+启动时间分两部分：
+	main()之前
+	main()之后
+
+	main之前启动做的事情：
+		Load dylibs -> Rebase -> Bind -> Objc -> Initializers
+	main()之后：
+		main()到didFinishLauching或者到第一个ViewController的viewDidLoad
+

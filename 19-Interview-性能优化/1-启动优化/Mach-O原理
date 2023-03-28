@@ -39,6 +39,11 @@
 	1.Header：保存文件的基本信息，如文件类型、CPU架构信息、加载命令个数等。
 	2.Load commands：根据这里的数据确定内存分布(本身不包含数据，类似于一个指针索引)。
 	3.Raw segement data：存放具体的代码和数据，是Mach-O文件真正的内容数据。
+
+	__TEXT 包含 Mach header，被执行的代码和只读常量（如C 字符串）。只读可执行（r-x）。
+	__DATA 包含全局变量，静态变量等。可读写（rw-）。
+	__LINKEDIT 包含了加载程序的『元数据』，比如函数的名称和地址。只读（r–）。
+
 [图2]
 ## 如何查看Mach-O的结构
 	1.file:查看Mach-O的文件类型
@@ -126,11 +131,19 @@
 		再注意看__DATA段的上面那个段，是__TEXT段，请注意，Section64（XXX）段代表的是真正存放数据的段，与LC_xxx段有着本质的区别，LC_XXX段是索引，不存放具体的数据。
 		而vmaddr是什么呢？其实是Mach-o文件加载到虚拟内存的地址的起始位置，在这里每个mach-o文件都是固定的数值。读者肯定会有疑惑，如果内存起始地址写死在文件里，那就相当于我可以根据地址随意访问mach-o中的任意数据了吗？
 		苹果为了防止出现这种情况，对真实的内存地址是做了随机偏移的，也就是传说中的ASLR，全称为：Address Space Layout Randomization，也就是说，真实的地址 = vmaddr + ASLR的偏移量
+		ASLR（Address Space Layout Randomization）：地址空间布局随机化，镜像会在随机的地址上加载。这其实是一二十年前的旧技术了。
 	fileoff：全0。TEXT段映射的时候会将文件头部也映射到进程空间。__TEXT段从0开始，__DATA的起始位置地址就是__TEXT的大小。fileoff+filesize=下一个段的虚拟内存开始
 	filesize：0000000000F58000，前面已经分析过了，__TEXT段到__DATA段的长度就是这个长度。
 	maxprot、initprot：VM_PROT_READ、VM_PROT_EXECUTE，表示__TEXT段可读，数据允许执行。（__DATA段是VM_PROT_READ、VM_PROT_WRITE，表示可读可写）
 	nsects：值为12，说明__TEXT段有12个section。注意：只有__TEXT、__DATA这2个段才有sections
 	flags：空
+
+	虚拟内存：
+		虚拟内存就是一层间接寻址（indirection）。软件工程中有句格言就是任何问题都能通过添加一个间接层来解决。虚拟内存解决的是管理所有进程使用物理 RAM 的问题。通过添加间接层来让每个进程使用逻辑地址空间，它可以映射到 RAM 上的某个物理页上。这种映射不是一对一的，逻辑地址可能映射不到 RAM 上，也可能有多个逻辑地址映射到同一个物理 RAM 上。针对第一种情况，当进程要存储逻辑地址内容时会触发 page fault；第二种情况就是多进程共享内存。
+
+		对于文件可以不用一次性读入整个文件，可以使用分页映射（mmap()）的方式读取。也就是把文件某个片段映射到进程逻辑内存的某个页上。当某个想要读取的页没有在内存中，就会触发 page fault，内核只会读入那一页，实现文件的懒加载。
+
+		也就是说 Mach-O 文件中的 __TEXT 段可以映射到多个进程，并可以懒加载，且进程之间共享内存。__DATA 段是可读写的。这里使用到了 Copy-On-Write 技术，简称 COW。也就是多个进程共享一页内存空间时，一旦有进程要做写操作，它会先将这页内存内容复制一份出来，然后重新映射逻辑地址到新的 RAM 页上。也就是这个进程自己拥有了那页内存的拷贝。这就涉及到了 clean/dirty page 的概念。dirty page 含有进程自己的信息，而 clean page 可以被内核重新生成（重新读磁盘）。所以 dirty page 的代价大于 clean page。
 
 	Section_64结构体
 	SEGMENT包含了一个后者多个section，那么在segment结构体之后紧跟着各个section头，总大小也包括在cmdsize中,section和segment很多成员变量的都相似，其含义也差不多相同
@@ -190,8 +203,28 @@
 	[图12]
 	D我们完全可以这样理解：LC_DYLD_INFO_ONLY是Dynamic Load Info段的索引。
 
+	dyld 加载 dylib 文件
+	Unix 的前二十年很安逸，因为那时还没有发明动态链接库。有了动态链接库后，一个用于加载链接库的帮助程序被创建。在苹果的平台里是 dyld，其他 Unix 系统也有 ld.so。 当内核完成映射进程的工作后会将名字为 dyld 的Mach-O 文件映射到进程中的随机地址，它将 PC 寄存器设为 dyld 的地址并运行。dyld 在应用进程中运行的工作是加载应用依赖的所有动态链接库，准备好运行所需的一切，它拥有的权限跟应用一样。
+
+	下面的步骤构成了 dyld 的时间线：
+	Load dylibs -> Rebase -> Bind -> ObjC -> Initializers
+
+	加载 Dylib
+	从主执行文件的 header 获取到需要加载的所依赖动态库列表，而 header 早就被内核映射过。然后它需要找到每个 dylib，然后打开文件读取文件起始位置，确保它是 Mach-O 文件。接着会找到代码签名并将其注册到内核。然后在 dylib 文件的每个 segment 上调用 mmap()。应用所依赖的 dylib 文件可能会再依赖其他 dylib，所以 dyld 所需要加载的是动态库列表一个递归依赖的集合。一般应用会加载 100 到 400 个 dylib 文件，但大部分都是系统 dylib，它们会被预先计算和缓存起来，加载速度很快。
+
+	Fix-ups
+	在加载所有的动态链接库之后，它们只是处在相互独立的状态，需要将它们绑定起来，这就是 Fix-ups。代码签名使得我们不能修改指令，那样就不能让一个 dylib 的调用另一个 dylib。这时需要加很多间接层。
+
+	现代 code-gen 被叫做动态 PIC（Position Independent Code），意味着代码可以被加载到间接的地址上。当调用发生时，code-gen 实际上会在 __DATA 段中创建一个指向被调用者的指针，然后加载指针并跳转过去。
+	所以 dyld 做的事情就是修正（fix-up）指针和数据。Fix-up 有两种类型，rebasing 和 binding。
+
 	rebase/bind:
-		为了描述rebase/bind信息，dyly定义了一套伪指令，用来描述具体的操作（opcode）及其操作数据。以延时绑定为例，我们从操作符看：
+		为了描述rebase/bind信息，dyly定义了一套伪指令，用来描述具体的操作（opcode）及其操作数据。可以通过命令行查看 rebase 和 bind 等信息：
+		```
+		xcrun dyldinfo -rebase -bind -lazy_bind myapp.app/myapp
+		```
+		通过这个命令可以查看所有的 Fix-up。rebase，bind，weak_bind，lazy_bind 都存储在 __LINKEDIT 段中，并可通过 LC_DYLD_INFO_ONLY 查看各种信息的偏移量和大小。
+		以延时绑定为例，我们从操作符看：
 		[图13]
 		name：_AUGraphInitialize
 		set：uleb128编码的值 0xC006，如果我们直接以0xC006这个地址去查找，会发现找到的信息是不对的。因为uleb128编码的数据是不能直接使用的，需要经过转换才能使用。
@@ -206,16 +239,42 @@
 			（__DATA,__got）这个段是存放非懒加载的符号指针，即在加载阶段就已经绑定好了符号地址，比如dyld_stub_binder，这个函数是用于动态绑定函数符号地址的。
 			（__DATA,__la_symbol_ptr）是存放懒加载的符号指针的，即在运行过程中再进行动态查找具体的函数地址。
 
-	Binding
+	Binding：将指针指向镜像外部的内容
 	看上图_AUGraphInitialize符号存放的数据：00000000 100BD6948。这是一段地址，我们来找找这个地址在哪个段，最后发现在Section64（__TEXT,__stub_helper）段
 	[图15]
 	不难发现，这个地址存放的是一段汇编指令，但是他真实要执行的指令不是00BD6948，而是00BD694C，因为寄存器存放指令的地址也要算上，也就是说，要加寄存器的内存，一条指令占4个字节，所以要加上4个字节，即得到100BD694C，这条指令是 b #0x100bd690c，b是跳转的意思，意思是跳转到0x100bd690c这个地址去执行。再看上面00BD6940的指令，也是b #0x100bd690c，这条指令其实就是其他符号被调用的时候执行的汇编代码。也就是说所有需要binging的符号都会执行到这条指令，这其实就是binging的中间跳板。然后通过这个地址的命令去寻址真实地址，通过dyld_stub_binder函数获取，dyld_stub_binder这个函数的符号是非延迟绑定的，会在dyld进行加载的时候就进行绑定（该函数符号存放在Section(__DATA,__got)段的最末尾）。最后会将通过dyld_stub_binder找到的真实地址写入到（__DATA,__la_symbol_ptr）或者（__DATA,__got）对应函数符号地址的data中。下次再调用这个函数的时候就可以根据这个存入的数据直接调用了。
 	以上就是Binging的具体过程了。
 
-	Rebase
+	Rebase：在镜像内部调整指针的指向
 	那么Rebase的过程又是怎么样的呢？这就要提到Section64（__TEXT,__stubs)这个段了，这个段存放的全都是以 101CXXXXXXXXXXXX 开头的数据。101C其实就是汇编指令adrp。事实上在代码执行到需要rebase的函数时，会跳转到
 	[图16]
 	__stub段该函数的地址。然后经过一系列的地址计算，计算结果就是Section(__DATA,__la_symbol_ptr)中该函数的地址。然后按照上述Binging的过程就能查找到具体的地址了。
+
+	从 dyld 源码层面简要介绍下 Rebasing 和 Binding 的流程。
+	ImageLoader 是一个用于加载可执行文件的基类，它负责链接镜像，但不关心具体文件格式，因为这些都交给子类去实现。每个可执行文件都会对应一个 ImageLoader 实例。ImageLoaderMachO 是用于加载 Mach-O 格式文件的 ImageLoader 子类，而 ImageLoaderMachOClassic 和 ImageLoaderMachOCompressed 都继承于 ImageLoaderMachO，分别用于加载那些 __LINKEDIT 段为传统格式和压缩格式的 Mach-O 文件。
+	因为 dylib 之间有依赖关系，所以 ImageLoader 中的好多操作都是沿着依赖链递归操作的，Rebasing 和 Binding 也不例外，分别对应着 recursiveRebase() 和 recursiveBind() 这两个方法。因为是递归，所以会自底向上地分别调用 doRebase() 和 doBind() 方法，这样被依赖的 dylib 总是先于依赖它的 dylib 执行 Rebasing 和 Binding。传入 doRebase() 和 doBind() 的参数包含一个 LinkContext 上下文，存储了可执行文件的一堆状态和相关的函数。
+	在 Rebasing 和 Binding 前会判断是否已经 Prebinding。如果已经进行过预绑定（Prebinding），那就不需要 Rebasing 和 Binding 这些 Fix-up 流程了，因为已经在预先绑定的地址加载好了。
+	ImageLoaderMachO 实例不使用预绑定会有四个原因：
+		1.Mach-O Header 中 MH_PREBOUND 标志位为 0
+		2.镜像加载地址有偏移（这个后面会讲到）
+		3.依赖的库有变化
+		4.镜像使用 flat-namespace，预绑定的一部分会被忽略
+		5.LinkContext 的环境变量禁止了预绑定
+	ImageLoaderMachO 中 doRebase() 做的事情大致如下：
+		1.果使用预绑定，fgImagesWithUsedPrebinding 计数加一，并 return;否则进入第二步
+		2.如果 MH_PREBOUND 标志位为 1（也就是可以预绑定但没使用），且镜像在共享内存中，重置上下文中所有的 lazy pointer。（如果镜像在共享内存中，稍后会在 Binding 过程中绑定，所以无需重置）
+		3.如果镜像加载地址偏移量为0，则无需 Rebasing，直接 return；否则进入第四步
+		4.调用 rebase() 方法，这才是真正做 Rebasing 工作的方法。如果开启 TEXT_RELOC_SUPPORT 宏，会允许 rebase() 方法对 __TEXT 段做写操作来对其进行 Fix-up。所以其实 __TEXT 只读属性并不是绝对的。
+	ImageLoaderMachOClassic 和 ImageLoaderMachOCompressed 分别实现了自己的 doRebase() 方法。实现逻辑大同小异，同样会判断是否使用预绑定，并在真正的 Binding 工作时判断 TEXT_RELOC_SUPPORT 宏来决定是否对 __TEXT 段做写操作。最后都会调用 setupLazyPointerHandler 在镜像中设置 dyld 的 entry point，放在最后调用是为了让主可执行文件设置好 __dyld 或 __program_vars。
+	Rebasing
+		在过去，会把 dylib 加载到指定地址，所有指针和数据对于代码来说都是对的，dyld 就无需做任何 fix-up 了。如今用了 ASLR 后会将 dylib 加载到新的随机地址(actual_address)，这个随机的地址跟代码和数据指向的旧地址(preferred_address)会有偏差，dyld 需要修正这个偏差(slide)，做法就是将 dylib 内部的指针地址都加上这个偏移量，偏移量的计算方法如下：
+		Slide = actual_address - preferred_address
+		然后就是重复不断地对 __DATA 段中需要 rebase 的指针加上这个偏移量。这就又涉及到 page fault 和 COW。这可能会产生 I/O 瓶颈，但因为 rebase 的顺序是按地址排列的，所以从内核的角度来看这是个有次序的任务，它会预先读入数据，减少 I/O 消耗。
+
+	Binding
+		Binding 是处理那些指向 dylib 外部的指针，它们实际上被符号（symbol）名称绑定，也就是个字符串。之前提到 __LINKEDIT 段中也存储了需要 bind 的指针，以及指针需要指向的符号。dyld 需要找到 symbol 对应的实现，这需要很多计算，去符号表里查找。找到后会将内容存储到 __DATA 段中的那个指针中。Binding 看起来计算量比 Rebasing 更大，但其实需要的 I/O 操作很少，因为之前 Rebasing 已经替 Binding 做过了。
+
+
 	[深入理解Mach-O文件中的Rebase和Bind](http://blog.cocosdever.com/2020/09/13/2020-09-13-understanding-rebase-and-bind/)
 
 	LC_SYMTAB
@@ -299,6 +358,8 @@
 	LC_FUNCTION_STARTS:存储着方法的起始偏移地址。
 	LC_DATA_IN_CODE:存储运行中代码的存储空间，即栈和堆空间的offset
 	LC_CODE_SIGNATURE:存储mach-o文件以及代码签名在文件中的offset。
+
+	代码签名：可能我们认为 Xcode 会把整个文件都做加密 hash 并用做数字签名。其实为了在运行时验证 Mach-O 文件的签名，并不是每次重复读入整个文件，而是把每页内容都生成一个单独的加密散列值，并存储在 __LINKEDIT 中。这使得文件每页的内容都能及时被校验确并保不被篡改。
 
 	_DATA段
 	__nl_symbol_ptr: 非懒加载指针表,dyld 加载会立即绑定
