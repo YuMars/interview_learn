@@ -2,12 +2,102 @@
 
 启动时间分两部分：
 	main()之前:也叫pre-main()时间
-	main()之后
+	main()之后：main
 
-	main之前启动做的事情：
+	main之前启动做的事情：系统dylib（动态链接库）和自身app可执行文件的加载
 		Load dylibs -> Rebase -> Bind -> Objc -> Initializers
-	main()之后：
-		main()到didFinishLauching或者到第一个ViewController的viewDidLoad
+	main()之后：main()到didFinishLauching或者到第一个ViewController的viewDidLoad渲染展示
+
+main()之前的加载过程
+	App开始启动后，系统首先加载可执行文件（自身App的所有.o文件的集合），然后加载动态链接库dyld(dyld是一个专门用来加载动态链接库的库)。执行从dyld开始，dyld从可执行文件的依赖开始，递归加载所有的依赖动态链接库。
+	动态链接库包括：iOS中用的的所有系统framework，加载OC runtime方法libobjc，系统级别的libSystem，例如libdispatch（GCG），libsystem_blocks(Block)
+
+	系统的动态链接库和App本身的可执行文件都有image（镜像），而每个App都以image（镜像）为单位进行加载。
+
+image（镜像）
+	1.executable可执行文件 比如.o文件
+	2.dylib动态链接库，framework就是动态链接库和相应资源包含在一起的文件夹结构。
+	3.bundle资源文件，只能用dlopen加载（不推荐）
+
+	除了App本身的可执行文件，系统中所有的framework比如UIKit，Founddation等都是以动态链接库的方式集成进App中的。
+
+系统使用动态链接的好处：
+	1.代码公用：很多程序都动态链接了这些lib，但是他们在内存和磁盘中只有一份。
+	2.易于维护：由于被依赖的lib是程序执行时才链接的，所以这些lib很容易做更新，比如libSystem.dylib是libSystem.B.dylib的替身，如果需要升级可以直接换成libSysttem.C.dylib然后再替换替身。
+	3.减少可执行文件体积：相比静态链接，动态链接在编译时不需要打进去，所以可执行文件的体积要小很多。
+
+[图1-1]		
+	上图所示，不同进程之间共用系统dylib的_TEXT区，但是各自维护对应的_DATA区。
+
+	所有的动态库和我们App中的静态库.a和所有类文件编译后的.o文件最终都是由dyld（the dynamic link editor），Apple的动态连接器来加载到内存中。每个image都由一个叫做Imageloader的类来负责加载。
+
+ImageLoader
+	image表示一个二进制文件（可执行文件或者so文件），里面被编译过的符号、代码等，所以ImageLoader作用是将这些文件加载进内存，且每个文件对应一个ImageLoader实例来负责加载。
+	1.在程序运行时它先将动态链接的image递归加载。
+	2.从可执行文件image递归加载所有符号。
+	这些都发生在main()之前
+
+动态链接库加载的流程：
+	动态链接库的接在步骤具体分为5步：
+	1.load dylibs image 读取库镜像文件
+	2.Reabase image
+	3.Bind image
+	4.Objc setup
+	5.initializer
+
+	load dylibs image
+		在每个动态库的加载过程，dyld都需要
+		1.分析所依赖的动态库
+		2.找到动态库的mach-o文件
+		3.打开文件
+		4.验证文件
+		5.在系统核心注册文件签名
+		6.对动态库的每一个segment调用mmap()
+		通常，一个App需要加在100到400个dylibs，其中系统库已经被优化，可以很快加载。
+
+		这一步骤可以做的优化：
+		1.减少非系统库的依赖
+		2.合并非系统库
+		3.使用静态资源，比如把代码加入主程序
+
+	rebase/bind
+		由于ASLR（Address space layout radomization）的存在，可执行文件和动态链接库在虚拟内存中的加载地址每次启动都不固定，所以需要这2步来修复镜像中的资源指针，来指向正确的地址。rebase步骤先进行，需要把镜像读入内存，并以page为单位进行加密验证，保证不会被篡改，所以这一步的瓶颈在I/O。binding在其后进行，由于要查询符号表，来指向跨镜像的资源，加上再rebase阶段，镜像一杯读入和加密验证，所以这一步的瓶颈在CPU计算。
+			通过命令行可以查看相关的资源指针:
+			```
+			xcrun dyldinfo -rebase -bind -lazy_bind myApp.App/myApp
+			```
+		优化该阶段的关键在于减少__DATA segment中的指针数量。可以优化的点：
+		1.减少Objc类数量，减少selector方法
+		2.减少C++虚函数数量
+		3.使用swift struct（本质上是为了减少符号的数量）
+
+	Objc setup
+		这一步主要的工作：
+		1.注册Objc类
+		2.把Category的定义插入方法列表
+		3.保证每一个selector唯一
+		(这一步因为 load dylibs image和rebase/bind已经优化，无需做什么)
+
+	initializer
+		上面三步属于静态调整，都在修改_DATA segment中的内容，这一步则开始动态调整，开始在堆和栈中写入内容
+		1.Objc的+load:函数
+		2.C++的构造函数 如：attribute((constructor)) void DoSomeInitializationWork()
+		3.非基本类型的C++静态全局变量的创建（通常是类或者结构体）(non-trivial initializer)比如一个全局静态结构体的创建，如果在构造函数中有繁重的工作，那么会拖慢启动速度。
+
+	Objc的load函数和C++的静态构造函数采用由底向上的方式执行，来保证每个执行的方法都可以找到所依赖的动态库。
+	[图1-2]
+	上图是在自定义类XXViewController的+load方法断点的调用栈，清楚的看到整个调用栈和顺序：
+		1.dyld开始将程序二进制文件初始化
+		2.交由ImageLoader读取image，其中包含了我们的类，方法等各种符号
+		3.由于runtime向dyld绑定了回调，当image加载到内存后，dyld会通知runtime进行处理
+		4.runtime接手后调用mapimages做解析和处理，接下来loadimages中调用callloadmethod方法，遍历所有加载进来的Class，按继承层级一次调用Class的+load方法和其他Category的+load方法
+
+	到此，可执行文件中的动态库所有的符号（Class，Protocol，Selector，IMP，....）都已经按格式成功加载到内存中，被runtime所管理，在这之后，runtime的那些方法（动态添加Class、swizzle等等才生效）
+
+	整个事件由dyld主导，完成运行环境的初始化后，配合imageLoader将二进制文件按照格式加载到内存，动态链接库，并由runtime负责加载成objc定义的结构，所有初始化工作结束后，dyld调用真正的-main()函数
+
+	如果程序刚刚被运行过，那么程序的代码会被dyld缓存，因此即使杀掉进程再次重启，加载时间也会相对快一点，如果长时间没有启动或者当前dyld的缓存已经被其他App占用，那么这次启动所花费的时间就要长一点。这就分别是热启动和冷启动的概念：
+	[图1-3]
 
 Xcode计算pre-main时间
 	Edit scheme -> Run -> Arguments 中将环境变量 DYLD_PRINT_STATISTICS 设为 1，
@@ -62,12 +152,31 @@ Xcode计算pre-main时间
 	total images defining weak symbols:  30
 	total images using weak symbols:  69
 	```
+iOS15或者Xcode14.0之后上面的方式已经失效，苹果官方推荐Instructment的Profile来统计启动时间。
 
-线上度量pre-main时间
-不依靠Xcode度量pre-main时间，可以通过Initialzier段处理C++静态对象的initializer、Objc Load方法执行进行来度量
-[图1-1]
+总结：
+	对于main()调用之间的耗时我们可以优化的点有：
+	1.较少不必要的framework，因为动态连接比较耗时
+	2.check framework应当设为optional和required，如果该framework在当前app支持的所有iOS系统版本都存在，那么久设为required，否则就设为optional，因为optional有额外的检查
+	3.合并或者删除一些OC类，关于清理项目中没用到的类，可以使用AppCode
+	4.删减一些无用的静态变量
+	5.删减没有被调用到的或者已经废弃的方法
+	6.将不必须在+load方法中做的事情延迟到+initializer中
+	7.尽量不要使用C++虚函数
 
-度量Objc Load方法
-通过拦截打点的方式进行计算时间，可以通过dyld的源码看到，整个初始化过程都是从initializeMainExecutable方法开始的。dyld会先初始化动态库，然后初始化app的可执行文件
 
+main()之后的加载
+	在main()被调用之后，App的主要工作就是初始化必要的服务，显示首页内容等。优化也是围绕如何能够快速展现首页来开展。 App通常在AppDelegate类中的- (BOOL)Application:(UIApplication *)Application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions方法中创建首页需要展示的view，然后在当前runloop的末尾，主动调用CA::Transaction::commit完成视图的渲染。
+	而视图渲染主要涉及的三个阶段：
+	1.准备阶段 主要是图片解码
+	2.布局阶段 首页所有UIView的layoutsubview()
+	3.绘制阶段 首页所有UIViewdrewRect
+	还有数据创建和读取
 
+	优化点：
+	1.不实用Xib，直接使用代码加载首页视图
+	2.NSUserDefault实际上是在library文件夹下产生一个Plist文件，如果文件太大的话读取到内存中可能很耗时，进行拆分
+	3.每次使用NSLog打印会隐式的创建一个Calendar（日历），因此需要删减启动时各业务打的log
+	4.梳理应用启动时发送的网络请求，统一在异步线程处理
+
+	
