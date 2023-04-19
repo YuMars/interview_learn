@@ -1,0 +1,168 @@
+Mach异常和signal
+
+Mach为XNU的微内核，Mach异常为最底层的内核级异常，在iOS系统中，底层Crash先触发Mach异常，然后在转换为对应的singal信息。
+
+# iOS Mach异常
+## XNU
+Drawin是Mach OS的iOS的操作系统，而XNU是Drawin操作系统的内核部分。XNU是混合内核，兼具宏内核和微内核的特性，而Mach即为其微内核。
+[图1]
+Drawin操作系统和MacOS，iOS操作系统的对应版本号上图所示，可以通过以下命令查看Drawin版本号
+```
+system_profiler SPSoftwareDataType
+```
+
+## Mach
+Mach:操作系统微内核，是许多新操作系统的设计基础
+Mach微内核有几个基础概念：
+	1.Tasks，拥有一组系统资源的对象，允许Thread在其中执行
+	2.Treads，执行的基本单位，拥有task的上下文，并共享其资源
+	3.Ports，task之间通讯的一组受保护的消息队列，task可对任何port发送、接收数据
+	4.Message，有类型的数据对象集合，只可以发送到port
+
+## 模拟Mach Message发送
+Mach提供少量API，苹果文档介绍较少。
+```
+// 内核中创建一个消息队列，获取对应的port
+mach_port_allocate();
+// 授予task对port的指定权限
+mach_port_insert_right();
+// 通过设定参数：MACH_RSV_MSG/MACH_SEND_MSG用于接收/发送mach message
+mach_msg();
+```
+
+下述代码模拟向Mach Port发送Message，接收Message后做处理：
+	1.首先调用createPortAndAddListener创建Mach Port
+	2.调用sendMachPortMessage:向已创建的Mach Port发送消息；
+
+```
+// 创建Mach Port并监听消息
++ (mach_port_t)createPortAndAddListener {
+    mach_port_t server_port;
+    kern_return_t kr = mach_port_allocate(mach_task_self(), MACH_PORT_RIGHT_RECEIVE, &server_port);
+    assert(kr == KERN_SUCCESS);
+    NSLog(@"create a port: %d", server_port);
+
+    kr = mach_port_insert_right(mach_task_self(), server_port, server_port, MACH_MSG_TYPE_MAKE_SEND);
+    assert(kr == KERN_SUCCESS);
+
+    [self setMachPortListener:server_port];
+
+    return server_port;
+}
+
++ (void)setMachPortListener:(mach_port_t)mach_port {
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+      mach_message mach_message;
+
+      mach_message.Head.msgh_size = 1024;
+      mach_message.Head.msgh_local_port = server_port;
+
+      mach_msg_return_t mr;
+
+      while (true) {
+          mr = mach_msg(&mach_message.Head,
+                        MACH_RCV_MSG | MACH_RCV_LARGE,
+                        0,
+                        mach_message.Head.msgh_size,
+                        mach_message.Head.msgh_local_port,
+                        MACH_MSG_TIMEOUT_NONE,
+                        MACH_PORT_NULL);
+
+          if (mr != MACH_MSG_SUCCESS && mr != MACH_RCV_TOO_LARGE) {
+              NSLog(@"error!");
+          }
+
+          mach_msg_id_t msg_id = mach_message.Head.msgh_id;
+          mach_port_t remote_port = mach_message.Head.msgh_remote_port;
+          mach_port_t local_port = mach_message.Head.msgh_local_port;
+
+          NSLog(@"Receive a mach message:[%d], remote_port: %d, local_port: %d, exception code: %d",
+                msg_id,
+                remote_port,
+                local_port,
+                mach_message.exception);
+
+          abort();
+      }
+  });
+}
+
+// 向指定Mach Port发送消息
++ (void)sendMachPortMessage:(mach_port_t)mach_port {
+    kern_return_t kr;
+    mach_msg_header_t header;
+    header.msgh_bits = MACH_MSGH_BITS(MACH_MSG_TYPE_COPY_SEND, 0);
+    header.msgh_size = sizeof(mach_msg_header_t);
+    header.msgh_remote_port = mach_port;
+    header.msgh_local_port = MACH_PORT_NULL;
+    header.msgh_id = 100;
+
+    NSLog(@"Send a mach message: [%d].", header.msgh_id);
+
+    kr = mach_msg(&header,
+                  MACH_SEND_MSG,
+                  header.msgh_size,
+                  0,
+                  MACH_PORT_NULL,
+                  MACH_MSG_TIMEOUT_NONE,
+                  MACH_PORT_NULL);
+}
+```
+
+## 捕获异常
+	task_set_exception_ports()设置内核接收Mach异常消息的Port，替换为自定义的Port后，即可捕获程序执行过程中产生的异常消息
+```
++ (void)createAndSetExceptionPort {
+    mach_port_t server_port;
+    kern_return_t kr = mach_port_allocate(mach_task_self(), MACH_PORT_RIGHT_RECEIVE, &server_port);
+    assert(kr == KERN_SUCCESS);
+    NSLog(@"create a port: %d", server_port);
+
+    kr = mach_port_insert_right(mach_task_self(), server_port, server_port, MACH_MSG_TYPE_MAKE_SEND);
+    assert(kr == KERN_SUCCESS);
+
+    kr = task_set_exception_ports(mach_task_self(), EXC_MASK_BAD_ACCESS | EXC_MASK_CRASH, server_port, EXCEPTION_DEFAULT | MACH_EXCEPTION_CODES, THREAD_STATE_NONE);
+
+    [self setMachPortListener:server_port];
+}
+
+// 构造BAD MEM ACCESS Crash
+- (void)makeCrash {
+  NSLog(@"********** Make a [BAD MEM ACCESS] now. **********");
+  *((int *)(0x1234)) = 122;
+}
+```
+
+## RunLoop
+Mach Port的应用不止于内核级别，在Cocoa Foundation和Core Foundation层同样有应用，不如Runloop。
+[图2]
+Runloop source分两类
+	1.input source
+		port-based sources
+		custom input sources
+	2.Timer sources
+其中Port-base sources即基于Mach port，在Runloop中完成消息传递
+
+
+# signal信号
+signal是一种中断信号，提供异步事件处理机制。signal是进程间互相传递信息的一种粗糙方法，使用场景：
+	1.进程终止相关
+	2.终端交互
+	3.编程错误或硬件错误相关，系统遇到不可恢复的错误时触发崩溃机制
+
+## signal注册和处理
+	signal()
+		1.#import <sys/signal.h>
+		2.注册singal
+		3.调用成功时会移除signal信号当前的操作，以handler指定的新信号处理程序替代
+		4.信号处理函数返回void，因为没有地方给函数返回
+	注册自定义信号处理函数，构造crash后，发出信号并执行自定义的信号处理逻辑
+		Xcode Debug运行时，添加断点，在Crash触发前，执行pro hand -p true -s false SIGABRT命令。
+
+## LLDB Debugger
+Xcode Debug模式允许App，App进程signal会被LLDB Debugger调试器捕获，需要使用LLDB调试命令，将指定singal处理抛到用户层处理，方便调试。
+	查看全部信号传递配置
+
+
+https://linux.cn/thread-17516-1-1.html
+https://developer.aliyun.com/article/499180

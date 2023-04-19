@@ -152,7 +152,7 @@ Xcode计算pre-main时间
 	total images defining weak symbols:  30
 	total images using weak symbols:  69
 	```
-iOS15或者Xcode14.0之后上面的方式已经失效，苹果官方推荐Instructment的Profile来统计启动时间。
+iOS15或者Xcode14.0之后上面的方式已经失效，苹果官方推荐Instructment的Time Profiler来统计启动时间。
 
 总结：
 	对于main()调用之间的耗时我们可以优化的点有：
@@ -179,4 +179,4 @@ main()之后的加载
 	3.每次使用NSLog打印会隐式的创建一个Calendar（日历），因此需要删减启动时各业务打的log
 	4.梳理应用启动时发送的网络请求，统一在异步线程处理
 
-	
+

@@ -1,0 +1,106 @@
+ipa瘦身
+
+苹果近几年销售的手机存储空间配置越来越大，同时也在2017年9月和最近2019年6月分别修改了在移动流量下载上线为150M和200M。但是包体瘦身对于用户来说，可以为用户节省手机存储空间，同时也减少了下载app的时间。如果包体太大上架到app store，用户没办法在非Wifi环境下下载app。是在WWDC中有专门的App Thinning内容。
+
+随着app的版本迭代，包体大小从80M上升到了超过150M，导致了用户无法在非Wifi环境下下载app（当时app store移动流量下ipa下载上限是150M），影响了用户的使用，所以专门调研了ipa瘦身的相关问题，实践了很多办法，将ipa的大小降低到了差不多100M上下。
+
+1.了解ipa包的构成
+	1.资源文件：图片、音频、视频等
+	2.可执行文件：程序主体，代码、静态库、动态链接库
+	3.bundle：静态库资源文件
+
+	上传到App Store后，Apple也会做一些处理优化，最终只剩：
+	1.App Slicing对不同架构的裁剪，可执行文件只剩下单架构
+	2.Asset.car中图片只留下设备需要的特定植村和压缩算法的变体
+	3.__TEXT段加密
+
+通过解压压缩包
+
+1.资源（图片）
+	1.优化压缩png（展开说动画资源），删除重复资源，删除无用资源
+	图片做压缩（放在resource 和 image.asset的区别）
+	2.本地资源放占位图，然后从服务端获取
+	3.序列帧动画制作成svga效果，通过下载
+
+2.可执行文件瘦身
+	1.删除无用的类（多人维护的情况下，appcode）
+	2.整理第三方库瘦身（第三方类库，小功能把整个库拿进来）
+	3.静态库瘦身（去掉多余的armv7）
+	4.删除无用的方法，属性，不用的函数，重复代码
+	5.对linkmap做脚本监控
+
+	Mach-O文件中，__DATA-__objc_classrefs中记录了引用类的地址，__DATA-__objc_classlist中记录了所有类的地址，我们通过otool打印对应的信息，然后两者取差值，再进行符号化，就得到没有被引用的类信息。
+		1.通过otool -v -s __DATA __objc_classrefs获取到引用类(明确用到的)的地址。
+		```
+		#通过otool -v -s __DATA __objc_classrefs获取到引用类的地址。
+		def class_ref_pointers(path, binary_file_arch):
+		    ref_pointers = set()
+		    lines = os.popen('/usr/bin/otool -v -s __DATA __objc_classrefs %s' % path).readlines()
+		    for line in lines:
+		        pointers = pointers_from_binary(line, binary_file_arch)
+		        ref_pointers = ref_pointers.union(pointers)
+		    return ref_pointers
+		```
+
+		2.通过otool -v -s __DATA __objc_classlist获取所有类的地址。
+		```
+		#通过otool -v -s __DATA __objc_classlist获取所有类的地址。
+			def class_list_pointers(path, binary_file_arch):
+			    list_pointers = set()
+			    #__DATA_CONST __DATA
+			    command = '/usr/bin/otool -v -s __DATA __objc_classlist %s' % path
+			    lines = os.popen(command).readlines()
+			    if len(lines) < 2:
+			        command = '/usr/bin/otool -v -s __DATA_CONST __objc_classlist %s' % path
+			        lines = os.popen(command).readlines()
+			    for line in lines:
+			        pointers = pointers_from_binary(line, binary_file_arch)
+			        list_pointers = list_pointers.union(pointers)
+			    return list_pointers
+		```
+		3.用所有类信息减去引用类的信息，此时我们可以拿到未使用类的地址信息。
+		```
+		#获取未被使用到类
+			def class_unrefpointers(path, binary_file_arch):
+			    list_pointers =  class_list_pointers(path, binary_file_arch)
+			    ref_pointers = class_ref_pointers(path, binary_file_arch)
+			    unref_pointers = list_pointers - ref_pointers
+			    return unref_pointers
+		```
+		4.通过nm -nm命令可以得到地址和对应的类名字。
+		```
+		#通过nm -nm命令可以得到地址和对应的类名字。
+			def class_symbols(path):
+			    symbols = {}
+			    #class symbol format from nm: 0000000103113f68 (__DATA,__objc_data) external _OBJC_CLASS_$_EpisodeStatusDetailItemView
+			    re_class_name = re.compile('(\w{16}) .* _OBJC_CLASS_\$_(.+)')
+			    lines = os.popen('nm -nm %s' % path).readlines()
+			    for line in lines:
+			        result = re_class_name.findall(line)
+			        if result:
+			            (address, symbol) = result[0]
+			            symbols[address] = symbol
+			    return symbols
+		```
+		由于是静态查找，对于动态生成的类，比如通过反射生成的类，会被认为没有被引用，所以查找出列表后，还需要人工检查一遍。
+
+3.去掉无用的armv7框架
+
+4.业务上多变的功能做成H5
+
+5.了解了每个设置的意思，个人觉得对于一个普通的app来说可以这样配置这些设置：
+
+Generate Debug Symbols：DEBUG和RELEASE下均设为YES（和Xcode默认一致）；
+Debug Information Level：DEBUG和RELEASE下均设为Compiler default（和Xcode默认一致）；
+Deployment Postprocessing：DEBUG下设为NO，RELEASE下设为YES，这样RELEASE模式下就可以去除符号缩减app的大小（但是似乎设置为YES后，会牵涉一些和bitcode有关的设置，对于bitcode暂时还不太了解(´･_･`)）；
+Strip Linked Product：DEBUG下设为NO，RELEASE下设为YES，用于RELEASE模式下缩减app的大小；
+Strip Style：DEBUG和RELEASE下均设为All Symbols（和Xcode默认一致）；
+Strip Debug Symbols During Copy：DEBUG下设为NO，RELEASE下设为YES；
+Debug Information Format：DEBUG下设为DWARF，RELEASE下设为DWARF with dSYM File，dSYM文件需要用于符号化crash log（和Xcode默认一致）；
+
+
+
+
+https://blog.csdn.net/wywinstonwy/article/details/125206772
+clang插件优化包体大小 
+https://www.infoq.cn/article/clang-plugin-ios-app-size-reducing/
