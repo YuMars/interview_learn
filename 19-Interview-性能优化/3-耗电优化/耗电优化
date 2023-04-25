@@ -1,0 +1,54 @@
+耗电优化
+
+[图1]
+
+Idle:说明App处于休眠状态，几乎不使用电量。
+Active:说明App处于前台工作状态，用电量比较高。图中第二个Active耗电远高于第一个，主要因为App实际所做的工作类型不同而导致
+Overhead：是指调用硬件来支持App功能所消耗的点了
+上图中，横线以下所包含区域是固定开销，横线以上区域动态开销。
+
+耗电的主要原因：
+1.CPU处理（processing）
+2.网络（Networking）
+3.定位（Location）
+4.图像（Graphics）
+
+省电的基本原则
+1.Identify:了解App在特定时刻需要完成的工作，如果是不必须的工作，考虑延后执行或者省略。
+2.Optimize：优化App的功能实现，尽可能以更有效率的方式完成功能
+3.Coalesce：合并
+4.Reduce：减少做重复工作的频率
+
+优化方式：
+网络
+	1.去除定时器，只在产生用户交互响应（下拉，点击按钮）、收到新消息时去重新加载数据。
+	2.使用NSURLSession的waitForConnectivity属性（等有网络时在执行，而不是立刻报错）
+	3.使用缓存（避免重复请求获取相同的内容）
+	4.上传照片失败，减少重复上传的次数，设定合理的超时时间，批量上传照片，使用Background Session（重试次数到达上限）
+	5.使用断点续传，否则网络不稳定时可能多次传输相同的内容。
+
+定位
+Continuous location、Quick location update、Region monitoring、Visit monitoring、Significant location change
+	1.清楚app需要的定位精确度（适合你的需求就好） 
+	2.使用其它来替代 Continuous location（因为这个比较耗电） 
+	3.不需要使用定位时，就停止 
+	4.延后定位更新
+
+图像处理
+	1.保证在UI需要变化时，进行刷新
+	2.避免blur
+	3.减少动画
+	4.减少不可见的内容
+	5.
+
+优化I/O
+	1.减少写入数据，有变化时在写入，做一定时间间隔。
+	2.避免访问存储频率太高。分批修改
+	3.尽量顺序读写数据。在文件中跳转位置会消耗一些时间。
+	4.从文件读写大数据块，一次读取太多数据可能会引发一些问题。比如，读取一个32M文件的全部内容可能会在读取完成前触发内容分页。
+	5.读写大量重要数据时，考虑用dispatch_io，其提供了基于GCD的异步操作文件I/O的API。用dispatch_io系统会优化磁盘访问。
+	6.数据由随机访问的结构化内容组成，建议将其存储在数据库中，可以使用SQLite或Core Data访问。特别是需要操作的内容可能增长到超过几兆的时候。
+	7.
+
+https://www.jianshu.com/p/9a5e94e7b7c3
+https://www.jianshu.com/p/f0dc653d04ca
