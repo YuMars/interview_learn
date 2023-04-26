@@ -14,6 +14,7 @@
 
 @property (nonatomic, assign) NSInteger ticketNum;
 
+@property (nonatomic, strong) NSLock *lock;
 @end
 
 @implementation ViewController
@@ -29,8 +30,16 @@
     //[self pthreadmutexLock];
     //[self pthreadmutexRecursive];
     //[self osspinLock];
-    
+    self.lock = [[NSLock alloc] init];
     //[self metex];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_global_queue(0, 0), ^{
+        [self.lock unlock];
+    });
+
+    [self.lock lock];
+    
+    [self.lock lock];
     
 //    [self dealSale];
     [self nsconditionLock];
