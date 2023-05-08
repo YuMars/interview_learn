@@ -262,9 +262,128 @@ TCP/IP协议（4层）
 			Client发送ACK后，需要有个TIME-Wait阶段，等待一段时间后，再真正关闭连接。一般是等待2倍的MSL（Maximun Segment Lifetime，最大分段生存期，大概2分钟）。
 			如果Client发送ACK后马上释放了，然后又因为网络原因，server没有收到client的ACK，server就回重发FIN，可能Client没有任何响应，服务器干等，甚至多次重发Fin，浪费资源。client有个新的应用程序刚好分配了同一个端口号，新的应用程序收到FIN后马上开始执行断开连接的操作，本来它可能是想跟server建立连接的。
 
-			三次挥手
+			三次挥手的情况
 			当server收到client的FIN时，server已经没有数据要发送给client，server就回将2、3次挥手合并，同时告诉client两件事：1.已经知道client没有数据要发2.server已经没有数据要发。
 	
+
+	# 应用层
+		应用层的常见协议：
+		超文本传输：HTTP、HTTPS
+		文本传输：FTP
+		电子邮件：SMTP、POP3、IMAP
+		动态主机配置：DHCP
+		域名系统：DNS
+
+		域名（Domain Name）
+		IP地址不方便记忆，并且不能表达组织的名称和性质，所以设计出了域名。但实际上，为了能够访问具体的主机，最终还是得知道目标主机的IP地址。
+
+		为什么直接用域名，不用IP地址？
+		IP地址固定4字节，域名使用字节多，会给路由器增加流量负担，增加流量。
+
+		根据级别不同，域名可以分为：
+		1.顶级域名：.com(公司)，.net（网络机构），.org（组织机构），.edu（教育），.gov（政府部门），.int（国际组织），.cn（中国），.jp（日本），.uk（英国），.vip，.xyz，.top，.club，.shop等
+		2.二级域名：在通用定级域名下，一般指注册人的名称，例如google，baidu，microsoft，在国际级顶级域名下，一般指注册级别
+		3.三级域名
+
+		DNS（Domain Name System）域名系统
+		利用DNS协议，将域名解析成对应的IP地址，DNS服务器可以基于UDP，也可以基于UDP，服务器占用53端口
+		->本地名称服务器->根名称服务器->顶级名称服务器->二级名称服务器->权威名称服务器
+		1.客户端会先访问最近的一台DNS服务器（客户端自己配的DNS服务器）
+		2.所有的DNS服务器都记录了DNS根域名服务器端IP地址
+		3.上级DNS服务器记录了下一级DNS服务器的IP地址
+		4.全球一共13台IPV4的DNS根域名服务器，25台IPV6DNS根域名服务器
+
+		IP地址的分配
+		IP地址按照分配的方式，可以分为：静态IP地址、动态IP地址
+		静态IP地址：
+			手动设置
+			适用场景：不怎么挪动的台式机，服务器
+		动态IP地址：
+			从DHCP服务器自动获取IP地址
+			适用场景：移动设备，无线设备
+			DHCP（Dynamic Host Configuration Protocol）：动态主机配置协议
+				DHCP协议基于UDP协议，客户端是68端口，服务器上67端口。DHCP服务器会从IP地址池中，挑选一个IP地址出租给客户端一段时间，时间到期就回收他们。
+				DHCP分配地址的4个阶段：
+					1.Discover：发现服务器。发广播包（源0.0.0.0,目标IP是255.255.255.255，目标mac是FF:FF:FF:FF:FF:FF）
+					2.Offer:提供租约。服务器返回可以租用的IP地址，以及租用期限，子网掩码，网管，DNS等信息。这里可能会有多个服务器提供租约
+					3.Request:选择IP地址。客户端选择一个Offer，发送广播包进行回应。
+					4.Acknowledge：确认。被选中的服务端发送ACK数据包给客户端。至此，IP地址分配完毕
+				DHCP服务器可以跨网段分配IP地址（DHCP服务器、客户端不在同一个网段），可以借助DHCP中继代理（DHCP Relay Agent）实现跨网段分配IP地址
+				自动续约：客户端毁在租期不足的时候，自动向DHCP服务器发送Request信息申请续约
+
+
+		HTTP（Hyper Text Transfer Protocol）超文本传输协议 
+		是互联网中应用最广泛的应用层协议之一
+		设计HTTP最初的目的是：提供一种发布和接收HTML页面的方法，由URI来识别具体资源。
+		用HTTP传递的数据格式不仅仅是HTML，应用非常广泛 
+
+		HTML（Hyper Text Markup Language）超文本标记语言
+		用以编写网页
+
+		HTTP版本：
+			HTTP/0.9(1991)
+			只支持Get请求方法获取文本数据（比如HTML文档），且不支持请求头，响应头，无法向服务器传递太多信息
+
+			HTTP/1.0(1996)
+			支持Post，Head等请求方法，支持请求头，响应头，支持跟多数据类型，浏览器的每次i请求都需要与服务器建立一个TCP连接，请求处理完成后立即断开TCP连接
+
+			HTTP/1.1(1997)
+			支持PUT、DELETE等请求方法
+			采用持久连接（Connection：keep-alive），多个请求可以共用一个TCP连接
+
+			HTTP/2.0(2015)
+
+			HTTP/3.0(2018)
+
+		请求报文：
+		方法【】URL【】版本【回车换行】
+		首部字段名：【】值【回车换行】
+		首部字段名：【】值【回车换行】
+		【回车换行】
+
+		响应报文：
+		版本【】状态码【】短语【回车换行】
+		首部字段名：【】值【回车换行】
+		首部字段名：【】值【回车换行】
+		【回车换行】
+
+		ABNF：是BNF的修改、增强版，是最严谨的HTTP报文格式描述形式，脱离ABNF谈HTTP报文格式都是不严谨的
+		HTTP-message = start-line 			start-line = request-line/status-line
+		*(header-field CRLF)
+		CRLF
+		[message-body]
+		/ ： 任选一个
+		* ： 0个或者多个，2*标识至少2个
+		()： 组成一个
+		[]： 可选（可有可无）
+
+		request-line = method SP request-target SP HTTP-version CRLF
+		HTTP-version = HTTP-name "/" DIGIT "." DIGIT
+		HTTP-name = %x48,54,54,50;HTTP
+		status-line = HTTP-version SP status-code SP reason-phrase CRLF
+		status-code = 3 DIGIT
+		reason-phrase = *(HTAB/SP/VCHAR/obs-text)
+		header-field = field-name ":" OWS field-value OWS
+		field-name = token
+		field-value = *(field-content / obs-fold)
+		OWS = *(SP / HTAB)
+		message-body = *OCTET
+
+		URL的编码
+			URL中一旦出现一些特殊字符（比如中文、空格）需要进行编码，在浏览器地址输入URL时，是采用UTF-8进行编码
+		
+		请求方法
+			GET：常用于读取操作，请求参数直接拼接在URL的后面（浏览器对URL的有长度限制的）
+			HEAD：与GET请求得到相同的响应，但是没有响应体
+			POST：常用于添加、修改、删除的操作，请求参数可以放到请求体中（没有大小限制）
+			DELETE
+			CONNECT
+			OPTIONS
+			TRACE
+			PATCH
+
+
+
 
 
 
