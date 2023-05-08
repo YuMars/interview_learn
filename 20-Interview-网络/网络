@@ -260,7 +260,10 @@ TCP/IP协议（4层）
 
 			TCP/IP协议栈在设计上，允许任何一方先发起断开请求。
 			Client发送ACK后，需要有个TIME-Wait阶段，等待一段时间后，再真正关闭连接。一般是等待2倍的MSL（Maximun Segment Lifetime，最大分段生存期，大概2分钟）。
-			如果Client发送ACK后马上释放了，然后又因为网络原因，server没有收到client的ACK，server就回重发FIN，可能Client没有任何响应，服务器干等，甚至多次重发Fin，浪费资源
+			如果Client发送ACK后马上释放了，然后又因为网络原因，server没有收到client的ACK，server就回重发FIN，可能Client没有任何响应，服务器干等，甚至多次重发Fin，浪费资源。client有个新的应用程序刚好分配了同一个端口号，新的应用程序收到FIN后马上开始执行断开连接的操作，本来它可能是想跟server建立连接的。
+
+			三次挥手
+			当server收到client的FIN时，server已经没有数据要发送给client，server就回将2、3次挥手合并，同时告诉client两件事：1.已经知道client没有数据要发2.server已经没有数据要发。
 	
 
 
