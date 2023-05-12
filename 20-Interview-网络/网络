@@ -597,8 +597,50 @@ TCP/IP协议（4层）
 							防止消息发送人否认
 
 					证书（Public-key Certificate PKC）
-						里面有姓名、邮箱等个人信息以及此人的公钥，由认证机构施加数字签名
+						里面有姓名、邮箱等个人信息以及此人的公钥， 由认证机构施加数字签名
 
+
+		HTTPs（HyperText Transfer Protocol Secure）超文本传输安全协议
+			HTTP over TSL、HTTP over SSL、HTTP Secure 
+			HTTP默认端口443，HTTP默认端口80
+			HTTPS是在HTTP基础上使用SSL/TSL来加密报文，对窃听和中间人攻击提供合理的防护，SSL/TSL也可以用在其他协议上，比如FTP->FTPS，SMTP->SMTPS
+
+			TLS(Transprot Layer Security)传输层安全协议，全身是SSL（Secure Sockets Layer）安全套接层
+			OpenSSL
+			成本：
+				证书费用
+				加解密计算
+				降低访问速度
+			HTTPS通信过程
+				1.TCP的三次握手
+				2.TSL的连接
+					1. Client Hello 
+						TSL版本号
+						支持的加密组件（Cipher Suite）列表，加密组件是指所使用的加密算法及密钥长度等
+						一个随机数
+					2.Server Hello
+						TSL版本号
+						选择的加密组件
+						一个随机数
+					3.Certificate
+						服务器端签名证书（被CA签名过的）
+					4.Server Key Exchange
+						用以实现ECDHE算法的其中一个参数（Server Params），是一种密钥交换算法，为了防止伪造，Server Params经过了服务器私钥签名
+					5.Server Hellow Done
+						告知客户端：协商部分结束（目前为止，客户端和服务器之间通过明文共享了）
+					6.Client Key Exchange
+						用以实现ECDHE算法的另一个参数（Client Params）（目前为止，客户端和服务器都拥有了ECDHE算法需要的2个参数，Server Params，Client Params），客户端、服务器都可以使用ECDHE算法
+						根据Server Params、Client Params 计算出一个新的随机密钥串：Pre-mater secret
+						结合Client Random、Server Random、Pre-mater secret
+					7.Change Cipher Spec
+						告知服务器，之后的通信采用计算出来的会话密钥进行加密
+					8.Finished
+						包含连接至今全部报文段整体校验值（摘要），加密之后发送给服务器
+					9.Change Cipher Spec
+						告知客户端，之后的通信采用计算出来的会话密钥进行加密
+					10.Finished
+						到此为止，客户端都验证加密解密没问题，握手正式结束
+				3.HTTP的请求和响应 
 
 
 
