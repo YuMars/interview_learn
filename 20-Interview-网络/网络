@@ -755,6 +755,99 @@ TCP/IP协议（4层）
 				客户端的操作会根服务器同步（删除，移动文件）
 				所有客户端使用会看到相同的邮件和相同文件夹
 
+		VPN（virtual Private Network）：虚拟私人网络
+			在公共网络上建立专用网络，进行加密通信
+			作用
+				提高上网的安全性
+				保护公司都内部资料
+				隐藏上网者的身份
+				突破网站的地域限制
+				突破网络封锁
+			与代理的区别
+				VPN需要安装VPN客户端软件，代理不需要安装额外的软件
+				VPN默认会对数据进行加密，代理默认不会对数据进行加密
+				VPN费用比代理高
+			实现原理
+				Tunneling Protocol（隧道协议）
+					PPTP（Point to Point Tunneling protocol）：点对点隧道协议
+					L2TP（Layer Two Tunneling Protocol）：第二层隧道协议
+					IPsec（Internet Protocol Security）：互联网安全协议
+					SSL VPN
+
+		网络爬虫（Web Crawler）
+			模拟人类使用浏览器操作页面的行为，对页面进行相关的操作
+
+		无线网络（Access Point）
+
+		缓存（Cache）
+			响应头
+				通常会缓存的情况：GET请求+静态资源
+				Pragma：类似于Cache-Control，HTTP/1.0
+				Expires：缓存的过期时间HTTP/1.0
+				Cache-Control：设置缓存策略
+					no-storage：不缓存数据到本地
+					public：允许用户、代理服务器缓存数据到本地
+					private：只允许用户缓存数据到本地
+					max-age:缓存的有效时间，单位：秒
+					no-cache:每次需要发请求给服务器询问缓存是否有变化，再来决定如何使用缓存
+				优先级：Pragma>Expires>Cache-Control
+
+				Last-Modify:资源的最后一次修改时间（只能精确到秒，如果资源在1秒内修改，客户端无法获取最新的资源数据，如果某些数据被修改，但是内容没有变化，会导致相同的数据重复传输，没有使用到缓存）
+				ETag：资源的唯一标识
+				优先级：ETag>Last-Modified
+
+			请求头
+				If-None-Match:如果上一次的响应头有ETag，就会将ETag的值作为请求头的值。如果服务器发现资源的最新摘要跟If-None-Match不匹配，就会返回新的资源。否则就不会返回新资源
+				If-Modifed-Since:如果上一次的响应头中没有ETag，有Last-Modified，就会将Last-Modified的值作为请求头的值，如果服务器发现资源的最后一次修改时间晚于If-Modified-Since，就会返回新的资源
+
+		IPV6（Internet Protocol Version 6）
+			用它来取代IPV4主要为了解决IPV4地址枯竭问题，同时它也在其他方面对于IPV4有很多改进，然后长期以来IPV4在互联网流量中然占据主要地位，IPV6使用增长缓慢。
+			地址格式
+				IPV6采用128位的地址，而IPV4使用的32位，支持2^128个地址，每16bit一组，共8组
+				每组以冒号『：』隔开，每组以4位十六进制表示，跟IPV4的点分十进制，同样也存在点分十六进制的写法
+				每组前面连续的0可以省略，可以用双冒号：：表示一组0或者多组0，但只能出现1次
+			首部格式
+				有40字节的固定首部
+				version：版本号
+				Traffic Class：交通类别，指数据包的类别或优先级，可以帮助路由器根据数据包的优先级处理流量，如果路由器发生拥塞，则优先级最低的数据包将被丢弃
+				Payload length：有效负载长度，最大值65535，包括了拓展头部、上层数据到长度
+				Hop Limit：跳数限制，与IPV4数据包中的TTL相同
+				Source Address：源IPV6地址
+				Destination Address：目的IPV6地址
+				Flow Label：流标签，指定数据包属于哪个特定序列，用数据包的源地址、目标地址、流标签标识一个流
+				Next Header：下一个头部，指示扩展头部的类型，上层数据包的协议类型
+
+		即时通讯（Instant Messaging）
+			XMPP（Extensible Messaging and Presence Protocol）可拓展消息与存在协议
+				基于TCP，默认端口5222，5269
+				特点
+					使用XML格式进行传输，体积较大
+					比较成熟的IM协议，开发者接入方便
+			MQTT（Message queuing Telemetry Transport）消息队列遥测传输
+				基于TCP，默认端口1883、8883
+				特点
+					开销很小，以降低网络流量，信息冗余远小于XMPP
+					不是专门为IM设计的协议，很多功能需要自己实现
+					适合物联网
+
+		流媒体（Streaming Media）流式媒体
+			指将一连串的多媒体数据压缩后，经过互联网分段发送数据，在互联网上即时传输影音以供观赏的一种技术，不需要下载整个媒体文件也可以查看视频
+			RTP（Real-Time Transport Protocol）实时传输协议
+				基于UDP
+			RTCP（Real-Time Transport Control Protocol）实时传输控制协议
+				基于UDP，
+			RTSP（Real-Time Transport Steaming Protocol）实时流协议
+				基于UDP、TCP的544端口
+			RTMP（Real-Time Transport Messaging Protocol）实时消息传输协议
+				默认基于TCP的1935端口
+			HLS（HTTP Live Streaming）基于HTTP的流媒体网络传输协议
+				
+
+
+
+
+
+
 
 
 
