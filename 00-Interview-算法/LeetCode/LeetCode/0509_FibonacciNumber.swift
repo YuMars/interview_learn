@@ -51,4 +51,24 @@ public class FibonacciNumber {
         }
         return subFib(n)
     }
+    
+    // DP
+    public class func fib3(_ n: Int) -> Int {
+        // 1.DP[i]含义
+        // 2.确定递推公式
+        // 3.数组如何初始化
+        // 4.遍历数组
+        // 5.打印数组
+        
+        guard n > 1 else { return n }
+        
+        var dp = [Int](repeating: 0, count: n + 1)
+        dp[0] = 0
+        dp[1] = 1
+        for i in 2 ... n {
+            dp[i] = dp[i - 1] + dp[i - 2]
+        }
+        
+        return dp[n]
+    }
 }
