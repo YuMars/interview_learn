@@ -161,3 +161,5 @@ print("IntgerBreak ",IntgerBreak.integerBreak(10))
 print("DivideTwoIntegers ",DivideTwoIntegers.divide(-2147483648, -1))
 
 print("SwordBinaryPlus ",SwordBinaryPlus.addBinary("11", "10"))
+
+print("PartitionEqualSubsetSum ", PartitionEqualSubsetSum.canPartition([5,1,5,11]))
