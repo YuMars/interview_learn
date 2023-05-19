@@ -46,4 +46,25 @@ public class UniquePath {
         
         return dp[m - 1][n - 1]
     }
+    
+    public class func uniquePaths2(_ m: Int, _ n: Int) -> Int {
+        // 确定dp[x][y]的含义 走到x,y位置有多少种可能
+        // 确定递推公式 dp[x][y] = dp[x-1][y] + dp[x][y-1]
+        // 初始化dp dp[0][0] = 1 dp[0][1] = 1 dp[1][0] = 1
+        // 遍历数组
+        // 打印数组
+        
+        var dp:[[Int]] = [[Int]](repeating: [Int](repeating: 1, count: n + 1), count: m + 1)
+        dp[0][0] = 1
+        dp[0][1] = 1
+        dp[1][0] = 1
+        for x in 1 ..< m {
+            for y in 1 ..< n {
+                dp[x][y] = dp[x-1][y] + dp[x][y-1]
+                print("dp", x , y , dp[x][y])
+            }
+        }
+        
+        return dp[m - 1][n - 1]
+    }
 }

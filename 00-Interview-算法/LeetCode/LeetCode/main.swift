@@ -157,7 +157,7 @@ print("FibonacciNumber ",FibonacciNumber.fib(1))
 print("FibonacciNumber2 ",FibonacciNumber.fib3(1))
 print("ClimbingStairs ",ClimbingStairs.climbStairs2(2))
 print("MinCostClimbingStairs ",MinCostClimbingStairs.minCostClimbingStairs([1,100,1,1,1,100,1,1,100,1]))
-print("UniquePath ",UniquePath.uniquePaths(3, 3))
+print("UniquePath ",UniquePath.uniquePaths2(3, 7))
 print("IntgerBreak ",IntgerBreak.integerBreak(10))
 print("DivideTwoIntegers ",DivideTwoIntegers.divide(-2147483648, -1))
 
