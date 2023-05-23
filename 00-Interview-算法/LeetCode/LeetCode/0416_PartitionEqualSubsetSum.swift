@@ -48,4 +48,35 @@ public class PartitionEqualSubsetSum {
         }
         return dp[sum]
     }
+    
+    public class func canPartition2(_ nums: [Int]) -> Bool {
+        // dp[target] = target target = sum / 2
+        // 确定dp[j]含义 dp[j] = 背包容量是j，放进物品后背的最大重量是dp[j]
+        // 确定递推公式
+        // 初始化
+        // 遍历
+        
+        var sum:Int = 0
+        _ = nums.map { num in
+            sum += num
+        }
+        
+        if sum % 2 != 0 {
+            return false
+        }
+        
+        sum /= 2
+        
+        var dp: [Int] = [Int](repeating: 0, count: sum)
+        
+        for _ in 0 ..< nums.count {
+            for j in (0 ..< dp.count).reversed() {
+                if dp[j] < dp[j - nums[j]] + nums[j] {
+                    dp[j] = max(dp[j], dp[j - nums[j]] + nums[j])
+                }
+            }
+        }
+        
+       return dp[sum] == sum
+    }
 }
