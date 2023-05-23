@@ -157,11 +157,11 @@ static id<SDImageLoader> _defaultImageLoader;
     NSValue *thumbnailSizeValue = context[SDWebImageContextImageThumbnailPixelSize];
     if (thumbnailSizeValue != nil) {
         CGSize thumbnailSize = CGSizeZero;
-#if SD_MAC
-        thumbnailSize = thumbnailSizeValue.sizeValue;
-#else
+
+
+
         thumbnailSize = thumbnailSizeValue.CGSizeValue;
-#endif
+
         BOOL preserveAspectRatio = YES;
         NSNumber *preserveAspectRatioValue = context[SDWebImageContextImagePreserveAspectRatio];
         if (preserveAspectRatioValue != nil) {
@@ -500,7 +500,7 @@ static id<SDImageLoader> _defaultImageLoader;
                     [self.failedURLs removeObject:url];
                     SD_UNLOCK(self->_failedURLsLock);
                 }
-                // Continue transform process
+                // Continue transform process // 继续下载流程
                 [self callTransformProcessForOperation:operation url:url options:options context:context originalImage:downloadedImage originalData:downloadedData cacheType:SDImageCacheTypeNone finished:finished completed:completedBlock];
             }
             

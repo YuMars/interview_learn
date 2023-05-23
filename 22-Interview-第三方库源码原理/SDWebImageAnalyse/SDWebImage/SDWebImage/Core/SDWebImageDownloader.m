@@ -232,7 +232,7 @@ void SDWebImageDownloaderOperationSetCompleted(id<SDWebImageDownloaderOperation>
     } else {
         cacheKey = url.absoluteString;
     }
-    SDImageCoderOptions *decodeOptions = SDGetDecodeOptionsFromContext(context, [self.class imageOptionsFromDownloaderOptions:options], cacheKey);
+    SDImageCoderOptions *decodeOptions = SDGetDecodeOptionsFromContext(context, [self.class imageOptionsFromDownloaderOptions:options], cacheKey); // 下载前，先获取解码参数（虽然之前尝试从缓存获取UIImage的时候已经计算过一次，不知道为什么这里又重新算一次，可能是代码虽然差不多，但是为了关键解耦，单独处理逻辑）
     SD_LOCK(_operationsLock);
     NSOperation<SDWebImageDownloaderOperation> *operation = [self.URLOperations objectForKey:url];
     // There is a case that the operation may be marked as finished or cancelled, but not been removed from `self.URLOperations`.
@@ -245,7 +245,7 @@ void SDWebImageDownloaderOperationSetCompleted(id<SDWebImageDownloaderOperation>
         shouldNotReuseOperation = YES;
     }
     if (shouldNotReuseOperation) {
-        operation = [self createDownloaderOperationWithUrl:url options:options context:context];
+        operation = [self createDownloaderOperationWithUrl:url options:options context:context];// 创建下载任务
         if (!operation) {
             SD_UNLOCK(_operationsLock);
             if (completedBlock) {

@@ -98,7 +98,7 @@ const int64_t SDWebImageProgressUnitCountUnknown = 1LL;
             [((SDImageCache *)manager.imageCache) imageFromMemoryCacheForKey:key];
         }
         dispatch_main_async_safe(^{
-            // 设置placehodlerZ
+            // 设置placehodler
             [self sd_setImage:placeholder imageData:nil basedOnClassOrViaCustomSetImageBlock:setImageBlock cacheType:SDImageCacheTypeNone imageURL:url];
         });
     }

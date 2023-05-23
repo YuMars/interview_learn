@@ -21,6 +21,11 @@
     self.imgV = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 300.0, 300.0)];
     [self.imgV sd_setImageWithURL:[NSURL URLWithString:@"https://p.upyun.com/demo/webp/animated-gif/0.gif"]];
     [self.view addSubview:self.imgV];
+    
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.imgV sd_setImageWithURL:[NSURL URLWithString:@"https://p.upyun.com/demo/webp/animated-gif/0.gif"]];
+    });
 }
 
 
