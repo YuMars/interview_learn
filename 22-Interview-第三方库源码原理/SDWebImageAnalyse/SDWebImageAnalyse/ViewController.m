@@ -17,7 +17,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self.imgV sd_setImageWithURL:[NSURL URLWithString:@""]];
+    
+    self.imgV = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 300.0, 300.0)];
+    [self.imgV sd_setImageWithURL:[NSURL URLWithString:@"https://p.upyun.com/demo/webp/animated-gif/0.gif"]];
+    [self.view addSubview:self.imgV];
 }
 
 

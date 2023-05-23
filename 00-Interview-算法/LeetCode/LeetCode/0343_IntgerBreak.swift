@@ -36,4 +36,19 @@ public class IntgerBreak {
         }
         return dp[n]
     }
+    
+    public class func integerBreak2(_ n: Int) -> Int {
+        // 确定dp[i]含义 dp[i] = 数字i可以获得的最大乘积
+        // 确定递推公式 dp[i] = (i - j) * j dp[i] = dp[i - j] * j dp[i] = dp[i]
+        // 数组初始化 dp[0] = 1 dp[1] = 1 dp[2] = 1
+        var dp: [Int] = [Int](repeating: 1, count: n + 1)
+        for i in 3 ... n {
+            
+            for j in 1 ..< n - 1 {
+                dp[i] = max(dp[i], dp[i - j]  * j, (i - j) * j, 1)
+            }
+            
+        }
+        return dp[n]
+    }
 }
