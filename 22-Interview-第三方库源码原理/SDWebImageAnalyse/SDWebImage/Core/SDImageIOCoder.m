@@ -351,11 +351,7 @@ static NSString * kSDCGImageDestinationRequestedFileSize = @"kCGImageDestination
     }
     
     NSMutableDictionary *properties = [NSMutableDictionary dictionary];
-#if SD_UIKIT || SD_WATCH
     CGImagePropertyOrientation exifOrientation = [SDImageCoderHelper exifOrientationFromImageOrientation:image.imageOrientation];
-#else
-    CGImagePropertyOrientation exifOrientation = kCGImagePropertyOrientationUp;
-#endif
     properties[(__bridge NSString *)kCGImagePropertyOrientation] = @(exifOrientation);
     // Encoding Options
     double compressionQuality = 1;

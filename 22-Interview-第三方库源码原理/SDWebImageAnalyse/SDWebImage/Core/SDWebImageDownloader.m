@@ -214,7 +214,7 @@ void SDWebImageDownloaderOperationSetCompleted(id<SDWebImageDownloaderOperation>
                                                    context:(nullable SDWebImageContext *)context
                                                   progress:(nullable SDWebImageDownloaderProgressBlock)progressBlock
                                                  completed:(nullable SDWebImageDownloaderCompletedBlock)completedBlock {
-    // The URL will be used as the key to the callbacks dictionary so it cannot be nil. If it is nil immediately call the completed block with no image or data.
+    // URL将用作回调字典中的键,因此不能为nil。如果为nil,立即使用无图像或数据调用completed
     if (url == nil) {
         if (completedBlock) {
             NSError *error = [NSError errorWithDomain:SDWebImageErrorDomain code:SDWebImageErrorInvalidURL userInfo:@{NSLocalizedDescriptionKey : @"Image url is nil"}];
@@ -224,7 +224,7 @@ void SDWebImageDownloaderOperationSetCompleted(id<SDWebImageDownloaderOperation>
     }
     
     id downloadOperationCancelToken;
-    // When different thumbnail size download with same url, we need to make sure each callback called with desired size
+    // 当用相同的url下载不同大小的缩略图时,我们需要确保每个回调都以期望的大小调用
     id<SDWebImageCacheKeyFilter> cacheKeyFilter = context[SDWebImageContextCacheKeyFilter];
     NSString *cacheKey;
     if (cacheKeyFilter) {
@@ -232,6 +232,7 @@ void SDWebImageDownloaderOperationSetCompleted(id<SDWebImageDownloaderOperation>
     } else {
         cacheKey = url.absoluteString;
     }
+    // 将downloadOption和context内置转换成SDImageCoderOption
     SDImageCoderOptions *decodeOptions = SDGetDecodeOptionsFromContext(context, [self.class imageOptionsFromDownloaderOptions:options], cacheKey); // 下载前，先获取解码参数（虽然之前尝试从缓存获取UIImage的时候已经计算过一次，不知道为什么这里又重新算一次，可能是代码虽然差不多，但是为了关键解耦，单独处理逻辑）
     SD_LOCK(_operationsLock);
     NSOperation<SDWebImageDownloaderOperation> *operation = [self.URLOperations objectForKey:url];
@@ -245,7 +246,8 @@ void SDWebImageDownloaderOperationSetCompleted(id<SDWebImageDownloaderOperation>
         shouldNotReuseOperation = YES;
     }
     if (shouldNotReuseOperation) {
-        operation = [self createDownloaderOperationWithUrl:url options:options context:context];// 创建下载任务
+        // 读option和context创建并配置下载任务
+        operation = [self createDownloaderOperationWithUrl:url options:options context:context];
         if (!operation) {
             SD_UNLOCK(_operationsLock);
             if (completedBlock) {

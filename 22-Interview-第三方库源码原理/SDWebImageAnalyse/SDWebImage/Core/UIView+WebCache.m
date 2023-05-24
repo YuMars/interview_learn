@@ -60,6 +60,8 @@ const int64_t SDWebImageProgressUnitCountUnknown = 1LL;
     } else {
         context = [NSDictionary dictionary];
     }
+    
+    // 先取了context里面的配置参数，context没有，则从NSStringFromClass([self class])取类本身，并且给context赋值{@"setImageOperationKey":validOperationKey}
     NSString *validOperationKey = context[SDWebImageContextSetImageOperationKey];
     if (!validOperationKey) {
         // pass through the operation key to downstream, which can used for tracing operation or image view class
@@ -85,6 +87,7 @@ const int64_t SDWebImageProgressUnitCountUnknown = 1LL;
         context = [mutableContext copy];
     }
     
+    // 弱引用Cache,当内存警告时候缓存memoryCahce中的数据被清除，一些图片就需要重新下载，用了shouldUseWeakCache后清理缓存后也可以从NSMapTable类型的weakCache表中获取数据
     BOOL shouldUseWeakCache = NO;
     if ([manager.imageCache isKindOfClass:SDImageCache.class]) {
         shouldUseWeakCache = ((SDImageCache *)manager.imageCache).config.shouldUseWeakMemoryCache;
@@ -97,7 +100,7 @@ const int64_t SDWebImageProgressUnitCountUnknown = 1LL;
             // in the future the weak cache feature may be re-design or removed
             [((SDImageCache *)manager.imageCache) imageFromMemoryCacheForKey:key];
         }
-        dispatch_main_async_safe(^{
+        dispatch_main_async_safe(^{// 判断了当前线程是不是在主线程，确保在主线程执行
             // 设置placehodler
             [self sd_setImage:placeholder imageData:nil basedOnClassOrViaCustomSetImageBlock:setImageBlock cacheType:SDImageCacheTypeNone imageURL:url];
         });
@@ -146,20 +149,22 @@ const int64_t SDWebImageProgressUnitCountUnknown = 1LL;
             }
         };
         @weakify(self);
-        // 完成后操作
+        
         operation = [manager loadImageWithURL:url options:options context:context progress:combinedProgressBlock completed:^(UIImage *image, NSData *data, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+            
+            // 加载完成后操作、设置加载动画、设置图片转场效果、设置最终图片
+            
+            
             @strongify(self);
             if (!self) { return; }
             
-            // 纠错，如果已经完成并且没有报错，将已下载总数据量和总数据量标记成完成状态
-            // if the progress not been updated, mark it to complete state
+            // 纠错，如果已经完成并且没有报错，将已下载总数据量和总数据量标记成完成状态(可能是那种数据量很少，直接下载完成无进度回调的情况)
             if (imageProgress && finished && !error && imageProgress.totalUnitCount == 0 && imageProgress.completedUnitCount == 0) {
                 imageProgress.totalUnitCount = SDWebImageProgressUnitCountUnknown;
                 imageProgress.completedUnitCount = SDWebImageProgressUnitCountUnknown;
             }
             
             // 结束加载菊花动画
-            // check and stop image indicator
             if (finished) {
                 [self sd_stopImageIndicator];
             }
@@ -181,9 +186,8 @@ const int64_t SDWebImageProgressUnitCountUnknown = 1LL;
                 }
             };
             
-            // case 1a: we got an image, but the SDWebImageAvoidAutoSetImage flag is set
-            // OR
-            // case 1b: we got no image and the SDWebImageDelayPlaceholder is not set
+            // 有图片，但是需要手动设置图片
+            // 无图片，但是placeHolder没设置
             if (shouldNotSetImage) {
                 dispatch_main_async_safe(callCompletedBlockClosure);
                 return;
@@ -192,27 +196,28 @@ const int64_t SDWebImageProgressUnitCountUnknown = 1LL;
             UIImage *targetImage = nil;
             NSData *targetData = nil;
             if (image) {
-                // case 2a: we got an image and the SDWebImageAvoidAutoSetImage is not set
+                // 有图，自动设置图片
                 targetImage = image;
                 targetData = data;
             } else if (options & SDWebImageDelayPlaceholder) {
-                // case 2b: we got no image and the SDWebImageDelayPlaceholder flag is set
+                // 无图，设置了PlaceHolder
                 targetImage = placeholder;
                 targetData = nil;
             }
             
-            // 加载成功后动画操作
-            // check whether we should use the image transition
+            // 加载成功后动画专场效果
+
             SDWebImageTransition *transition = nil;
             BOOL shouldUseTransition = NO;
             if (options & SDWebImageForceTransition) {
-                // Always
+                // 强制转场效果
                 shouldUseTransition = YES;
             } else if (cacheType == SDImageCacheTypeNone) {
-                // From network
+                // 没有缓存，需要转场效果
                 shouldUseTransition = YES;
             } else {
-                // From disk (and, user don't use sync query)
+                // 从缓存中取的，不需要转场
+                // 从磁盘中取的，如果是缓存同步或者磁盘同步，不需要转场，否则需要转场
                 if (cacheType == SDImageCacheTypeMemory) {
                     shouldUseTransition = NO;
                 } else if (cacheType == SDImageCacheTypeDisk) {
@@ -222,7 +227,7 @@ const int64_t SDWebImageProgressUnitCountUnknown = 1LL;
                         shouldUseTransition = YES;
                     }
                 } else {
-                    // Not valid cache type, fallback
+                    // 其他情况不需要转场
                     shouldUseTransition = NO;
                 }
             }
@@ -230,23 +235,18 @@ const int64_t SDWebImageProgressUnitCountUnknown = 1LL;
                 transition = self.sd_imageTransition;
             }
 
-            
             dispatch_main_async_safe(^{
-#if SD_UIKIT || SD_MAC
                 [self sd_setImage:targetImage imageData:targetData basedOnClassOrViaCustomSetImageBlock:setImageBlock transition:transition cacheType:cacheType imageURL:imageURL];
-#else
-                [self sd_setImage:targetImage imageData:targetData basedOnClassOrViaCustomSetImageBlock:setImageBlock cacheType:cacheType imageURL:imageURL];
-#endif
+
                 // 加载成功回调
                 callCompletedBlockClosure();
             });
         }];
-        // 设置operation和validOperationKey关联
+        // 设置operation和validOperationKey关联、用于取消某次加载图片
         [self sd_setImageLoadOperation:operation forKey:validOperationKey];
     } else {
-#if SD_UIKIT || SD_MAC
+        // 停止图片加载动画
         [self sd_stopImageIndicator];
-#endif
         if (completedBlock) {
             dispatch_main_async_safe(^{
                 NSError *error = [NSError errorWithDomain:SDWebImageErrorDomain code:SDWebImageErrorInvalidURL userInfo:@{NSLocalizedDescriptionKey : @"Image url is nil"}];
@@ -337,13 +337,7 @@ const int64_t SDWebImageProgressUnitCountUnknown = 1LL;
 #endif
 
 - (void)sd_setNeedsLayout {
-#if SD_UIKIT
     [self setNeedsLayout];
-#elif SD_MAC
-    [self setNeedsLayout:YES];
-#elif SD_WATCH
-    // Do nothing because WatchKit automatically layout the view after property change
-#endif
 }
 
 #if SD_UIKIT || SD_MAC

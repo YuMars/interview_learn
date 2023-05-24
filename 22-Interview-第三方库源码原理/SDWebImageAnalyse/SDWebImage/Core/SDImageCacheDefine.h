@@ -63,7 +63,7 @@ typedef void(^SDImageCacheContainsCompletionBlock)(SDImageCacheType containsCach
  */
 FOUNDATION_EXPORT UIImage * _Nullable SDImageCacheDecodeImageData(NSData * _Nonnull imageData, NSString * _Nonnull cacheKey, SDWebImageOptions options, SDWebImageContext * _Nullable context);
 
-/// Get the decode options from the loading context options and cache key. This is the built-in translate between the web loading part to the decoding part (which does not depends on).
+/// 从加载上下文选项和缓存键获取解码选项。这是web加载部分与解码部分(不依赖)之间的内置转换。
 /// @param context The context arg from the input
 /// @param options The options arg from the input
 /// @param cacheKey The image cache key from the input. Should not be nil

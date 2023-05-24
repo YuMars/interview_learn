@@ -99,15 +99,14 @@ FOUNDATION_EXPORT void SDImageLoaderSetProgressiveCoder(id<SDWebImageOperation> 
 
 @required
 /**
- Load the image and image data with the given URL and return the image data. You're responsible for producing the image instance.
-
- @param url The URL represent the image. Note this may not be a HTTP URL
- @param options A mask to specify options to use for this request
- @param context A context contains different options to perform specify changes or processes, see `SDWebImageContextOption`. This hold the extra objects which `options` enum can not hold.
- @param progressBlock A block called while image is downloading
- *                    @note the progress block is executed on a background queue
- @param completedBlock A block called when operation has been completed.
- @return An operation which allow the user to cancel the current request.
+ 使用给定的URL加载图像和图像数据并返回图像数据，可能需要负责生成图像实例。
+  @param url 表示图像的URL。请注意,这可能不是HTTP URL
+ @param options 用于此请求的选项掩码
+ @param context 包含不同选项的上下文,以执行特定的更改或过程,请参阅`SDWebImageContextOption`。这个上下文保存`options`枚举无法保存的额外对象。
+ @param progressBlock   图像下载时调用的块
+ *          @note 进度块在后台队列上执行
+ @param completedBlock   操作完成时调用的块。
+ @return 允许用户取消当前请求的操作。
  */
 - (nullable id<SDWebImageOperation>)requestImageWithURL:(nullable NSURL *)url
                                                 options:(SDWebImageOptions)options

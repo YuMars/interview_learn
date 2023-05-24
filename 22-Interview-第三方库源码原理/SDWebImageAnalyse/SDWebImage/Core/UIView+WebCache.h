@@ -72,6 +72,24 @@ typedef void(^SDSetImageBlock)(UIImage * _Nullable image, NSData * _Nullable ima
  *
  *   The last parameter is the original image URL
  *  @return The returned operation for cancelling cache and download operation, typically type is `SDWebImageCombinedOperation`
+ *  为`UIImageView`设置图像`url`和可选的占位图像。
+ * 下载是异步的和缓存的。
+ * placeholder   最初设置的图像,直到图像请求完成。
+ * options      下载图像时使用的选项。@see SDWebImageOptions 可用的值。
+ * context     包含不同选项的上下文,以执行特定的更改或过程,请参阅`SDWebImageContextOption`。这个上下文保存`options`枚举无法保存的额外对象。
+ * setImageBlock 用于自定义设置图像代码的块。如果不提供,则使用内置的设置图像代码(当前支持`UIImageView/NSImageView`和`UIButton/NSButton`)
+ * progressBlock   图像下载时调用的块
+ * 进度块在后台队列上执行
+ * completedBlock   操作完成时调用的块。
+ *  此块没有返回值,并以第一个参数请求的UIImage和第二个参数NSData表示形式。
+ *  如果出现错误,图像参数为nil,第三个参数可能包含NSError。
+ *
+ *  第四个参数通常是一个`SDImageCacheType`枚举,指示图像是否从本地缓存中检索,从内存缓存中检索还是从网络中检索。
+ *
+ *  第五个参数通常总是YES。 但是,如果您使用SDWebImageAvoidAutoSetImage与SDWebImageProgressiveLoad选项提供progressive下载并自己设置图像。 因此,该块将重复调用具有部分图像。 当图像完全下载时,块最后一次调用具有完整图像,最后一个参数设置为YES。
+ *
+ *  最后一个参数是原始图像URL
+ * @return 用于取消缓存和下载操作的返回操作,通常类型为`SDWebImageCombinedOperation`
  */
 - (nullable id<SDWebImageOperation>)sd_internalSetImageWithURL:(nullable NSURL *)url
                                               placeholderImage:(nullable UIImage *)placeholder

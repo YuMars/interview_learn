@@ -51,6 +51,7 @@
                    context:(nullable SDWebImageContext *)context
                   progress:(nullable SDImageLoaderProgressBlock)progressBlock
                  completed:(nullable SDExternalCompletionBlock)completedBlock {
+    // 下载图片的入口函数
     [self sd_internalSetImageWithURL:url
                     placeholderImage:placeholder
                              options:options

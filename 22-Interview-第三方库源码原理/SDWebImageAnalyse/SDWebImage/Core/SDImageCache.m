@@ -230,6 +230,7 @@ static NSString * _defaultDiskCacheDirectory;
            context:(nullable SDWebImageContext *)context
          cacheType:(SDImageCacheType)cacheType
         completion:(nullable SDWebImageNoParamsBlock)completionBlock {
+    // 纠错，直接返回
     if ((!image && !imageData) || !key) {
         if (completionBlock) {
             completionBlock();
@@ -238,37 +239,41 @@ static NSString * _defaultDiskCacheDirectory;
     }
     BOOL toMemory = cacheType == SDImageCacheTypeMemory || cacheType == SDImageCacheTypeAll;
     BOOL toDisk = cacheType == SDImageCacheTypeDisk || cacheType == SDImageCacheTypeAll;
-    // if memory cache is enabled
+    // 默认存储到缓存中 NSCache或者NSMapTable
     if (image && toMemory && self.config.shouldCacheImagesInMemory) {
         NSUInteger cost = image.sd_memoryCost;
         [self.memoryCache setObject:image forKey:key cost:cost];
     }
     
+    // 不需要存到磁盘，直接返回完成
     if (!toDisk) {
         if (completionBlock) {
             completionBlock();
         }
         return;
     }
+    
+    // 存到磁盘中
     NSData *data = imageData;
     if (!data && [image respondsToSelector:@selector(animatedImageData)]) {
-        // If image is custom animated image class, prefer its original animated data
+        // 如果图像是自定义动画图像类,优先选择其原始动画数据
         data = [((id<SDAnimatedImage>)image) animatedImageData];
     }
     SDCallbackQueue *queue = context[SDWebImageContextCallbackQueue];
     if (!data && image) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-            // Check image's associated image format, may return .undefined
+            // 检查图像关联的图像格式,可能返回Undefined
             SDImageFormat format = image.sd_imageFormat;
             if (format == SDImageFormatUndefined) {
-                // If image is animated, use GIF (APNG may be better, but has bugs before macOS 10.14)
+                // 如果图像是动画的,使用GIF(APNG可能更好,但在macOS 10.14之前有bug)
                 if (image.sd_isAnimated) {
                     format = SDImageFormatGIF;
                 } else {
-                    // If we do not have any data to detect image format, check whether it contains alpha channel to use PNG or JPEG format
+                    // 如果我们没有任何数据来检测图像格式,请检查它是否包含alpha通道以使用PNG或JPEG格式
                     format = [SDImageCoderHelper CGImageContainsAlpha:image.CGImage] ? SDImageFormatPNG : SDImageFormatJPEG;
                 }
             }
+            // image转成序列化Data，存进磁盘需要data，打包对应的image信息
             NSData *data = [[SDImageCodersManager sharedManager] encodedDataWithImage:image format:format options:context[SDWebImageContextImageEncodeOptions]];
             dispatch_async(self.ioQueue, ^{
                 [self _storeImageDataToDisk:data forKey:key];
@@ -576,7 +581,7 @@ static NSString * _defaultDiskCacheDirectory;
         }
         return nil;
     }
-    // Invalid cache type
+    // 不用任何缓存，直接返回
     if (queryCacheType == SDImageCacheTypeNone) {
         if (doneBlock) {
             doneBlock(nil, nil, SDImageCacheTypeNone);
@@ -584,7 +589,6 @@ static NSString * _defaultDiskCacheDirectory;
         return nil;
     }
     
-    // First check the in-memory cache...
     // 先从缓存中查找图片
     UIImage *image;
     if (queryCacheType != SDImageCacheTypeDisk) {
@@ -609,7 +613,7 @@ static NSString * _defaultDiskCacheDirectory;
         }
     }
 
-    // 从内存中获取图片
+    // 仅从内存中获取图片
     BOOL shouldQueryMemoryOnly = (queryCacheType == SDImageCacheTypeMemory) || (image && !(options & SDImageCacheQueryMemoryData));
     if (shouldQueryMemoryOnly) {
         if (doneBlock) {
@@ -618,20 +622,15 @@ static NSString * _defaultDiskCacheDirectory;
         return nil;
     }
     
-    // Second check the disk cache...
     // 第二步，从磁盘缓存中查找
     SDCallbackQueue *queue = context[SDWebImageContextCallbackQueue];
     SDImageCacheToken *operation = [[SDImageCacheToken alloc] initWithDoneBlock:doneBlock];
     operation.key = key;
     operation.callbackQueue = queue;
-    // Check whether we need to synchronously query disk
-    // 1. in-memory cache hit & memoryDataSync
-    // 2. in-memory cache miss & diskDataSync
     
     // 检查是否需要同步查询磁盘
     // 1. 内存缓存命中&内存同步查询
     // 2. 内存缓存未命中&磁盘同步查询
-    
     BOOL shouldQueryDiskSync = ((image && options & SDImageCacheQueryMemoryDataSync) ||
                                 (!image && options & SDImageCacheQueryDiskDataSync));
     
@@ -656,7 +655,6 @@ static NSString * _defaultDiskCacheDirectory;
         
         UIImage *diskImage;
         if (image) {
-            // the image is from in-memory cache, but need image data
             // 图像来自内存缓存,但需要图像数据
             diskImage = image;
         } else if (diskData) {
@@ -681,7 +679,7 @@ static NSString * _defaultDiskCacheDirectory;
             // SDAnimatedImage根据不同格式的解码器解码图片（SDImageIOCoder、SDImageGIFCoder、SDImageAPNGCoder），同时带着context参数进行解码
             // 图片的格式类型有：JPEG、PNG、Gif、TIFF、BMP、WEBP、HEIC、HEIF、PDF、SVG
             // 解码后根据解码方案：SDImageCoderDecodeSolutionAutomatic、SDImageCoderDecodeSolutionCoreGraphics、SDImageCoderDecodeSolutionUIKit将图片内容Image再进行解码，填充图片，丰富使达到对应的图片格式内容，并标记image已经解码的状态，最终返回解码图片
-            // 仅在内存缓存未命中时解码图像数据，
+            // 仅在内存缓存未命中时解码图像数据，和图片拓展信息，取出缓存后存在内存中
             diskImage = [self diskImageForKey:key data:diskData options:options context:context];
             if (shouldCacheToMomery && diskImage && self.config.shouldCacheImagesInMemory) {
                 // 保存在缓存中
@@ -714,8 +712,7 @@ static NSString * _defaultDiskCacheDirectory;
             }
             if (doneBlock) {
                 [(queue ?: SDCallbackQueue.mainQueue) async:^{
-                    // Dispatch from IO queue to main queue need time, user may call cancel during the dispatch timing
-                    // This check is here to avoid double callback (one is from `SDImageCacheToken` in sync)
+                    // 从IO队列调度到主队列需要时间,用户可能在调度时间内调用取消,这里的检查是为了避免双回调(一个来自同步中的`SDImageCacheToken`)
                     @synchronized (operation) {
                         if (operation.isCancelled) {
                             return;

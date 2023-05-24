@@ -33,14 +33,14 @@
 
 /**
  *  Cancel the operation for the current UIView and key
- *
+ *  取消当前UIView和键的操作
  *  @param key key for identifying the operations
  */
 - (void)sd_cancelImageLoadOperationWithKey:(nullable NSString *)key;
 
 /**
  *  Just remove the operation corresponding to the current UIView and key without cancelling them
- *
+ * 只移除与当前UIView和键对应的操作,而不取消操作
  *  @param key key for identifying the operations
  */
 - (void)sd_removeImageLoadOperationWithKey:(nullable NSString *)key;
