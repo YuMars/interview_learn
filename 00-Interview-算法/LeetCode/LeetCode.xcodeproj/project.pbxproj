@@ -41,6 +41,7 @@
 		EE359A612908FDE6004F12FD /* 0037_SudokuSolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE359A602908FDE6004F12FD /* 0037_SudokuSolver.swift */; };
 		EE4AC2482872A40A00301517 /* 0206_ReverseLinkedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4AC2472872A40A00301517 /* 0206_ReverseLinkedList.swift */; };
 		EE4AC24A2873184600301517 /* 0024_SwapNodesInPairs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4AC2492873184600301517 /* 0024_SwapNodesInPairs.swift */; };
+		EE4C223B2A1F4462005B7CCF /* 0518_CoinChange2.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4C223A2A1F4462005B7CCF /* 0518_CoinChange2.swift */; };
 		EE4E7F7F2937073700745DDE /* Sword_002_BinaryPlus.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4E7F7E2937073700745DDE /* Sword_002_BinaryPlus.swift */; };
 		EE5562B3283F58BF00DB9C1E /* 0027_RemoveElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5562B2283F58BF00DB9C1E /* 0027_RemoveElement.swift */; };
 		EE567832291E8CDC00618CD8 /* 0714_BestTimeToBuyAndSellStockWithTransactionFee.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE567831291E8CDC00618CD8 /* 0714_BestTimeToBuyAndSellStockWithTransactionFee.swift */; };
@@ -60,6 +61,9 @@
 		EE5E23D228ACECA000AA53DB /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5E23D128ACECA000AA53DB /* Node.swift */; };
 		EE66D32028A3AFAA00E36118 /* 0347_TopKFrequentElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE66D31F28A3AFAA00E36118 /* 0347_TopKFrequentElements.swift */; };
 		EE7250A328B8954400C9AFF8 /* 0101_SymmetricTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7250A228B8954400C9AFF8 /* 0101_SymmetricTree.swift */; };
+		EE7550C92A1DFC5900DC8883 /* 1049_LastStoneWeight2.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7550C82A1DFC5900DC8883 /* 1049_LastStoneWeight2.swift */; };
+		EE7550CB2A1E0C6100DC8883 /* 0494_TargetSum.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7550CA2A1E0C6100DC8883 /* 0494_TargetSum.swift */; };
+		EE7550CD2A1F03B100DC8883 /* 0474_OnesAndZeros.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7550CC2A1F03B100DC8883 /* 0474_OnesAndZeros.swift */; };
 		EE85F153288531F200D217CB /* 0349_IntersectionofTwoArrays.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE85F152288531F200D217CB /* 0349_IntersectionofTwoArrays.swift */; };
 		EE8AFD83290A86A100311083 /* 0455_AssignCookies.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8AFD82290A86A100311083 /* 0455_AssignCookies.swift */; };
 		EE8EA1C72935A1D1008FCAAA /* 0029_DivideTwoIntegers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8EA1C62935A1D1008FCAAA /* 0029_DivideTwoIntegers.swift */; };
@@ -161,6 +165,7 @@
 		EE359A602908FDE6004F12FD /* 0037_SudokuSolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0037_SudokuSolver.swift; sourceTree = "<group>"; };
 		EE4AC2472872A40A00301517 /* 0206_ReverseLinkedList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0206_ReverseLinkedList.swift; sourceTree = "<group>"; };
 		EE4AC2492873184600301517 /* 0024_SwapNodesInPairs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0024_SwapNodesInPairs.swift; sourceTree = "<group>"; };
+		EE4C223A2A1F4462005B7CCF /* 0518_CoinChange2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0518_CoinChange2.swift; sourceTree = "<group>"; };
 		EE4E7F7E2937073700745DDE /* Sword_002_BinaryPlus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sword_002_BinaryPlus.swift; sourceTree = "<group>"; };
 		EE5562B2283F58BF00DB9C1E /* 0027_RemoveElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0027_RemoveElement.swift; sourceTree = "<group>"; };
 		EE567831291E8CDC00618CD8 /* 0714_BestTimeToBuyAndSellStockWithTransactionFee.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0714_BestTimeToBuyAndSellStockWithTransactionFee.swift; sourceTree = "<group>"; };
@@ -180,6 +185,9 @@
 		EE5E23D128ACECA000AA53DB /* Node.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
 		EE66D31F28A3AFAA00E36118 /* 0347_TopKFrequentElements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0347_TopKFrequentElements.swift; sourceTree = "<group>"; };
 		EE7250A228B8954400C9AFF8 /* 0101_SymmetricTree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0101_SymmetricTree.swift; sourceTree = "<group>"; };
+		EE7550C82A1DFC5900DC8883 /* 1049_LastStoneWeight2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 1049_LastStoneWeight2.swift; sourceTree = "<group>"; };
+		EE7550CA2A1E0C6100DC8883 /* 0494_TargetSum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0494_TargetSum.swift; sourceTree = "<group>"; };
+		EE7550CC2A1F03B100DC8883 /* 0474_OnesAndZeros.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0474_OnesAndZeros.swift; sourceTree = "<group>"; };
 		EE85F152288531F200D217CB /* 0349_IntersectionofTwoArrays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0349_IntersectionofTwoArrays.swift; sourceTree = "<group>"; };
 		EE8AFD82290A86A100311083 /* 0455_AssignCookies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0455_AssignCookies.swift; sourceTree = "<group>"; };
 		EE8EA1C62935A1D1008FCAAA /* 0029_DivideTwoIntegers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0029_DivideTwoIntegers.swift; sourceTree = "<group>"; };
@@ -370,6 +378,10 @@
 				EE8EA1C62935A1D1008FCAAA /* 0029_DivideTwoIntegers.swift */,
 				EE4E7F7E2937073700745DDE /* Sword_002_BinaryPlus.swift */,
 				EE0EBB8A2A135FA500460D86 /* 0416_PartitionEqualSubsetSum.swift */,
+				EE7550C82A1DFC5900DC8883 /* 1049_LastStoneWeight2.swift */,
+				EE7550CA2A1E0C6100DC8883 /* 0494_TargetSum.swift */,
+				EE7550CC2A1F03B100DC8883 /* 0474_OnesAndZeros.swift */,
+				EE4C223A2A1F4462005B7CCF /* 0518_CoinChange2.swift */,
 			);
 			path = LeetCode;
 			sourceTree = "<group>";
@@ -470,6 +482,7 @@
 				EECDB999290F80FF0015DE08 /* 0122_BestTimetoBuyandSellStock2.swift in Sources */,
 				EE5D5E102887B305007B12F3 /* 0015_3Sum.swift in Sources */,
 				EE5E23CA28ACBCEA00AA53DB /* 0102_BinaryTreeLevelOrderTraversal.swift in Sources */,
+				EE4C223B2A1F4462005B7CCF /* 0518_CoinChange2.swift in Sources */,
 				EEEEF1AD27F3563E0030229F /* 0035_SearchInsertPosition.swift in Sources */,
 				EEA9DB3B2893B59200D17FD1 /* 0239_SlidingWindowMaximum.swift in Sources */,
 				EE07651C292BAA870007F1F2 /* 0343_IntgerBreak.swift in Sources */,
@@ -519,6 +532,7 @@
 				EE1CC97228AE36B000C578D1 /* 0104_MaximumDepthofBinaryTree.swift in Sources */,
 				EE284D7A291B4BFF00C84EE3 /* 0763_PartitionLabels.swift in Sources */,
 				EEA9DAC02891873600D17FD1 /* 0020_ValidParentheses.swift in Sources */,
+				EE7550CD2A1F03B100DC8883 /* 0474_OnesAndZeros.swift in Sources */,
 				EEDF16532912588C00A4CDC2 /* 0134_GasStation.swift in Sources */,
 				EE2D384628ADEB9100BDEA18 /* 0515_FindLargestValueInEachTreeRow.swift in Sources */,
 				EE056D3F28A9FA680039402E /* TreeNode.swift in Sources */,
@@ -530,10 +544,12 @@
 				EEA9DABC2891069C00D17FD1 /* 0232_ImplementQueueUsingStacks.swift in Sources */,
 				EEA0B2D1286DE744007FF6F9 /* 0904_FruitIntoBaskets.swift in Sources */,
 				EE2BC3E62930FE18005024C6 /* 0809_ExpressiveWords.swift in Sources */,
+				EE7550C92A1DFC5900DC8883 /* 1049_LastStoneWeight2.swift in Sources */,
 				EEDF1655291397C200A4CDC2 /* 0135_Candy.swift in Sources */,
 				EE8F33CC292501E400E5186B /* 746.MinCostClimbingStairs.swift in Sources */,
 				EE0765032926554F0007F1F2 /* 0062_UniquePath.swift in Sources */,
 				EE2D384428ADD8CF00BDEA18 /* 0429_N-aryTreeLevelOrderTraversal.swift in Sources */,
+				EE7550CB2A1E0C6100DC8883 /* 0494_TargetSum.swift in Sources */,
 				EEED8983287D544200D5CEDA /* R_0207_IntersectionOfTwoLinkedList.swift in Sources */,
 				EE5D5E0C28869B61007B12F3 /* 0454_4Sum.swift in Sources */,
 				EE1118D72923B855000383B0 /* 0070_ClimbingStairs.swift in Sources */,

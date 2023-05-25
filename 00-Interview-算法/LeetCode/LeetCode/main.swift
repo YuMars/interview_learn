@@ -164,3 +164,6 @@ print("DivideTwoIntegers ",DivideTwoIntegers.divide(-2147483648, -1))
 print("SwordBinaryPlus ",SwordBinaryPlus.addBinary("11", "10"))
 
 print("PartitionEqualSubsetSum ", PartitionEqualSubsetSum.canPartition([5,1,5,11]))
+
+print("LastStoneWeight2 ", LastStoneWeight2.lastStoneWeightII([7,2]))
+print("OnesAndZeros ", OnesAndZeros.findMaxForm(["10", "0001", "111001", "1", "0"], 5, 3))
