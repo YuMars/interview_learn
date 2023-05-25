@@ -54,6 +54,43 @@ SDWebImage提供了支持缓存的异步图像下载，为UIImageView、UIButton
 	5.图片数据下载完成之后，交给SDWebImageDecoder类做图片解码处理，图片的解码处理在NSOperationQueue完成，不会阻塞主线程。在图片解码完成后，会回调给SDWebImageDownloader，然后回调给SDWebImageManager告知图片下载完成，通知所有的downloadDelegates下载完成，回调给需要的地方显示图片。
 	6.最后将图片通过SDImageCache类，同时保存到内存缓存和硬盘缓存中。写文件到硬盘的过程也在以单独NSInvocationOperation完成，避免阻塞主线程。
 
-一般问SDWebImage的加载流程，普遍是知道SDWebImage的加载流程是先从缓存中取图片，再从磁盘中取图片，最后再做下载。下载过程是如何保存到缓存中，保存在磁盘中，磁盘中以什么方式存储，什么方式命名，缓存中以什么方式存储，以什么方式命名，缓存满了如何处理？怎么管理缓存，怎么管理磁盘，什么时候删除缓存数据，什么时候删除磁盘数据。如何手动删除缓存中数据、如何手动删除磁盘中数据。
+一般问SDWebImage的加载流程，普遍是知道SDWebImage的加载流程是先从缓存中取图片，再从磁盘中取图片，最后再做下载。下载过程是如何保存到缓存中，保存在磁盘中，磁盘中以什么方式存储，什么方式命名，缓存中以什么方式存储，以什么方式命名，缓存满了如何处理？怎么管理缓存，怎么管理磁盘，什么时候删除缓存数据，什么时候删除磁盘数据。如何手动删除缓存中数据、如何手动删除磁盘中数据。带着问题来从头开始看。
 
+入口函数
+  sd_setImageWithURL所有类似方法的入口函数都是通过sd_internalSetImageWithURL:placeholderImage:optionscontext:setImageBlock:progress:completed:
+  参数
+  	url:图片下载网络地址。大部分用的url的地方前置会判断url为空的情况下直接return，并且会在下载动作前判断传入类型是NSString下转成NSURL（主要是类型强转的场景）
+  	placeholderImage：展位图，多种情况下会使用，未加载图片前占位图、加载失败后占位图，通过SDWebImageOptions控制
+  	SDWebImageOptions：缓存类型，有23种，用于处理是否缓存，怎么加载缓存（内存缓存memoryCache、磁盘缓存dickCache），强制刷新、失败重试等等情况，可以叠加使用
+  	SDWebImageContext: 就是NSDictionary，方便自定义，在整个加载流程中一直优先以SDWebImageContext传入的内容优先，没有则通过SDWebImage内部提供的属性替换
+  	```
+		SDWebImageContextOption const SDWebImageContextSetImageOperationKey = @"setImageOperationKey"; // 通过validOperationKey取消正在运行的任务
+		SDWebImageContextOption const SDWebImageContextCustomManager = @"customManager"; // 初始化SDWebImageManager
+		SDWebImageContextOption const SDWebImageContextCallbackQueue = @"callbackQueue"; // Cache、Manager、Loader的回调，可以控制回调，不如不在主队列回调
+		SDWebImageContextOption const SDWebImageContextImageCache = @"imageCache";// 如果您想在图像加载期间指定自定义缓存,则无需重新创建具有缓存的假SDWebImageManager实例
+		SDWebImageContextOption const SDWebImageContextImageLoader = @"imageLoader"; // 实现自定义图片加载器
+		SDWebImageContextOption const SDWebImageContextImageCoder = @"imageCoder"; // 实现自定义图片解码器
+		SDWebImageContextOption const SDWebImageContextImageTransformer = @"imageTransformer"; // 自定义图片加载出来的效果动画
+		SDWebImageContextOption const SDWebImageContextImageDecodeOptions = @"imageDecodeOptions"; // 解码相关选项
+		SDWebImageContextOption const SDWebImageContextImageScaleFactor = @"imageScaleFactor"; // 解码的时候自定义比例图像缩放比 2x,3x，默认是屏幕的缩放
+		SDWebImageContextOption const SDWebImageContextImagePreserveAspectRatio = @"imagePreserveAspectRatio";// 控制在为图像生成缩略图时是否要强制缩略图具有与原始图像相同的纵横比
+		SDWebImageContextOption const SDWebImageContextImageThumbnailPixelSize = @"imageThumbnailPixelSize"; // 加载图像时指定生成缩略图的最大像素大小。将解码并缓存缩略图,并在回调中返回缩略图,而原始数据将保留在磁盘上。
+		SDWebImageContextOption const SDWebImageContextImageTypeIdentifierHint = @"imageTypeIdentifierHint";// 为图像提供文件扩展名或UTI提示,以帮助图像解码器选择正确的图像格式解析器。
+		SDWebImageContextOption const SDWebImageContextImageEncodeOptions = @"imageEncodeOptions"; // 通过编码选项自定义图像数据的编码方式。
+		SDWebImageContextOption const SDWebImageContextQueryCacheType = @"queryCacheType";// 指定SDWebImage从哪个缓存(内存缓存,磁盘缓存或两者)加载图像数据。
+		SDWebImageContextOption const SDWebImageContextStoreCacheType = @"storeCacheType"; // 指定下载的图像数据应存储在哪个SDWebImage缓存(内存,磁盘或两者)中。
+		SDWebImageContextOption const SDWebImageContextOriginalQueryCacheType = @"originalQueryCacheType"; // 指定在使用图像转换器时,SDWebImage应首先从哪个缓存(内存,磁盘或两者)中加载原始图像数据。
+		SDWebImageContextOption const SDWebImageContextOriginalStoreCacheType = @"originalStoreCacheType"; // 指定在使用图像转换器时,SDWebImage应首先将原始图像数据存储在哪个缓存(内存,磁盘或两者)中。
+		SDWebImageContextOption const SDWebImageContextOriginalImageCache = @"originalImageCache"; // 自定义缓存来控制原始图像数据的加载和存储。转换后的图像将继续使用SDWebImage的默认内存和磁盘缓存。
+		SDWebImageContextOption const SDWebImageContextAnimatedImageClass = @"animatedImageClass"; // 自定义的动画图像类以提高性能。SDWebImage会尝试使用此类来解析动画图像数据,而不是默认的UIImage。
+		SDWebImageContextOption const SDWebImageContextDownloadRequestModifier = @"downloadRequestModifier"; // 自定义的请求修改器来操作SDWebImage进行的图像下载请求。
+		SDWebImageContextOption const SDWebImageContextDownloadResponseModifier = @"downloadResponseModifier"; // 自定义的响应修改器来操作SDWebImage执行的图像下载响应。
+		SDWebImageContextOption const SDWebImageContextDownloadDecryptor = @"downloadDecryptor"; // 自定义的数据解密器来解密SDWebImage下载的图像数据。
+		SDWebImageContextOption const SDWebImageContextCacheKeyFilter = @"cacheKeyFilter"; // 自定义的缓存键过滤器,以生成SDWebImage用于图像缓存的密钥。
+		SDWebImageContextOption const SDWebImageContextCacheSerializer = @"cacheSerializer"; // 自定义的缓存序列化器来序列化/反序列化SDWebImage用于磁盘缓存的图像数据。
+  	```
+
+
+ ```
+ ```
 

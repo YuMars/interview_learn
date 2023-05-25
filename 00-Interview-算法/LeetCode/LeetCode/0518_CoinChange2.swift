@@ -14,5 +14,19 @@ public class CoinChange2 {
         // 初始化数组 dp[0] = 0
         // 遍历
         
+        var dp: [[Int]] = [[Int]](repeating: [Int](repeating: 0, count: amount + 1), count: coins.count)
+        for i in 0 ... amount where i % coins[0] == 0 {
+            dp[0][i] = 1
+        }
+        for i in 1 ..< coins.count {
+            for j in 0 ... amount {
+                
+                for k in 0 ... (j / coins[i]) {
+                    dp[i][j] += dp[i - 1][j - k * coins[i]]
+                }
+            }
+        }
+        
+        return dp[coins.count - 1][amount]
     }
 }
