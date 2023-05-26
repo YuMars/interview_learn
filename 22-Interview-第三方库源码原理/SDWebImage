@@ -62,6 +62,140 @@ SDWebImage提供了支持缓存的异步图像下载，为UIImageView、UIButton
   	url:图片下载网络地址。大部分用的url的地方前置会判断url为空的情况下直接return，并且会在下载动作前判断传入类型是NSString下转成NSURL（主要是类型强转的场景）
   	placeholderImage：展位图，多种情况下会使用，未加载图片前占位图、加载失败后占位图，通过SDWebImageOptions控制
   	SDWebImageOptions：缓存类型，有23种，用于处理是否缓存，怎么加载缓存（内存缓存memoryCache、磁盘缓存dickCache），强制刷新、失败重试等等情况，可以叠加使用
+  	```
+		typedef NS_OPTIONS(NSUInteger, SDWebImageOptions) {
+		    /**
+		     * 当URL失败下载时,该URL会被列入黑名单,以便库不会一直尝试。 此标志禁用此黑名单。
+		     */
+		    SDWebImageRetryFailed = 1 << 0,
+		    
+		    /**
+		     * 图像下载在UI交互期间开始,此标志禁用此功能, 导致UIScrollView减速时的延迟下载。
+		     */
+		    SDWebImageLowPriority = 1 << 1,
+		    
+		    /**
+		     * 此标志启用渐进式下载,图像在下载过程中逐渐显示,就像浏览器所做的那样。 默认情况下,仅在完全下载后显示图像。
+		     */
+		    SDWebImageProgressiveLoad = 1 << 2,
+		    
+		    /**
+		     * 只有在无法使您的URL静态并嵌入缓存清除参数的情况下,才使用此标志。
+		     */
+		    SDWebImageRefreshCached = 1 << 3,
+		    
+		    /**
+		     * 在iOS 4+中,如果应用程序进入后台,继续下载图像。这是通过请求系统提供额外的后台时间来完成请求来实现的。如果后台任务过期,操作将被取消
+		     */
+		    SDWebImageContinueInBackground = 1 << 4,
+		    
+		    /**
+		     * 通过设置NSMutableURLRequest.HTTPShouldHandleCookies = YES来处理NSHTTPCookieStore中的cookie;
+		     */
+		    SDWebImageHandleCookies = 1 << 5,
+		    
+		    /**
+		     * 启用以允许不受信任的SSL证书。
+		     */
+		    SDWebImageAllowInvalidSSLCertificates = 1 << 6,
+		    
+		    /**
+		     * 默认情况下,图像按照它们排队的顺序加载。此标志将它们移动到队列的前面。
+		     */
+		    SDWebImageHighPriority = 1 << 7,
+		    
+		    /**
+		     * 默认情况下,加载图像时显示占位符图像。此标志将推迟加载
+		     * 直到图像完成加载之后显示占位符图像。
+		     */
+		    SDWebImageDelayPlaceholder = 1 << 8,
+		    
+		    /**
+		     * 我们通常不对动画图像应用变换,因为大多数变换器无法处理动画图像。使用此标志无论如何对它们进行变换。
+		     */
+		    SDWebImageTransformAnimatedImage = 1 << 9,
+		    
+		    /**
+		     * 默认情况下,图像在下载后添加到图像视图。但在某些情况下,我们希望在设置图像之前拥有手部(例如应用过滤器或添加交叉渐变动画)。如果要在成功时手动设置图像,请使用此标志
+		     */
+		    SDWebImageAvoidAutoSetImage = 1 << 10,
+		    
+		    /**
+		     * 默认情况下,图像按照其原始大小解码。
+		     * 此标志将缩小图像到设备受限内存兼容的大小。
+		     * 要控制限制内存字节,请检查`SDImageCoderHelper.defaultScaleDownLimitBytes`(在iOS上默认为60MB)
+		     * 这实际上对应于v5.5.0中使用的上下文选项`.imageThumbnailPixelSize`(在iOS上默认为(3966,3966))。以前不会。
+		     */
+		    SDWebImageScaleDownLargeImages = 1 << 11,
+		    
+		    /**
+		     * 默认情况下,当图像已经缓存在内存中时,我们不查询图像数据。此掩码可以强制同时查询图像数据。但是,除非指定`SDWebImageQueryMemoryDataSync`,否则此查询是异步的。
+		     */
+		    SDWebImageQueryMemoryData = 1 << 12,
+		    
+		    /**
+		     * 默认情况下,当您仅指定`SDWebImageQueryMemoryData`时,我们异步查询内存中的图像数据。结合此掩码也可以同步查询内存中的图像数据。
+		     */
+		    SDWebImageQueryMemoryDataSync = 1 << 13,
+		    
+		    /**
+		     * 默认情况下,当内存缓存未命中时,我们异步查询磁盘缓存。此掩码可以强制在内存缓存未命中时同步查询磁盘缓存。
+		     */
+		    SDWebImageQueryDiskDataSync = 1 << 14,
+		    
+		    /**
+		     * 默认情况下,当缓存未命中时,图像将从加载程序加载。此标志可阻止仅从缓存加载。
+		     */
+		    SDWebImageFromCacheOnly = 1 << 15,
+		    
+		    /**
+		     * 默认情况下,我们在图像从加载程序加载之前查询缓存。此标志可阻止仅从加载程序加载。
+		     */
+		    SDWebImageFromLoaderOnly = 1 << 16,
+		    
+		    /**
+		     *  默认情况下,当您使用`SDWebImageTransition`在图像加载完成后进行某些视图过渡时,此过渡仅适用于来自网络或磁盘缓存查询的异步回调产生的图像。
+		     * 此掩码可以强制对任何情况(如内存缓存查询或同步磁盘缓存查询)应用视图过渡。
+		     */
+		    SDWebImageForceTransition = 1 << 17,
+		    
+		    /**
+		     * 默认情况下,我们将在缓存查询和网络下载期间在后台解码图像。这可以帮助提高性能,因为在屏幕上渲染图像时,首先需要解码。但是,这发生在Core Animation的主队列上。
+		     * 然而,此过程也可能增加内存使用量。如果由于过度内存消耗而遇到问题,此标志可以防止解码图像。
+		     */
+		    SDWebImageAvoidDecodeImage = 1 << 18,
+		    
+		    /**
+		     * 默认情况下,我们解码动画图像。此标志可以强制仅解码第一个帧并生成静态图像。
+		     */
+		    SDWebImageDecodeFirstFrameOnly = 1 << 19,
+		    
+		    /**
+		     * 默认情况下,对于`SDAnimatedImage`,我们在渲染期间解码动画图像帧以减少内存使用量。但是,您可以指定将所有帧预加载到内存中,以减少动画图像由许多imageViews共享时的CPU使用量。
+		     * 这实际上会触发后台队列(磁盘缓存和下载)中的`preloadAllAnimatedImageFrames`。
+		     */
+		    SDWebImagePreloadAllFrames = 1 << 20,
+		    
+		    /**
+		     * 默认情况下,当您使用`SDWebImageContextAnimatedImageClass`上下文选项(如使用`SDAnimatedImageView`,旨在使用`SDAnimatedImage`)时,我们可能仍然使用`UIImage`当内存缓存命中时,或图像解码器不可用来生成一个完全匹配您的自定义类作为后备解决方案.使用此选项,可以确保我们始终使用您提供的类回调图像。如果无法生成,将使用代码为`SDWebImageErrorBadImageData`的错误。
+		     */
+		    SDWebImageMatchAnimatedImageClass = 1 << 21,
+		    
+		    /**
+		     * 默认情况下,当我们从网络加载图像时,图像将被写入缓存(内存和磁盘,由您的`storeCacheType`上下文选项控制)。
+		     * 这可能是一个异步操作,最终的`SDInternalCompletionBlock`回调不能保证磁盘缓存写入已完成,并可能导致逻辑错误。 (例如,您只在完成块中修改磁盘数据,但是磁盘缓存尚未准备好)
+		     * 如果您需要在完成块中处理磁盘缓存,应使用此选项以确保在回调时磁盘缓存已经写入。
+		     */
+		    SDWebImageWaitStoreCache = 1 << 22,
+		    
+		    /**
+		     * 我们通常不对矢量图像应用变换,因为矢量图像支持动态更改为任何大小,对固定大小进行光栅化会损失细节。要修改矢量图像,您可以在运行时处理矢量数据(如修改PDF标记/SVG元素)。
+		     * 使用此标志无论如何对它们进行变换。
+		     */
+		    SDWebImageTransformVectorImage = 1 << 23
+		}
+  	```
+
   	SDWebImageContext: 就是NSDictionary，方便自定义，在整个加载流程中一直优先以SDWebImageContext传入的内容优先，没有则通过SDWebImage内部提供的属性替换
   	```
 		SDWebImageContextOption const SDWebImageContextSetImageOperationKey = @"setImageOperationKey"; // 通过validOperationKey取消正在运行的任务
@@ -89,8 +223,463 @@ SDWebImage提供了支持缓存的异步图像下载，为UIImageView、UIButton
 		SDWebImageContextOption const SDWebImageContextCacheKeyFilter = @"cacheKeyFilter"; // 自定义的缓存键过滤器,以生成SDWebImage用于图像缓存的密钥。
 		SDWebImageContextOption const SDWebImageContextCacheSerializer = @"cacheSerializer"; // 自定义的缓存序列化器来序列化/反序列化SDWebImage用于磁盘缓存的图像数据。
   	```
+  	SDSetImageBlock：设置图像时的回调
+  	SDImageLoaderProgressBlock：图片加载进度回调
+  	SDInternalCompletionBlock：图片加载完成回调
+
+  	从SDWebImageContext可以看出对应SDWebImage有哪些主要的功能。其对应的类也列出
+  		1.取消任务：SDWebImageOperation
+  		2.回调任务控制 SDWebImageDownloaderOperation（下载任务） SDWebImageManager（进度、完成任务） SDImageCache（缓存 ）SDWebImagePrefetcher（预加载任务）
+  		3.缓存图片（磁盘、内存，缓存的位置） ：SDImageCache
+  		4.图片加载（磁盘、缓存、请求数据、响应数据）SDImageLoader
+  		5.图片解码（解码后图片缩放比、宽高比、文件信息）SDImageCoder
+  		6.图片加载后显示动画（动画方式）SDImageTransformer
+  		7.图片编码（需要将图片缓存，所以需要重新序列化图片数据）
+  		8.图片下载：SDWebImageDownloader
 
 
- ```
- ```
+  	```
+		- (nullable id<SDWebImageOperation>)sd_internalSetImageWithURL:(nullable NSURL *)url
+		                                              placeholderImage:(nullable UIImage *)placeholder
+		                                                       options:(SDWebImageOptions)options
+		                                                       context:(nullable SDWebImageContext *)context
+		                                                 setImageBlock:(nullable SDSetImageBlock)setImageBlock
+		                                                      progress:(nullable SDImageLoaderProgressBlock)progressBlock
+		                                                     completed:(nullable SDInternalCompletionBlock)completedBlock {
+		    if (context) {
+		        // copy to avoid mutable object
+		        context = [context copy];
+		    } else {
+		        context = [NSDictionary dictionary];
+		    }
+		    
+		    // 先取了context里面的配置参数，context没有，则从NSStringFromClass([self class])取类本身，并且给context赋值{@"setImageOperationKey":validOperationKey}
+		    NSString *validOperationKey = context[SDWebImageContextSetImageOperationKey];
+		    if (!validOperationKey) {
+		        // pass through the operation key to downstream, which can used for tracing operation or image view class
+		        validOperationKey = NSStringFromClass([self class]);
+		        SDWebImageMutableContext *mutableContext = [context mutableCopy];
+		        mutableContext[SDWebImageContextSetImageOperationKey] = validOperationKey;
+		        context = [mutableContext copy];
+		    }
+		    self.sd_latestOperationKey = validOperationKey;
+		    
+		    // 从sd_operationDictionary中取出SDOperationsDictionary对应的operation，并且取消
+		    [self sd_cancelImageLoadOperationWithKey:validOperationKey];
+		    self.sd_imageURL = url;
+		    
+		    SDWebImageManager *manager = context[SDWebImageContextCustomManager];
+		    if (!manager) {
+		        manager = [SDWebImageManager sharedManager];
+		    } else {
+		        // 防止传入的context循环引用SDWebImageManager
+		        // remove this manager to avoid retain cycle (manger -> loader -> operation -> context -> manager)
+		        SDWebImageMutableContext *mutableContext = [context mutableCopy];
+		        mutableContext[SDWebImageContextCustomManager] = nil;
+		        context = [mutableContext copy];
+		    }
+		    
+		    // 弱引用Cache,当内存警告时候缓存memoryCahce中的数据被清除，一些图片就需要重新下载，用了shouldUseWeakCache后清理缓存后也可以从NSMapTable类型的weakCache表中获取数据
+		    BOOL shouldUseWeakCache = NO;
+		    if ([manager.imageCache isKindOfClass:SDImageCache.class]) {
+		        shouldUseWeakCache = ((SDImageCache *)manager.imageCache).config.shouldUseWeakMemoryCache;
+		    }
+		    if (!(options & SDWebImageDelayPlaceholder)) { // 没有设置延迟placeHolder（加载过程取消或者失败的情况）
+		        if (shouldUseWeakCache) {
+		            NSString *key = [manager cacheKeyForURL:url context:context];
+		            // call memory cache to trigger weak cache sync logic, ignore the return value and go on normal query
+		            // this unfortunately will cause twice memory cache query, but it's fast enough
+		            // in the future the weak cache feature may be re-design or removed
+		            [((SDImageCache *)manager.imageCache) imageFromMemoryCacheForKey:key];
+		        }
+		        dispatch_main_async_safe(^{// 判断了当前线程是不是在主线程，确保在主线程执行
+		            // 设置placehodler
+		            [self sd_setImage:placeholder imageData:nil basedOnClassOrViaCustomSetImageBlock:setImageBlock cacheType:SDImageCacheTypeNone imageURL:url];
+		        });
+		    }
+		    
+		    // 遵循的（可取消）协议的对象-下载功能
+		    id <SDWebImageOperation> operation = nil;
+		    
+		    // 1.有URL开始下载，开始加载动画、并且同步进度
+		    // 2.没URL，停止加载动画、回调进度、同时报错
+		    if (url) {
+		        // reset the progress // 设置加载进度
+		        NSProgress *imageProgress = objc_getAssociatedObject(self, @selector(sd_imageProgress));
+		        if (imageProgress) {
+		            imageProgress.totalUnitCount = 0;
+		            imageProgress.completedUnitCount = 0;
+		        }
+		        
+		        // check and start image indicator
+		        // 图片加载转菊花，有设置就开始动画，没有设置就return
+		        [self sd_startImageIndicator];
+		        id<SDWebImageIndicator> imageIndicator = self.sd_imageIndicator;
+		        
+		        // 加载进度回调
+		        // 对外部的imageProgress设置:已经加载的数据量和还需要的数据量
+		        // 同时对转菊花的进行进度更新
+		        SDImageLoaderProgressBlock combinedProgressBlock = ^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+		            if (imageProgress) {
+		                imageProgress.totalUnitCount = expectedSize;
+		                imageProgress.completedUnitCount = receivedSize;
+		            }
+		            
+		            if ([imageIndicator respondsToSelector:@selector(updateIndicatorProgress:)]) {
+		                double progress = 0;
+		                if (expectedSize != 0) {
+		                    progress = (double)receivedSize / expectedSize;
+		                }
+		                progress = MAX(MIN(progress, 1), 0); // 0.0 - 1.0
+		                dispatch_async(dispatch_get_main_queue(), ^{
+		                    [imageIndicator updateIndicatorProgress:progress];
+		                });
+		            }
+		            
+		            if (progressBlock) {
+		                progressBlock(receivedSize, expectedSize, targetURL);
+		            }
+		        };
+		        @weakify(self);
+		        
+		        operation = [manager loadImageWithURL:url options:options context:context progress:combinedProgressBlock completed:^(UIImage *image, NSData *data, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+		            
+		            // 加载完成后操作、设置加载动画、设置图片转场效果、设置最终图片
+		            
+		            @strongify(self);
+		            if (!self) { return; }
+		            
+		            // 纠错，如果已经完成并且没有报错，将已下载总数据量和总数据量标记成完成状态(可能是那种数据量很少，直接下载完成无进度回调的情况)
+		            if (imageProgress && finished && !error && imageProgress.totalUnitCount == 0 && imageProgress.completedUnitCount == 0) {
+		                imageProgress.totalUnitCount = SDWebImageProgressUnitCountUnknown;
+		                imageProgress.completedUnitCount = SDWebImageProgressUnitCountUnknown;
+		            }
+		            
+		            // 结束加载菊花动画
+		            if (finished) {
+		                [self sd_stopImageIndicator];
+		            }
+		            
+		            // SDWebImageAvoidAutoSetImage手动设置加载完成后操作
+		            BOOL shouldCallCompletedBlock = finished || (options & SDWebImageAvoidAutoSetImage);
+		            // SDWebImageDelayPlaceholder手动设置加载成功后动作
+		            BOOL shouldNotSetImage = ((image && (options & SDWebImageAvoidAutoSetImage)) ||
+		                                      (!image && !(options & SDWebImageDelayPlaceholder)));
+		            
+		            // 设置SDWebImageAvoidAutoSetImage和SDWebImageDelayPlaceholder的回调
+		            SDWebImageNoParamsBlock callCompletedBlockClosure = ^{
+		                if (!self) { return; }
+		                if (!shouldNotSetImage) {
+		                    [self sd_setNeedsLayout];
+		                }
+		                if (completedBlock && shouldCallCompletedBlock) {
+		                    completedBlock(image, data, error, cacheType, finished, url);
+		                }
+		            };
+		            
+		            // 有图片，但是需要手动设置图片
+		            // 无图片，但是placeHolder没设置
+		            if (shouldNotSetImage) {
+		                dispatch_main_async_safe(callCompletedBlockClosure);
+		                return;
+		            }
+		            
+		            UIImage *targetImage = nil;
+		            NSData *targetData = nil;
+		            if (image) {
+		                // 有图，自动设置图片
+		                targetImage = image;
+		                targetData = data;
+		            } else if (options & SDWebImageDelayPlaceholder) {
+		                // 无图，设置了PlaceHolder
+		                targetImage = placeholder;
+		                targetData = nil;
+		            }
+		            
+		            // 加载成功后动画专场效果
+
+		            SDWebImageTransition *transition = nil;
+		            BOOL shouldUseTransition = NO;
+		            if (options & SDWebImageForceTransition) {
+		                // 强制转场效果
+		                shouldUseTransition = YES;
+		            } else if (cacheType == SDImageCacheTypeNone) {
+		                // 没有缓存，需要转场效果
+		                shouldUseTransition = YES;
+		            } else {
+		                // 从缓存中取的，不需要转场
+		                // 从磁盘中取的，如果是缓存同步或者磁盘同步，不需要转场，否则需要转场
+		                if (cacheType == SDImageCacheTypeMemory) {
+		                    shouldUseTransition = NO;
+		                } else if (cacheType == SDImageCacheTypeDisk) {
+		                    if (options & SDWebImageQueryMemoryDataSync || options & SDWebImageQueryDiskDataSync) {
+		                        shouldUseTransition = NO;
+		                    } else {
+		                        shouldUseTransition = YES;
+		                    }
+		                } else {
+		                    // 其他情况不需要转场
+		                    shouldUseTransition = NO;
+		                }
+		            }
+		            if (finished && shouldUseTransition) {
+		                transition = self.sd_imageTransition;
+		            }
+
+		            dispatch_main_async_safe(^{
+		                [self sd_setImage:targetImage imageData:targetData basedOnClassOrViaCustomSetImageBlock:setImageBlock transition:transition cacheType:cacheType imageURL:imageURL];
+
+		                // 加载成功回调
+		                callCompletedBlockClosure();
+		            });
+		        }];
+		        // 设置operation和validOperationKey关联、用于取消某次加载图片
+		        [self sd_setImageLoadOperation:operation forKey:validOperationKey];
+		    } else {
+		        // 停止图片加载动画
+		        [self sd_stopImageIndicator];
+		        if (completedBlock) {
+		            dispatch_main_async_safe(^{
+		                NSError *error = [NSError errorWithDomain:SDWebImageErrorDomain code:SDWebImageErrorInvalidURL userInfo:@{NSLocalizedDescriptionKey : @"Image url is nil"}];
+		                completedBlock(nil, nil, error, SDImageCacheTypeNone, YES, url);
+		            });
+		        }
+		    }
+		    
+		    return operation;
+		}
+  	```
+  	入口函数里面主要的功能：
+  		1 如果有需要需要的任务，则取消已经开始的任务
+  		2 判断是否使用了弱引用，用于内存警告的情况下，用户还能显示图片
+  		3 根据SDWebImageDelayPlaceholder，不是就在加载完成显示占位图，否则就先显示占位图
+  		4 将当前任务加到SDOperationsDictionary中
+  		5 根据有无加载动画，显示加载动画
+  		6 无URL的、停止动画，报错回调
+  		7 有URL的、初始化加载进度，重复第4步，开始加载图片
+  		8 图片加载成功后回调
+  			8.1 同步进度imageProgress
+  			8.2 结束加载动画
+  			8.3 根据SDWebImageAvoidAutoSetImage判断，是否需要手动设置图片
+  			8.4 根据options判断是否需要做转场动画
+  			8.5 回调completedBlock(image, data, error, cacheType, finished, url)
+
+加载图片SDWebImageManager
+	加载图片调用SDWebImageManager的loadImageWithURL:options:context:progress:completed
+	```
+		- (SDWebImageCombinedOperation *)loadImageWithURL:(nullable NSURL *)url options:(SDWebImageOptions)options context:(nullable SDWebImageContext *)context progress:(nullable SDImageLoaderProgressBlock)progressBlock completed:(nonnull SDInternalCompletionBlock)completedBlock {
+		    // Invoking this method without a completedBlock is pointless
+		    NSAssert(completedBlock != nil, @"If you mean to prefetch the image, use -[SDWebImagePrefetcher prefetchURLs] instead");
+
+		    // 常见错误适配
+		    // 强制转换NSString成NSURL
+		    if ([url isKindOfClass:NSString.class]) {
+		        url = [NSURL URLWithString:(NSString *)url];
+		    }
+
+		    // 保护：做其他类型判断
+		    if (![url isKindOfClass:NSURL.class]) {
+		        url = nil;
+		    }
+
+		    SDWebImageCombinedOperation *operation = [SDWebImageCombinedOperation new];
+		    operation.manager = self;
+
+		    BOOL isFailedUrl = NO;
+		    if (url) {
+		        // 判断是已经尝试过失败的URL集合里的数据，下一步处理中直接报错，并且结束操作
+		        SD_LOCK(_failedURLsLock);
+		        isFailedUrl = [self.failedURLs containsObject:url];
+		        SD_UNLOCK(_failedURLsLock);
+		    }
+		    
+		    // Preprocess the options and context arg to decide the final the result for manager
+		    // 预处理选项和上下文参数,以决定管理器的最终结果。
+		    // 1.Transformer，图片动画
+		    // 2.cacheKeyFilter 缓存key过滤
+		    // 3.cacheSerializer 将解码的图像、源下载的数据转换为并存储到磁盘缓存，用于已经加载到的大数据图片比较慢，可以转换成其他格式存储到磁盘缓存中
+		    // 4.如果有全局控制options处理操作，按照全局控制options处理操作优先，否则就用设置的操作进行
+		    SDWebImageOptionsResult *result = [self processedResultForURL:url options:options context:context];
+
+		    // 如果URL空，或者options是不需要重试的失败url，直接报错，返回对应的操作，失败的结果
+		    if (url.absoluteString.length == 0 || (!(options & SDWebImageRetryFailed) && isFailedUrl)) {
+		        NSString *description = isFailedUrl ? @"Image url is blacklisted" : @"Image url is nil";
+		        NSInteger code = isFailedUrl ? SDWebImageErrorBlackListed : SDWebImageErrorInvalidURL;
+		        [self callCompletionBlockForOperation:operation completion:completedBlock error:[NSError errorWithDomain:SDWebImageErrorDomain code:code userInfo:@{NSLocalizedDescriptionKey : description}] queue:result.context[SDWebImageContextCallbackQueue] url:url];
+		        return operation;
+		    }
+
+		    SD_LOCK(_runningOperationsLock);
+		    // 下载操作中的集合添加新的操作任务
+		    [self.runningOperations addObject:operation];
+		    SD_UNLOCK(_runningOperationsLock);
+		    
+		    // 从缓存加载图像的入口
+		    // 1.没有图片转场的步骤->从缓存查询图像->下载数据和图像->将图像存储在缓存中
+		    
+		    // 2.有图片转场的步骤->从缓存查询转换后的图像->从缓存查询原始图像->下载数据和图像->在CPU上进行变换->将原始图像存储在缓存中->将转换后的图像存储在缓存中
+		    
+		    [self callCacheProcessForOperation:operation url:url options:result.options context:result.context progress:progressBlock completed:completedBlock];
+
+		    return operation;
+		}
+	```
+	执行的代码逻辑：
+		1 url纠错
+		2 生成return的SDWebImageCombinedOperation对象
+		3 判断当前图片URL是否在失败集合failedURLs中，根据options判断是否需要重新加载失败的url，还是结束流程并且返回错误信息
+		4 将当前SDWebImageCombinedOperation加到runningOperations集合中，自动判断runningOperations中有否对象，自动执行后续的任务
+		5 调用查询普通缓存方法callCacheProcessForOperation查看是否需要使用缓存中的内容
+
+
+	查询缓存callCacheProcessForOperation:url:options:context:progress:completed
+		1.没有图片转场的步骤->从缓存查询图像->下载数据和图像->将图像存储在缓存中
+		2.有图片转场的步骤->从缓存查询转换后的图像->从缓存查询原始图像->下载数据和图像->在CPU上进行变换->将原始图像存储在缓存中->将转换后的图像存储在缓存中
+	```
+		- (void)callCacheProcessForOperation:(nonnull SDWebImageCombinedOperation *)operation
+		                                 url:(nonnull NSURL *)url
+		                             options:(SDWebImageOptions)options
+		                             context:(nullable SDWebImageContext *)context
+		                            progress:(nullable SDImageLoaderProgressBlock)progressBlock
+		                           completed:(nullable SDInternalCompletionBlock)completedBlock {
+		    // Grab the image cache to use
+		    //
+		    id<SDImageCache> imageCache = context[SDWebImageContextImageCache];
+		    if (!imageCache) {
+		        imageCache = self.imageCache;
+		    }
+		    
+		    // 默认支持从缓存、磁盘取
+		    SDImageCacheType queryCacheType = SDImageCacheTypeAll;
+		    if (context[SDWebImageContextQueryCacheType]) {
+		        queryCacheType = [context[SDWebImageContextQueryCacheType] integerValue];
+		    }
+		    
+		    // 查询缓存
+		    BOOL shouldQueryCache = !SD_OPTIONS_CONTAINS(options, SDWebImageFromLoaderOnly);
+		    if (shouldQueryCache) { // 取缓存过程
+		        // 根据URL返回缓存的key
+		        // 1.优先从cacheKeyFilter取key
+		        // 2.没有保底用url.absoluteString作为key
+		        // 3.取地址和缩略图尺寸宽高比的作为key
+		        // 4.取transformer作为作为key
+		        NSString *key = [self cacheKeyForURL:url context:context];
+		        @weakify(operation);
+		        operation.cacheOperation = [imageCache queryImageForKey:key options:options context:context cacheType:queryCacheType completion:^(UIImage * _Nullable cachedImage, NSData * _Nullable cachedData, SDImageCacheType cacheType) {
+		            @strongify(operation);
+		            if (!operation || operation.isCancelled) { // 取消组合操作 -> 直接结束，并且报错 -> 删除running的queue
+		                [self callCompletionBlockForOperation:operation completion:completedBlock error:[NSError errorWithDomain:SDWebImageErrorDomain code:SDWebImageErrorCancelled userInfo:@{NSLocalizedDescriptionKey : @"Operation cancelled by user during querying the cache"}] queue:context[SDWebImageContextCallbackQueue] url:url];
+		                [self safelyRemoveOperationFromRunning:operation];
+		                return;
+		            } else if (!cachedImage) { // 未取到缓存图片(并且已经有缓存key，说明在解码过程中或者在图形转换过程) -> 走下载流程
+		                NSString *originKey = [self originalCacheKeyForURL:url context:context];
+		                BOOL mayInOriginalCache = ![key isEqualToString:originKey];
+		                // 有机会查询原始缓存而不是下载,然后应用变换
+		                // 缩略图解码是在SDImageCache的解码部分完成的,不需要变换的后期处理
+		                if (mayInOriginalCache) {
+		                    // 如果原始缓存中有，则查询原始缓存
+		                    [self callOriginalCacheProcessForOperation:operation url:url options:options context:context progress:progressBlock completed:completedBlock];
+		                    return;
+		                }
+		            }
+		            // 下载流程
+		            [self callDownloadProcessForOperation:operation url:url options:options context:context cachedImage:cachedImage cachedData:cachedData cacheType:cacheType progress:progressBlock completed:completedBlock];
+		        }];
+		    } else { // 下载过程
+		        // Continue download process
+		        [self callDownloadProcessForOperation:operation url:url options:options context:context cachedImage:nil cachedData:nil cacheType:SDImageCacheTypeNone progress:progressBlock completed:completedBlock];
+		    }
+		}
+	```
+
+	缓存中查询主要做了：
+		1 判断查询类型，SDWebImageFromLoaderOnly默认有缓存仅从缓存中查询
+			1.1 缓存查询后判断当前SDWebImageCombinedOperation是否已经取消，如果取消，回调失败结果和原因
+			1.2 如果未查询到缓存，判断是否已经有生成过缓存key，如果有原始缓存key，调用查询原始缓存流程
+		2 不查询缓存则走下载流程
+
+
+	查询原始缓存callOriginalCacheProcessForOperation:url:options:context:progress:completed
+	```
+// 查询原始缓存过程
+- (void)callOriginalCacheProcessForOperation:(nonnull SDWebImageCombinedOperation *)operation
+                                         url:(nonnull NSURL *)url
+                                     options:(SDWebImageOptions)options
+                                     context:(nullable SDWebImageContext *)context
+                                    progress:(nullable SDImageLoaderProgressBlock)progressBlock
+                                   completed:(nullable SDInternalCompletionBlock)completedBlock {
+    // 获取要使用的图像缓存,首先选择独立的原始缓存
+    id<SDImageCache> imageCache = context[SDWebImageContextOriginalImageCache];
+    if (!imageCache) {
+        // 如果没有独立缓存可用,使用默认缓存
+        imageCache = context[SDWebImageContextImageCache];
+        if (!imageCache) {
+            imageCache = self.imageCache;
+        }
+    }
+    
+    // 默认从磁盘查询
+    SDImageCacheType originalQueryCacheType = SDImageCacheTypeDisk;
+    if (context[SDWebImageContextOriginalQueryCacheType]) {
+        originalQueryCacheType = [context[SDWebImageContextOriginalQueryCacheType] integerValue];
+    }
+    
+    // 确认是否需要需要查询原始缓存
+    BOOL shouldQueryOriginalCache = (originalQueryCacheType != SDImageCacheTypeNone);
+    if (shouldQueryOriginalCache) {
+        // 获取没有变换器的原始缓存键生成
+        NSString *key = [self originalCacheKeyForURL:url context:context];
+        @weakify(operation);
+        operation.cacheOperation = [imageCache queryImageForKey:key options:options context:context cacheType:originalQueryCacheType completion:^(UIImage * _Nullable cachedImage, NSData * _Nullable cachedData, SDImageCacheType cacheType) {
+            @strongify(operation);
+            if (!operation || operation.isCancelled) {// 已经取消，直接结束并且报错
+                
+                [self callCompletionBlockForOperation:operation completion:completedBlock error:[NSError errorWithDomain:SDWebImageErrorDomain code:SDWebImageErrorCancelled userInfo:@{NSLocalizedDescriptionKey : @"Operation cancelled by user during querying the cache"}] queue:context[SDWebImageContextCallbackQueue] url:url];
+                [self safelyRemoveOperationFromRunning:operation];
+                return;
+            } else if (!cachedImage) {
+                // 无缓存，走下载流程
+                [self callDownloadProcessForOperation:operation url:url options:options context:context cachedImage:nil cachedData:nil cacheType:SDImageCacheTypeNone progress:progressBlock completed:completedBlock];
+                return;
+            }
+
+            // 跳过下载并继续变换过程,暂时忽略.refreshCached选项
+            [self callTransformProcessForOperation:operation url:url options:options context:context originalImage:cachedImage originalData:cachedData cacheType:cacheType finished:YES completed:completedBlock];
+            
+            [self safelyRemoveOperationFromRunning:operation];
+        }];
+    } else {
+        // 继续下载流程
+        [self callDownloadProcessForOperation:operation url:url options:options context:context cachedImage:nil cachedData:nil cacheType:SDImageCacheTypeNone progress:progressBlock completed:completedBlock];
+    }
+}
+	```
+	查询原始缓存主要代码：
+		1 获取查询缓存imageCache，判断是否需要查询原始缓存，如果需要则查询缓存
+
+		2 不需要查询缓存，走下载流程
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
