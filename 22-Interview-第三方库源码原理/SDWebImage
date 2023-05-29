@@ -656,8 +656,334 @@ SDWebImage提供了支持缓存的异步图像下载，为UIImageView、UIButton
 	```
 	查询原始缓存主要代码：
 		1 获取查询缓存imageCache，判断是否需要查询原始缓存，如果需要则查询缓存
+			1.1 通过缓存查询key对应缓存图片cachedImage、缓存数据cachedData、缓存类型SDImageCacheType
+			1.2 缓存查询结束回调
+			1.3	查询缓存操作取消则直接返回错误callCompletionBlockForOperation:completion:error:queue:url
+			1.4 未查询到缓存，执行下载流程callDownloadProcessForOperation:url:options:context:cachedImage:cachedData:cacheType:progress:completed
+			1.5 查询到缓存图片，执行转场效果方法callTransformProcessForOperation:url:options:context:originalImage:originalData:originalData:finished:completed
+			1.6 将当前SDWebImageCombinedOperation从runningOperations中移除
 
 		2 不需要查询缓存，走下载流程
+
+	转场特效方法callTransformProcessForOperation:url:options:context:originalImage:originalData:originalData:finished:completed
+		```
+		// Transform process
+		- (void)callTransformProcessForOperation:(nonnull SDWebImageCombinedOperation *)operation
+		                                     url:(nonnull NSURL *)url
+		                                 options:(SDWebImageOptions)options
+		                                 context:(SDWebImageContext *)context
+		                           originalImage:(nullable UIImage *)originalImage
+		                            originalData:(nullable NSData *)originalData
+		                               cacheType:(SDImageCacheType)cacheType
+		                                finished:(BOOL)finished
+		                               completed:(nullable SDInternalCompletionBlock)completedBlock {
+		    id<SDImageTransformer> transformer = context[SDWebImageContextImageTransformer];
+		    if ([transformer isEqual:NSNull.null]) {
+		        transformer = nil;
+		    }
+		    
+		    // 是否需要转场特效
+		    BOOL shouldTransformImage = originalImage && transformer;
+		    shouldTransformImage = shouldTransformImage && (!originalImage.sd_isAnimated || (options & SDWebImageTransformAnimatedImage));
+		    shouldTransformImage = shouldTransformImage && (!originalImage.sd_isVector || (options & SDWebImageTransformVectorImage));
+		    
+		    BOOL isThumbnail = originalImage.sd_isThumbnail;
+		    NSData *cacheData = originalData;
+		    UIImage *cacheImage = originalImage;
+		    if (isThumbnail) { // 缩略图无全图数据和尺寸
+		        cacheData = nil; // thumbnail don't store full size data
+		        originalImage = nil; // thumbnail don't have full size image
+		    }
+		    
+		    if (shouldTransformImage) {
+		        
+		        NSString *key = [self cacheKeyForURL:url context:context];
+		        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+		            // Case that transformer on thumbnail, which this time need full pixel image
+		            UIImage *transformedImage = [transformer transformedImageWithImage:cacheImage forKey:key];
+		            // 有转场特效原图用transformedImage原图，否则就用cacheImage缓存图
+		            if (transformedImage) { // 转场图
+		                transformedImage.sd_isTransformed = YES;
+		                [self callStoreOriginCacheProcessForOperation:operation url:url options:options context:context originalImage:originalImage cacheImage:transformedImage originalData:originalData cacheData:nil cacheType:cacheType finished:finished completed:completedBlock];
+		            } else {
+		                [self callStoreOriginCacheProcessForOperation:operation url:url options:options context:context originalImage:originalImage cacheImage:cacheImage originalData:originalData cacheData:cacheData cacheType:cacheType finished:finished completed:completedBlock];
+		            }
+		        });
+		    } else {
+		        [self callStoreOriginCacheProcessForOperation:operation url:url options:options context:context originalImage:originalImage cacheImage:cacheImage originalData:originalData cacheData:cacheData cacheType:cacheType finished:finished completed:completedBlock];
+		    }
+		}
+		```
+		转场特效流程主要代码：
+			1 获取SDImageTransformer图片改变配置，判断是否需要转场动画
+			2 需要做图片改变
+				2.1 生成了改变后的图片，执行保存改变后的图和原始图片到缓存中callStoreOriginCacheProcessForOperation:url:options:context:originalImage:cacheImage:originalData:cacheData:cacheType:finished:completed:
+				2.2 未生成改变后的图片，执行保存原始图片到缓存中callStoreOriginCacheProcessForOperation:url:options:context:originalImage:cacheImage:originalData:cacheData:cacheType:finished:completed:
+			3 不需要做图片改变，保存原始图片和原始数据
+
+	存储原始缓存过程
+	callStoreOriginCacheProcessForOperation:url:options:context:originalImage:cacheImage:originalData:cacheData:cacheType:finished:completed:
+	```
+		// 存储原始缓存过程
+		- (void)callStoreOriginCacheProcessForOperation:(nonnull SDWebImageCombinedOperation *)operation
+		                                            url:(nonnull NSURL *)url
+		                                        options:(SDWebImageOptions)options
+		                                        context:(SDWebImageContext *)context
+		                                  originalImage:(nullable UIImage *)originalImage
+		                                     cacheImage:(nullable UIImage *)cacheImage
+		                                   originalData:(nullable NSData *)originalData
+		                                      cacheData:(nullable NSData *)cacheData
+		                                      cacheType:(SDImageCacheType)cacheType
+		                                       finished:(BOOL)finished
+		                                      completed:(nullable SDInternalCompletionBlock)completedBlock {
+		    // 获取要使用的图像缓存,首先选择独立的原始缓存
+		    id<SDImageCache> imageCache = context[SDWebImageContextOriginalImageCache];
+		    if (!imageCache) {
+		        imageCache = context[SDWebImageContextImageCache];
+		        if (!imageCache) {
+		            imageCache = self.imageCache;
+		        }
+		    }
+		    
+		    // 默认存到磁盘
+		    SDImageCacheType originalStoreCacheType = SDImageCacheTypeDisk;
+		    if (context[SDWebImageContextOriginalStoreCacheType]) {
+		        originalStoreCacheType = [context[SDWebImageContextOriginalStoreCacheType] integerValue];
+		    }
+		    id<SDWebImageCacheSerializer> cacheSerializer = context[SDWebImageContextCacheSerializer];
+		    
+		    // 如果原始cacheType是磁盘,因为我们不需要再次存储原始数据，从原始StoreCacheType中剥离磁盘
+		    if (cacheType == SDImageCacheTypeDisk) {
+		        if (originalStoreCacheType == SDImageCacheTypeDisk) originalStoreCacheType = SDImageCacheTypeNone;
+		        if (originalStoreCacheType == SDImageCacheTypeAll) originalStoreCacheType = SDImageCacheTypeMemory;
+		    }
+		    
+		    // 获取没有变换器的原始缓存键生成
+		    NSString *key = [self originalCacheKeyForURL:url context:context];
+		    if (finished && cacheSerializer && (originalStoreCacheType == SDImageCacheTypeDisk || originalStoreCacheType == SDImageCacheTypeAll)) { // 缓存需要序列化（转成Data数据）
+		        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+		            // 对图片按照指定的格式jpg/png进行缓存
+		            NSData *newOriginalData = [cacheSerializer cacheDataWithImage:originalImage originalData:originalData imageURL:url];
+		            // 存原始数据和图片
+		            [self storeImage:originalImage imageData:newOriginalData forKey:key options:options context:context imageCache:imageCache cacheType:originalStoreCacheType finished:finished completion:^{
+		                // 继续存储缓存过程,变换的数据为nil
+		                [self callStoreCacheProcessForOperation:operation url:url options:options context:context image:cacheImage data:cacheData cacheType:cacheType finished:finished completed:completedBlock];
+		            }];
+		        });
+		    } else {
+		        // 存原始数据和图片
+		        [self storeImage:originalImage imageData:originalData forKey:key options:options context:context imageCache:imageCache cacheType:originalStoreCacheType finished:finished completion:^{
+		            // 存缓存数据和图片
+		            [self callStoreCacheProcessForOperation:operation url:url options:options context:context image:cacheImage data:cacheData cacheType:cacheType finished:finished completed:completedBlock];
+		        }];
+		    }
+		}
+
+	```
+	存储原始缓存过程主要代码：
+		1 获取缓存类型SDImageCache
+		2 默认存在磁盘缓存中
+		3 根据SDWebImageContextCacheSerializer是否需要序列化、对图片按照指定的格式jpg/png进行缓存
+			3.1 需要序列化，存储原始图片originalImage，序列化后的imageData；不需要序列化存储原始图片originalImage ，存储原始数据originalData
+			storeImage:imageData:forKey:options:context:imageCache:cacheType:finished:completion:
+			3.2 成功后存数缓存图片，序列化后的缓存图片
+			 callStoreCacheProcessForOperation:url:options:context:image:data:cacheType:finished:completed:
+
+	存储缓存过程
+	```
+		// Store normal cache process
+		- (void)callStoreCacheProcessForOperation:(nonnull SDWebImageCombinedOperation *)operation
+		                                      url:(nonnull NSURL *)url
+		                                  options:(SDWebImageOptions)options
+		                                  context:(SDWebImageContext *)context
+		                                    image:(nullable UIImage *)image
+		                                     data:(nullable NSData *)data
+		                                cacheType:(SDImageCacheType)cacheType
+		                                 finished:(BOOL)finished
+		                                completed:(nullable SDInternalCompletionBlock)completedBlock {
+		    // Grab the image cache to use
+		    id<SDImageCache> imageCache = context[SDWebImageContextImageCache];
+		    if (!imageCache) {
+		        imageCache = self.imageCache;
+		    }
+		    // the target image store cache type
+		    SDImageCacheType storeCacheType = SDImageCacheTypeAll;
+		    if (context[SDWebImageContextStoreCacheType]) {
+		        storeCacheType = [context[SDWebImageContextStoreCacheType] integerValue];
+		    }
+		    id<SDWebImageCacheSerializer> cacheSerializer = context[SDWebImageContextCacheSerializer];
+		    
+		    // transformed cache key
+		    NSString *key = [self cacheKeyForURL:url context:context];
+		    if (finished && cacheSerializer && (storeCacheType == SDImageCacheTypeDisk || storeCacheType == SDImageCacheTypeAll)) {
+		        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+		            NSData *newData = [cacheSerializer cacheDataWithImage:image originalData:data imageURL:url];
+		            // Store image and data
+		            [self storeImage:image imageData:newData forKey:key options:options context:context imageCache:imageCache cacheType:storeCacheType finished:finished completion:^{
+		                [self callCompletionBlockForOperation:operation completion:completedBlock image:image data:data error:nil cacheType:cacheType finished:finished queue:context[SDWebImageContextCallbackQueue] url:url];
+		            }];
+		        });
+		    } else {
+		        // Store image and data
+		        [self storeImage:image imageData:data forKey:key options:options context:context imageCache:imageCache cacheType:storeCacheType finished:finished completion:^{
+		            [self callCompletionBlockForOperation:operation completion:completedBlock image:image data:data error:nil cacheType:cacheType finished:finished queue:context[SDWebImageContextCallbackQueue] url:url];
+		        }];
+		    }
+		}
+	```
+	这个过程跟存储原始缓存流程一致，唯一的差别是这个过程存的数据源来自缓存cacheImage、originalData，上一个过程存的数据来自原始数据originalImage、originalData
+		1 获取缓存类型SDImageCache
+		2 默认存在磁盘缓存中
+		3 根据SDWebImageContextCacheSerializer是否需要序列化、对图片按照指定的格式jpg/png进行缓存
+			3.1 需要序列化，存储原始图片originalImage，序列化后的imageData；不需要序列化存储原始图片originalImage ，存储原始数据originalData
+			storeImage:imageData:forKey:options:context:imageCache:cacheType:finished:completion:
+			3.2 成功后存数缓存图片，序列化后的缓存图片
+			 callStoreCacheProcessForOperation:url:options:context:image:data:cacheType:finished:completed:
+
+	存数图片、图片数据过程
+	storeImage:imageData:forKey:options:context:imageCache:cacheType:finished:completion:
+	```
+		- (void)storeImage:(nullable UIImage *)image
+		         imageData:(nullable NSData *)data
+		            forKey:(nullable NSString *)key
+		           options:(SDWebImageOptions)options
+		           context:(nullable SDWebImageContext *)context
+		        imageCache:(nonnull id<SDImageCache>)imageCache
+		         cacheType:(SDImageCacheType)cacheType
+		          finished:(BOOL)finished
+		        completion:(nullable SDWebImageNoParamsBlock)completion {
+		    BOOL waitStoreCache = SD_OPTIONS_CONTAINS(options, SDWebImageWaitStoreCache);
+		    // 忽略渐进式数据缓存
+		    if (!finished) {
+		        if (completion) {
+		            completion();
+		        }
+		        return;
+		    }
+		    // 检查是否应等待存储缓存完成。如果不是,立即回调
+		    if ([imageCache respondsToSelector:@selector(storeImage:imageData:forKey:options:context:cacheType:completion:)]) {
+		        [imageCache storeImage:image imageData:data forKey:key options:options context:context cacheType:cacheType completion:^{
+		            if (waitStoreCache) {
+		                if (completion) {
+		                    completion();
+		                }
+		            }
+		        }];
+		    } else {
+		        [imageCache storeImage:image imageData:data forKey:key cacheType:cacheType completion:^{
+		            if (waitStoreCache) {
+		                if (completion) {
+		                    completion();
+		                }
+		            }
+		        }];
+		    }
+		    if (!waitStoreCache) {
+		        if (completion) {
+		            completion();
+		        }
+		    }
+		}
+	```
+	这个过程主要：
+		1 根据SDWebImageWaitStoreCache判断是否需要等待存数数据
+		2 根据代理类型能否响应storeImage:imageData:forKey:options:context:cacheType:completion:、storeImage:imageData:forKey:context:cacheType:completion:执行对应的方法。这两个方法最终调用都是storeImage:imageData:forKey:options:context:cacheType:completion:
+	到这一步为止，一直是SDWebImageManager中执行的一系列代码，还未进行存储缓存，真正的缓存是在SDImageCache中实现。
+
+SDImageCache
+	存数图片、图片数据
+	storeImage:imageData:forKey:options:context:cacheType:completion:
+	```
+		- (void)storeImage:(nullable UIImage *)image
+		         imageData:(nullable NSData *)imageData
+		            forKey:(nullable NSString *)key
+		           options:(SDWebImageOptions)options
+		           context:(nullable SDWebImageContext *)context
+		         cacheType:(SDImageCacheType)cacheType
+		        completion:(nullable SDWebImageNoParamsBlock)completionBlock {
+		    // 纠错，直接返回
+		    if ((!image && !imageData) || !key) {
+		        if (completionBlock) {
+		            completionBlock();
+		        }
+		        return;
+		    }
+		    BOOL toMemory = cacheType == SDImageCacheTypeMemory || cacheType == SDImageCacheTypeAll;
+		    BOOL toDisk = cacheType == SDImageCacheTypeDisk || cacheType == SDImageCacheTypeAll;
+		    // 默认存储到缓存中 NSCache或者NSMapTable
+		    if (image && toMemory && self.config.shouldCacheImagesInMemory) {
+		        NSUInteger cost = image.sd_memoryCost;
+		        [self.memoryCache setObject:image forKey:key cost:cost];
+		    }
+		    
+		    // 不需要存到磁盘，直接返回完成
+		    if (!toDisk) {
+		        if (completionBlock) {
+		            completionBlock();
+		        }
+		        return;
+		    }
+		    
+		    // 存到磁盘中
+		    NSData *data = imageData;
+		    if (!data && [image respondsToSelector:@selector(animatedImageData)]) {
+		        // 如果图像是自定义动画图像类,优先选择其原始动画数据
+		        data = [((id<SDAnimatedImage>)image) animatedImageData];
+		    }
+		    SDCallbackQueue *queue = context[SDWebImageContextCallbackQueue];
+		    if (!data && image) {
+		        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+		            // 检查图像关联的图像格式,可能返回Undefined
+		            SDImageFormat format = image.sd_imageFormat;
+		            if (format == SDImageFormatUndefined) {
+		                // 如果图像是动画的,使用GIF(APNG可能更好,但在macOS 10.14之前有bug)
+		                if (image.sd_isAnimated) {
+		                    format = SDImageFormatGIF;
+		                } else {
+		                    // 如果我们没有任何数据来检测图像格式,请检查它是否包含alpha通道以使用PNG或JPEG格式
+		                    format = [SDImageCoderHelper CGImageContainsAlpha:image.CGImage] ? SDImageFormatPNG : SDImageFormatJPEG;
+		                }
+		            }
+		            // image转成序列化Data，存进磁盘需要data，打包对应的image信息
+		            NSData *data = [[SDImageCodersManager sharedManager] encodedDataWithImage:image format:format options:context[SDWebImageContextImageEncodeOptions]];
+		            dispatch_async(self.ioQueue, ^{
+		                [self _storeImageDataToDisk:data forKey:key];
+		                [self _archivedDataWithImage:image forKey:key];
+		                if (completionBlock) {
+		                    [(queue ?: SDCallbackQueue.mainQueue) async:^{
+		                        completionBlock();
+		                    }];
+		                }
+		            });
+		        });
+		    } else {
+		        dispatch_async(self.ioQueue, ^{
+		            [self _storeImageDataToDisk:data forKey:key];
+		            [self _archivedDataWithImage:image forKey:key];
+		            if (completionBlock) {
+		                [(queue ?: SDCallbackQueue.mainQueue) async:^{
+		                    completionBlock();
+		                }];
+		            }
+		        });
+		    }
+		}
+	```
+	存储主要做
+		1 判断是否需要存储到缓存、磁盘中。默认都存缓存
+			1.1 需要存储到缓存中memoryCache缓存图片（默认存储到缓存中 NSCache或者NSMapTable）
+			1.2 不需要存储到磁盘，结束
+			1.3 存储到磁盘中
+				1.3.1 无动画数据animatedImageData，data = imageData，存储到diskCache中，并且把图片拓展信息extendedData打包后一并存入diskCache中
+				1.3.2 有动画数据animatedImageData，data = animatedImageData，根据图片格式format用SDImageCodersManager编码成data，存储到diskCache中，并且把图片拓展信息extendedData打包后一并存入diskCache中
+
+这样其中一条完整的流程已经结束，是从缓存中取出图片并且保存图片的流程。总结过程是，传入图片地址URL，进入入口函数后，查询缓存，并且保存缓存，如果缓存图片需要做改变，则保存改变后的图片和缓存，否则只保存缓存。
+
+	下载流程
+
+
+
+
 
 
 
