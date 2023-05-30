@@ -1230,9 +1230,169 @@ SDImageCache
 
 		3 返回最终下载SDWebImageDownloadToken
 
-这样一个下载流程也补充完全。
+	这样一个下载流程也补充完全。（下载完成后的流程这里不具体说明，详细来看看图片解码动作。）
 
-网络图片加载不光只有下载和查询缓存流程，还有复杂的加载图片数据，解码流程
+	下载完成后需要对图片数据进行解析
+	SDWebImageDownloaderOperationToken的成功-URLSession:task:didCompleteWithError:方法中，图像解码是一个串行队列，循环所有的下载SDWebImageDownloaderOperationToken
+	```
+        // decode the image in coder queue, cancel all previous decoding process
+        [self.coderQueue cancelAllOperations];
+        @weakify(self);
+        for (SDWebImageDownloaderOperationToken *token in tokens) {
+            [self.coderQueue addOperationWithBlock:^{
+                @strongify(self);
+                if (!self) {
+                    return;
+                }
+                UIImage *image;
+                // check if we already decode this variant of image for current callback
+                if (token.decodeOptions) {
+                    image = [self.imageMap objectForKey:token.decodeOptions];
+                }
+                if (!image) {
+                    // check if we already use progressive decoding, use that to produce faster decoding
+                    id<SDProgressiveImageCoder> progressiveCoder = SDImageLoaderGetProgressiveCoder(self);
+                    SDWebImageOptions options = [[self class] imageOptionsFromDownloaderOptions:self.options];
+                    SDWebImageContext *context;
+                    if (token.decodeOptions) {
+                        SDWebImageMutableContext *mutableContext = [NSMutableDictionary dictionaryWithDictionary:self.context];
+                        SDSetDecodeOptionsToContext(mutableContext, &options, token.decodeOptions);
+                        context = [mutableContext copy];
+                    } else {
+                        context = self.context;
+                    }
+                    if (progressiveCoder) {
+                        image = SDImageLoaderDecodeProgressiveImageData(imageData, self.request.URL, YES, self, options, context);
+                    } else {
+                        image = SDImageLoaderDecodeImageData(imageData, self.request.URL, options, context);
+                    }
+                    if (image && token.decodeOptions) {
+                        [self.imageMap setObject:image forKey:token.decodeOptions];
+                    }
+                }
+                CGSize imageSize = image.size;
+                if (imageSize.width == 0 || imageSize.height == 0) {
+                    NSString *description = image == nil ? @"Downloaded image decode failed" : @"Downloaded image has 0 pixels";
+                    NSError *error = [NSError errorWithDomain:SDWebImageErrorDomain code:SDWebImageErrorBadImageData userInfo:@{NSLocalizedDescriptionKey : description}];
+                    [self callCompletionBlockWithToken:token image:nil imageData:nil error:error finished:YES];
+                } else {
+                    [self callCompletionBlockWithToken:token image:image imageData:imageData error:nil finished:YES];
+                }
+            }];
+        }
+        // call [self done] after all completed block was dispatched
+        dispatch_block_t doneBlock = ^{
+            @strongify(self);
+            if (!self) {
+                return;
+            }
+            [self done];
+        };
+        if (@available(iOS 13, tvOS 13, macOS 10.15, watchOS 6, *)) {
+            // seems faster than `addOperationWithBlock`
+            [self.coderQueue addBarrierBlock:doneBlock];
+        } else {
+            // serial queue, this does the same effect in semantics
+            [self.coderQueue addOperationWithBlock:doneBlock];
+        }
+	``
+		图片会先从imageMap中取，如果没有缓存，则执行解码流程。解码流程分渐进式图像解码和普通解码。下面是渐进式的解码流程代码
+		```
+			UIImage * _Nullable SDImageLoaderDecodeProgressiveImageData(NSData * _Nonnull imageData, NSURL * _Nonnull imageURL, BOOL finished,  id<SDWebImageOperation> _Nonnull operation, SDWebImageOptions options, SDWebImageContext * _Nullable context) {
+			    NSCParameterAssert(imageData);
+			    NSCParameterAssert(imageURL);
+			    NSCParameterAssert(operation);
+			    
+			    UIImage *image;
+			    /// 缓存过滤器,来过滤和修改用于缓存的密钥
+			    id<SDWebImageCacheKeyFilter> cacheKeyFilter = context[SDWebImageContextCacheKeyFilter];
+			    NSString *cacheKey;
+			    if (cacheKeyFilter) {
+			        cacheKey = [cacheKeyFilter cacheKeyForURL:imageURL];
+			    } else {
+			        cacheKey = imageURL.absoluteString;
+			    }
+			    /// 获取解码配置
+			    SDImageCoderOptions *coderOptions = SDGetDecodeOptionsFromContext(context, options, cacheKey);
+			    // 解码第一帧
+			    BOOL decodeFirstFrame = SD_OPTIONS_CONTAINS(options, SDWebImageDecodeFirstFrameOnly);
+			    CGFloat scale = [coderOptions[SDImageCoderDecodeScaleFactor] doubleValue];
+			    
+			    // 逐步解码解码器
+			    id<SDProgressiveImageCoder> progressiveCoder = SDImageLoaderGetProgressiveCoder(operation);
+			    if (!progressiveCoder) {
+			        id<SDProgressiveImageCoder> imageCoder = context[SDWebImageContextImageCoder];
+			        // Check the progressive coder if provided
+			        if ([imageCoder respondsToSelector:@selector(initIncrementalWithOptions:)]) {
+			            progressiveCoder = [[[imageCoder class] alloc] initIncrementalWithOptions:coderOptions];
+			        } else {
+			            // We need to create a new instance for progressive decoding to avoid conflicts
+			            for (id<SDImageCoder> coder in [SDImageCodersManager sharedManager].coders.reverseObjectEnumerator) {
+			                if ([coder conformsToProtocol:@protocol(SDProgressiveImageCoder)] &&
+			                    [((id<SDProgressiveImageCoder>)coder) canIncrementalDecodeFromData:imageData]) {
+			                    // 生成对应的解码器类型
+			                    // 因为增量解码需要保留解码上下文,我们将为每个下载操作分配同一类的新实例,以避免冲突。
+			                    progressiveCoder = [[[coder class] alloc] initIncrementalWithOptions:coderOptions];
+			                    break;
+			                }
+			            }
+			        }
+			        SDImageLoaderSetProgressiveCoder(operation, progressiveCoder);
+			    }
+			    // If we can't find any progressive coder, disable progressive download
+			    if (!progressiveCoder) {
+			        return nil;
+			    }
+			    // 当有新的图像数据可用时更新增量解码
+			    [progressiveCoder updateIncrementalData:imageData finished:finished];
+			    if (!decodeFirstFrame) {
+			        // check whether we should use `SDAnimatedImage`
+			        Class animatedImageClass = context[SDWebImageContextAnimatedImageClass];
+			        if ([animatedImageClass isSubclassOfClass:[UIImage class]] && [animatedImageClass conformsToProtocol:@protocol(SDAnimatedImage)] && [progressiveCoder respondsToSelector:@selector(animatedImageFrameAtIndex:)]) {
+			            image = [[animatedImageClass alloc] initWithAnimatedCoder:(id<SDAnimatedImageCoder>)progressiveCoder scale:scale];
+			            if (image) {
+			                // Progressive decoding does not preload frames
+			            } else {
+			                // Check image class matching
+			                if (options & SDWebImageMatchAnimatedImageClass) {
+			                    return nil;
+			                }
+			            }
+			        }
+			    }
+			    if (!image) {
+			        // 增量解码当前图像数据以获取图像。
+			        image = [progressiveCoder incrementalDecodedImageWithOptions:coderOptions];
+			    }
+			    if (image) {
+			        BOOL shouldDecode = !SD_OPTIONS_CONTAINS(options, SDWebImageAvoidDecodeImage);
+			        BOOL lazyDecode = [coderOptions[SDImageCoderDecodeUseLazyDecoding] boolValue];
+			        if (lazyDecode) {
+			            // lazyDecode = NO means we should not forceDecode, highest priority
+			            shouldDecode = NO;
+			        }
+			        if (shouldDecode) {
+			            // 使用提供的图像返回解码后的图像。这与`CGImageCreateDecoded:不同,不会解码包含alpha通道或动画图像的图像。在iOS 15+上,这可能会使用UIImage.preparingForDisplay()`来使用CMPhoto进行解码,性能会比旧解决方案好。
+			            // 根据不同平台和系统版本进行不同的解码
+			            image = [SDImageCoderHelper decodedImageWithImage:image];
+			        }
+			        // assign the decode options, to let manager check whether to re-decode if needed
+			        image.sd_decodeOptions = coderOptions;
+			        // mark the image as progressive (completed one are not mark as progressive)
+			        image.sd_isIncremental = !finished;
+			    }
+			    
+			    return image;
+			}
+		```
+		下载+解码流程
+		1 首先生成继承自NSOperation的SDWebImageDownloaderOperation，配置当前operation，并将operation添加到NSOperationQueue下载队列中，添加到下载队列会出发operation的start方法。
+		2 如果operation的isCancelled为YES时，说明下载已经被取消，则结束下载。
+		3 创建NSURLSessionTask并执行resume方法开始下载。
+		4 当收到服务端的响应式根据code判断请求状态，如果是正常状态则发送正在接收response的通知以及下载进度。如果是304或者其他异常状态则cancel下载操作。
+		5 在didReceiveData每次收到服务器返回的response时，给data数据中追加图片当前下载的data，并回调下载的进度。
+		6 在didCompleteWithError下载结束时，如果下载成功则进行图片data解码，图片的缩放或者压缩操作，发送下载结束通知。若下载失败，则回调失败block。
+	
 
 
 
