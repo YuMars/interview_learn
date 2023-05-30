@@ -168,3 +168,4 @@ print("PartitionEqualSubsetSum ", PartitionEqualSubsetSum.canPartition([5,1,5,11
 print("LastStoneWeight2 ", LastStoneWeight2.lastStoneWeightII([7,2]))
 print("OnesAndZeros ", OnesAndZeros.findMaxForm(["10", "0001", "111001", "1", "0"], 5, 3))
 print("CoinChange2 ", CoinChange2.change(5, [1,2,5]))
+print("CombinationSum4 ", CombinationSum4.combinationSum4_2([1,2,3], 4))

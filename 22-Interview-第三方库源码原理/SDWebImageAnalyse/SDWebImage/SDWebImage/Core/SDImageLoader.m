@@ -96,6 +96,7 @@ UIImage * _Nullable SDImageLoaderDecodeProgressiveImageData(NSData * _Nonnull im
     NSCParameterAssert(operation);
     
     UIImage *image;
+    /// 缓存过滤器,来过滤和修改用于缓存的密钥
     id<SDWebImageCacheKeyFilter> cacheKeyFilter = context[SDWebImageContextCacheKeyFilter];
     NSString *cacheKey;
     if (cacheKeyFilter) {
@@ -103,11 +104,13 @@ UIImage * _Nullable SDImageLoaderDecodeProgressiveImageData(NSData * _Nonnull im
     } else {
         cacheKey = imageURL.absoluteString;
     }
+    /// 获取解码配置
     SDImageCoderOptions *coderOptions = SDGetDecodeOptionsFromContext(context, options, cacheKey);
+    // 解码第一帧
     BOOL decodeFirstFrame = SD_OPTIONS_CONTAINS(options, SDWebImageDecodeFirstFrameOnly);
     CGFloat scale = [coderOptions[SDImageCoderDecodeScaleFactor] doubleValue];
     
-    // Grab the progressive image coder
+    // 逐步解码解码器
     id<SDProgressiveImageCoder> progressiveCoder = SDImageLoaderGetProgressiveCoder(operation);
     if (!progressiveCoder) {
         id<SDProgressiveImageCoder> imageCoder = context[SDWebImageContextImageCoder];
@@ -119,6 +122,8 @@ UIImage * _Nullable SDImageLoaderDecodeProgressiveImageData(NSData * _Nonnull im
             for (id<SDImageCoder> coder in [SDImageCodersManager sharedManager].coders.reverseObjectEnumerator) {
                 if ([coder conformsToProtocol:@protocol(SDProgressiveImageCoder)] &&
                     [((id<SDProgressiveImageCoder>)coder) canIncrementalDecodeFromData:imageData]) {
+                    // 生成对应的解码器类型
+                    // 因为增量解码需要保留解码上下文,我们将为每个下载操作分配同一类的新实例,以避免冲突。
                     progressiveCoder = [[[coder class] alloc] initIncrementalWithOptions:coderOptions];
                     break;
                 }
@@ -130,7 +135,7 @@ UIImage * _Nullable SDImageLoaderDecodeProgressiveImageData(NSData * _Nonnull im
     if (!progressiveCoder) {
         return nil;
     }
-    
+    // 当有新的图像数据可用时更新增量解码
     [progressiveCoder updateIncrementalData:imageData finished:finished];
     if (!decodeFirstFrame) {
         // check whether we should use `SDAnimatedImage`
@@ -148,6 +153,7 @@ UIImage * _Nullable SDImageLoaderDecodeProgressiveImageData(NSData * _Nonnull im
         }
     }
     if (!image) {
+        // 增量解码当前图像数据以获取图像。
         image = [progressiveCoder incrementalDecodedImageWithOptions:coderOptions];
     }
     if (image) {
@@ -158,6 +164,8 @@ UIImage * _Nullable SDImageLoaderDecodeProgressiveImageData(NSData * _Nonnull im
             shouldDecode = NO;
         }
         if (shouldDecode) {
+            // 使用提供的图像返回解码后的图像。这与`CGImageCreateDecoded:不同,不会解码包含alpha通道或动画图像的图像。在iOS 15+上,这可能会使用UIImage.preparingForDisplay()`来使用CMPhoto进行解码,性能会比旧解决方案好。
+            // 根据不同平台和系统版本进行不同的解码
             image = [SDImageCoderHelper decodedImageWithImage:image];
         }
         // assign the decode options, to let manager check whether to re-decode if needed

@@ -366,11 +366,7 @@ static NSString * kSDCGImageDestinationRequestedFileSize = @"kCGImageDestination
     CGSize maxPixelSize = CGSizeZero;
     NSValue *maxPixelSizeValue = options[SDImageCoderEncodeMaxPixelSize];
     if (maxPixelSizeValue != nil) {
-#if SD_MAC
-        maxPixelSize = maxPixelSizeValue.sizeValue;
-#else
         maxPixelSize = maxPixelSizeValue.CGSizeValue;
-#endif
     }
     CGFloat pixelWidth = (CGFloat)CGImageGetWidth(imageRef);
     CGFloat pixelHeight = (CGFloat)CGImageGetHeight(imageRef);

@@ -280,7 +280,7 @@ static id<SDImageLoader> _defaultImageLoader;
 
 #pragma mark - Private
 
-// Query normal cache process
+// 查询缓存
 - (void)callCacheProcessForOperation:(nonnull SDWebImageCombinedOperation *)operation
                                  url:(nonnull NSURL *)url
                              options:(SDWebImageOptions)options

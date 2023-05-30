@@ -154,7 +154,6 @@ const int64_t SDWebImageProgressUnitCountUnknown = 1LL;
             
             // 加载完成后操作、设置加载动画、设置图片转场效果、设置最终图片
             
-            
             @strongify(self);
             if (!self) { return; }
             

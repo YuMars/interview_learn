@@ -681,11 +681,7 @@ static CGImageRef __nullable SDCGImageCreateCopy(CGImageRef cg_nullable image) {
         CGSize thumbnailSize = CGSizeZero;
         NSValue *thumbnailSizeValue = options[SDImageCoderDecodeThumbnailPixelSize];
         if (thumbnailSizeValue != nil) {
-    #if SD_MAC
-            thumbnailSize = thumbnailSizeValue.sizeValue;
-    #else
             thumbnailSize = thumbnailSizeValue.CGSizeValue;
-    #endif
         }
         _thumbnailSize = thumbnailSize;
         BOOL preserveAspectRatio = YES;

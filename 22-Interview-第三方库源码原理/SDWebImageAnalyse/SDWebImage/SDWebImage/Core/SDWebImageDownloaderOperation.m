@@ -590,8 +590,10 @@ didReceiveResponse:(NSURLResponse *)response
                                     context = self.context;
                                 }
                                 if (progressiveCoder) {
+                                    /// 这是从网络进行渐进式图像下载的内置解码过程。(如果您的加载器不支持渐进式图像加载,则无需设置此选项)
                                     image = SDImageLoaderDecodeProgressiveImageData(imageData, self.request.URL, YES, self, options, context);
                                 } else {
+                                    /// 这是从网络或本地文件下载图像的内置解码过程。
                                     image = SDImageLoaderDecodeImageData(imageData, self.request.URL, options, context);
                                 }
                                 if (image && token.decodeOptions) {
