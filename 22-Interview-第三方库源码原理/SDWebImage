@@ -980,6 +980,260 @@ SDImageCache
 这样其中一条完整的流程已经结束，是从缓存中取出图片并且保存图片的流程。总结过程是，传入图片地址URL，进入入口函数后，查询缓存，并且保存缓存，如果缓存图片需要做改变，则保存改变后的图片和缓存，否则只保存缓存。
 
 	下载流程
+	-callDownloadProcessForOperation:url:options:context:cachedImage:cachedData:cacheType:progress:completed:
+	```
+- (void)callDownloadProcessForOperation:(nonnull SDWebImageCombinedOperation *)operation
+                                    url:(nonnull NSURL *)url
+                                options:(SDWebImageOptions)options
+                                context:(SDWebImageContext *)context
+                            cachedImage:(nullable UIImage *)cachedImage
+                             cachedData:(nullable NSData *)cachedData
+                              cacheType:(SDImageCacheType)cacheType
+                               progress:(nullable SDImageLoaderProgressBlock)progressBlock
+                              completed:(nullable SDInternalCompletionBlock)completedBlock {
+    // 进入下载流程，结束查缓存流程
+    @synchronized (operation) {
+        operation.cacheOperation = nil;
+    }
+    
+    id<SDImageLoader> imageLoader = context[SDWebImageContextImageLoader];
+    if (!imageLoader) {
+        imageLoader = self.imageLoader;
+    }
+    
+    // 是否需要下载
+    // 非仅从缓存加载、需要强制刷新、响应shouldDownloadImageForURL、canRequestImageForURL、
+    BOOL shouldDownload = !SD_OPTIONS_CONTAINS(options, SDWebImageFromCacheOnly);
+    shouldDownload &= (!cachedImage || options & SDWebImageRefreshCached);
+    shouldDownload &= (![self.delegate respondsToSelector:@selector(imageManager:shouldDownloadImageForURL:)] || [self.delegate imageManager:self shouldDownloadImageForURL:url]);
+    if ([imageLoader respondsToSelector:@selector(canRequestImageForURL:options:context:)]) {
+        shouldDownload &= [imageLoader canRequestImageForURL:url options:options context:context];
+    } else {
+        shouldDownload &= [imageLoader canRequestImageForURL:url];
+    }
+    
+    // 下载的情况
+    // 有缓存，但是需要强制刷新-重新下载
+    
+    if (shouldDownload) {
+        if (cachedImage && options & SDWebImageRefreshCached) {
+            // 如果在缓存中找到图像但提供了SDWebImageRefreshCached,则通知缓存中的图像, 并尝试重新下载它,以便让NSURLCache有机会从服务器重新刷新它。
+            [self callCompletionBlockForOperation:operation completion:completedBlock image:cachedImage data:cachedData error:nil cacheType:cacheType finished:YES queue:context[SDWebImageContextCallbackQueue] url:url];
+            // 将缓存的图像传入图像加载器。图像加载器应检查远程图像是否等于缓存图像
+            SDWebImageMutableContext *mutableContext;
+            if (context) {
+                mutableContext = [context mutableCopy];
+            } else {
+                mutableContext = [NSMutableDictionary dictionary];
+            }
+            mutableContext[SDWebImageContextLoaderCachedImage] = cachedImage;
+            context = [mutableContext copy];
+        }
+        
+        @weakify(operation);
+        operation.loaderOperation = [imageLoader requestImageWithURL:url options:options context:context progress:progressBlock completed:^(UIImage *downloadedImage, NSData *downloadedData, NSError *error, BOOL finished) {
+            
+            // 取消或者其他错误判断后走callCompletionBlockForOperation回调
+            // 成功后走callTransformProcessForOperation进行所有参数回调
+            // 需要transform，做transform
+            // 根据context的缓存策略做SDImageCache的缓存
+            // 如果需要做磁盘缓存，先做磁盘缓存（存在磁盘diskCache缓存中，同时归档拓展信息extendedData）
+            // 没data数据，SDImageCodersManager解码
+            // 做内存缓存imageCache
+            // 将原始图片和transform后的图片都存到磁盘和缓存中
+            // 最后走callCompletionBlockForOperation回调
+            
+            
+            // 结束running序列中当前operation
+            
+            @strongify(operation);
+            if (!operation || operation.isCancelled) { // 取消下载
+                [self callCompletionBlockForOperation:operation completion:completedBlock error:[NSError errorWithDomain:SDWebImageErrorDomain code:SDWebImageErrorCancelled userInfo:@{NSLocalizedDescriptionKey : @"Operation cancelled by user during sending the request"}] queue:context[SDWebImageContextCallbackQueue] url:url];
+            } else if (cachedImage && options & SDWebImageRefreshCached && [error.domain isEqualToString:SDWebImageErrorDomain] && error.code == SDWebImageErrorCacheNotModified) {
+                // 图像刷新命中NSURLCache缓存,不调用completion块
+            } else if ([error.domain isEqualToString:SDWebImageErrorDomain] && error.code == SDWebImageErrorCancelled) {
+                // 在发送请求之前由用户取消的下载操作,不要封锁失败的URL
+                [self callCompletionBlockForOperation:operation completion:completedBlock error:error queue:context[SDWebImageContextCallbackQueue] url:url];
+            } else if (error) { // 下载失败，将URL放入失败池中
+                [self callCompletionBlockForOperation:operation completion:completedBlock error:error queue:context[SDWebImageContextCallbackQueue] url:url];
+                BOOL shouldBlockFailedURL = [self shouldBlockFailedURLWithURL:url error:error options:options context:context];
+                
+                if (shouldBlockFailedURL) {
+                    SD_LOCK(self->_failedURLsLock);
+                    [self.failedURLs addObject:url];
+                    SD_UNLOCK(self->_failedURLsLock);
+                }
+            } else { // 下载成功，移除失败池中的URL -> 继续转场效果
+                if ((options & SDWebImageRetryFailed)) {
+                    SD_LOCK(self->_failedURLsLock);
+                    [self.failedURLs removeObject:url];
+                    SD_UNLOCK(self->_failedURLsLock);
+                }
+                [self callTransformProcessForOperation:operation url:url options:options context:context originalImage:downloadedImage originalData:downloadedData cacheType:SDImageCacheTypeNone finished:finished completed:completedBlock];
+            }
+            
+            if (finished) {
+                [self safelyRemoveOperationFromRunning:operation];
+            }
+        }];
+    } else if (cachedImage) { // 取到缓存，直接用缓存数据
+        [self callCompletionBlockForOperation:operation completion:completedBlock image:cachedImage data:cachedData error:nil cacheType:cacheType finished:YES queue:context[SDWebImageContextCallbackQueue] url:url];
+        [self safelyRemoveOperationFromRunning:operation];
+    } else {// 即不成功，也不失败，其他情况下回调
+        
+        [self callCompletionBlockForOperation:operation completion:completedBlock image:nil data:nil error:nil cacheType:SDImageCacheTypeNone finished:YES queue:context[SDWebImageContextCallbackQueue] url:url];
+        [self safelyRemoveOperationFromRunning:operation];
+    }
+}
+	```
+	下载流程主要代码：
+		1 获取图片加载器
+		2 判断是否需要下载（只取缓存SDWebImageFromCacheOnly、需要强制刷新SDWebImageRefreshCached、响应imageManager:shouldDownloadImageForURL:、imageManager:shouldDownloadImageForURL、imageLoader:canRequestImageForURL:options:context、imageLoader:canRequestImageForURL）
+		3 不需要下载，判断是否有传入缓存cachedImage，有cachedImage，直接用缓存，执行结束回调，并且移除当前SDWebImageCombinedOperation
+		4 不需要下载，也无传入缓存cachedImage，执行结束回调，并且移除当前SDWebImageCombinedOperation
+		4 需要下载，
+			4.1 先判断有缓存，执行回调刷新图片，继续执行
+			4.2 loaderOperation，请求url-requestImageWithURL:options:context:progress:completed:
+			4.3 加载url成功回调
+				4.3.1 当前SDWebImageCombinedOperation已经取消，结束回调
+				4.3.2 有缓存且需要强制刷新，且缓存不变，不做操作
+				4.3.3 在加载结束前已经被取消，调用结束回调
+				4.3.4 下载失败，将URL放入失败池中，调用结束回调
+				4.3.5 下载成功，移除失败池中的URL -> 继续转场效果
+
+
+	请求URL-requestImageWithURL:options:context:progress:completed:
+	```
+		- (id<SDWebImageOperation>)requestImageWithURL:(NSURL *)url options:(SDWebImageOptions)options context:(SDWebImageContext *)context progress:(SDImageLoaderProgressBlock)progressBlock completed:(SDImageLoaderCompletedBlock)completedBlock {
+		    UIImage *cachedImage = context[SDWebImageContextLoaderCachedImage];
+		    
+		    SDWebImageDownloaderOptions downloaderOptions = 0;
+		    if (options & SDWebImageLowPriority) downloaderOptions |= SDWebImageDownloaderLowPriority;
+		    if (options & SDWebImageProgressiveLoad) downloaderOptions |= SDWebImageDownloaderProgressiveLoad;
+		    if (options & SDWebImageRefreshCached) downloaderOptions |= SDWebImageDownloaderUseNSURLCache;
+		    if (options & SDWebImageContinueInBackground) downloaderOptions |= SDWebImageDownloaderContinueInBackground;
+		    if (options & SDWebImageHandleCookies) downloaderOptions |= SDWebImageDownloaderHandleCookies;
+		    if (options & SDWebImageAllowInvalidSSLCertificates) downloaderOptions |= SDWebImageDownloaderAllowInvalidSSLCertificates;
+		    if (options & SDWebImageHighPriority) downloaderOptions |= SDWebImageDownloaderHighPriority;
+		    if (options & SDWebImageScaleDownLargeImages) downloaderOptions |= SDWebImageDownloaderScaleDownLargeImages;
+		    if (options & SDWebImageAvoidDecodeImage) downloaderOptions |= SDWebImageDownloaderAvoidDecodeImage;
+		    if (options & SDWebImageDecodeFirstFrameOnly) downloaderOptions |= SDWebImageDownloaderDecodeFirstFrameOnly;
+		    if (options & SDWebImagePreloadAllFrames) downloaderOptions |= SDWebImageDownloaderPreloadAllFrames;
+		    if (options & SDWebImageMatchAnimatedImageClass) downloaderOptions |= SDWebImageDownloaderMatchAnimatedImageClass;
+		    
+		    if (cachedImage && options & SDWebImageRefreshCached) {
+		        // force progressive off if image already cached but forced refreshing
+		        downloaderOptions &= ~SDWebImageDownloaderProgressiveLoad;
+		        // ignore image read from NSURLCache if image if cached but force refreshing
+		        downloaderOptions |= SDWebImageDownloaderIgnoreCachedResponse;
+		    }
+		    
+		    return [self downloadImageWithURL:url options:downloaderOptions context:context progress:progressBlock completed:completedBlock];
+		}
+
+	```
+	请求图片主要：
+		1 将配置参数SDWebImageOptions转成下载配置参数SDWebImageDownloaderOptions
+		2 执行下载流程-downloadImageWithURL:options:context:progress:completed:
+
+
+	执行下载流程-downloadImageWithURL:options:context:progress:completed:
+	```
+- (nullable SDWebImageDownloadToken *)downloadImageWithURL:(nullable NSURL *)url
+                                                   options:(SDWebImageDownloaderOptions)options
+                                                   context:(nullable SDWebImageContext *)context
+                                                  progress:(nullable SDWebImageDownloaderProgressBlock)progressBlock
+                                                 completed:(nullable SDWebImageDownloaderCompletedBlock)completedBlock {
+    // URL将用作回调字典中的键,因此不能为nil。如果为nil,立即使用无图像或数据调用completed
+    if (url == nil) {
+        if (completedBlock) {
+            NSError *error = [NSError errorWithDomain:SDWebImageErrorDomain code:SDWebImageErrorInvalidURL userInfo:@{NSLocalizedDescriptionKey : @"Image url is nil"}];
+            completedBlock(nil, nil, error, YES);
+        }
+        return nil;
+    }
+    
+    id downloadOperationCancelToken;
+    // 当用相同的url下载不同大小的缩略图时,我们需要确保每个回调都以期望的大小调用
+    id<SDWebImageCacheKeyFilter> cacheKeyFilter = context[SDWebImageContextCacheKeyFilter];
+    NSString *cacheKey;
+    if (cacheKeyFilter) {
+        cacheKey = [cacheKeyFilter cacheKeyForURL:url];
+    } else {
+        cacheKey = url.absoluteString;
+    }
+    // 将downloadOption和context内置转换成SDImageCoderOption
+    SDImageCoderOptions *decodeOptions = SDGetDecodeOptionsFromContext(context, [self.class imageOptionsFromDownloaderOptions:options], cacheKey); // 下载前，先获取解码参数（虽然之前尝试从缓存获取UIImage的时候已经计算过一次，不知道为什么这里又重新算一次，可能是代码虽然差不多，但是为了关键解耦，单独处理逻辑）
+    SD_LOCK(_operationsLock);
+    NSOperation<SDWebImageDownloaderOperation> *operation = [self.URLOperations objectForKey:url];
+    // There is a case that the operation may be marked as finished or cancelled, but not been removed from `self.URLOperations`.
+    BOOL shouldNotReuseOperation;
+    if (operation) {
+        @synchronized (operation) {
+            shouldNotReuseOperation = operation.isFinished || operation.isCancelled || SDWebImageDownloaderOperationGetCompleted(operation);
+        }
+    } else {
+        shouldNotReuseOperation = YES;
+    }
+    if (shouldNotReuseOperation) {
+        // 读option和context创建并配置下载任务
+        operation = [self createDownloaderOperationWithUrl:url options:options context:context];
+        if (!operation) {
+            SD_UNLOCK(_operationsLock);
+            if (completedBlock) {
+                NSError *error = [NSError errorWithDomain:SDWebImageErrorDomain code:SDWebImageErrorInvalidDownloadOperation userInfo:@{NSLocalizedDescriptionKey : @"Downloader operation is nil"}];
+                completedBlock(nil, nil, error, YES);
+            }
+            return nil;
+        }
+        @weakify(self);
+        operation.completionBlock = ^{
+            @strongify(self);
+            if (!self) {
+                return;
+            }
+            SD_LOCK(self->_operationsLock);
+            [self.URLOperations removeObjectForKey:url];
+            SD_UNLOCK(self->_operationsLock);
+        };
+        [self.URLOperations setObject:operation forKey:url];
+        // Add the handlers before submitting to operation queue, avoid the race condition that operation finished before setting handlers.
+        downloadOperationCancelToken = [operation addHandlersForProgress:progressBlock completed:completedBlock decodeOptions:decodeOptions];
+        // Add operation to operation queue only after all configuration done according to Apple's doc.
+        // `addOperation:` does not synchronously execute the `operation.completionBlock` so this will not cause deadlock.
+        [self.downloadQueue addOperation:operation];
+    } else {
+        // When we reuse the download operation to attach more callbacks, there may be thread safe issue because the getter of callbacks may in another queue (decoding queue or delegate queue)
+        // So we lock the operation here, and in `SDWebImageDownloaderOperation`, we use `@synchonzied (self)`, to ensure the thread safe between these two classes.
+        @synchronized (operation) {
+            downloadOperationCancelToken = [operation addHandlersForProgress:progressBlock completed:completedBlock decodeOptions:decodeOptions];
+        }
+    }
+    SD_UNLOCK(_operationsLock);
+    
+    SDWebImageDownloadToken *token = [[SDWebImageDownloadToken alloc] initWithDownloadOperation:operation];
+    token.url = url;
+    token.request = operation.request;
+    token.downloadOperationCancelToken = downloadOperationCancelToken;
+    
+    return token;
+}
+	```
+	下载主要流程：
+		1 生成下载操作SDImageCoderOptions
+		2 判断是否需要下载操作
+			2.1 需要下载操作
+				2.1.1 根据配置生成SDWebImageDownloaderOperation下载操作
+				2.1.2 添加进下载队列URLOperations中、downloadQueue中
+
+			2.2 不需要下载操作
+
+		3 返回最终下载SDWebImageDownloadToken
+
+这样一个下载流程也补充完全。
+
+网络图片加载不光只有下载和查询缓存流程，还有复杂的加载图片数据，解码流程
+
 
 
 
