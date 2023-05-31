@@ -6,7 +6,7 @@
 //
 
 #import "ViewController.h"
-
+#import <AFNetworking.h>
 @interface ViewController ()
 
 @end
@@ -15,7 +15,15 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
+    AFHTTPSessionManager *sessionManager = [AFHTTPSessionManager manager];
+    [sessionManager POST:@"https://www.baidu.com" parameters:nil headers:nil progress:^(NSProgress * _Nonnull uploadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+    }];
 }
 
 
