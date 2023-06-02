@@ -52,4 +52,27 @@ public class ClimbingStairs {
         }
         return dp[n]
     }
+    
+    public class func climbStairs3(_ n: Int) -> Int {
+        // 1.确定dp[i]的含义 dp[i]表示有多少种方式爬到i阶
+        // 2.确定递推公式
+        // 3.dp数组初始化
+        // 4.确定遍历顺序
+        // 5.print
+        
+        // m代表一次最多走几阶
+        let m = 2
+        guard n > 1 else {return 1}
+        
+        var dp:[Int] = [Int](repeating: 0, count: n + 1)
+        
+        for i in 1 ..< n {
+            for j in 1 ..< m {
+                if i  >= j {
+                    dp[i] += dp[i - j]
+                }
+            }
+        }
+        return dp[n]
+    }
 }
