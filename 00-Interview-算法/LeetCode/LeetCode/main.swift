@@ -170,3 +170,4 @@ print("OnesAndZeros ", OnesAndZeros.findMaxForm(["10", "0001", "111001", "1", "0
 print("CoinChange2 ", CoinChange2.change(5, [1,2,5]))
 print("CombinationSum4 ", CombinationSum4.combinationSum4_2([1,2,3], 4))
 print("CoinChange ", CoinChange.coinChange([2], 3))
+print("PerfectSquares ", PerfectSquares.numSquares(11))
