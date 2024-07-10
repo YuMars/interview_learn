@@ -46,7 +46,7 @@ class Queue {
 }
 
 // 单队列实现栈
-public class MyStack {
+public class Stack {
 
     var queue: Queue
     
