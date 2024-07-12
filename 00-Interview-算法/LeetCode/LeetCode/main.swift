@@ -172,3 +172,6 @@ print("CombinationSum4 ", CombinationSum4.combinationSum4_2([1,2,3], 4))
 print("CoinChange ", CoinChange.coinChange([2], 3))
 print("PerfectSquares ", PerfectSquares.numSquares(11))
 print("Sword_3 ", Sword_3.theNumberOfNForBinaryOne3(5))
+print("0003_LongestSubstringWithoutRepeatingCharacters ", LongestSubstringWithoutRepeatingCharacters.lengthOfLongestSubstring("alhjkbcayio"))
+
+print("0005_LongestPalindromicSubstring ", LongestPalindromicSubstring.longestPalindrome("bb"))
