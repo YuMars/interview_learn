@@ -175,3 +175,6 @@ print("Sword_3 ", Sword_3.theNumberOfNForBinaryOne3(5))
 print("0003_LongestSubstringWithoutRepeatingCharacters ", LongestSubstringWithoutRepeatingCharacters.lengthOfLongestSubstring("alhjkbcayio"))
 
 print("0005_LongestPalindromicSubstring ", LongestPalindromicSubstring.longestPalindrome("bb"))
+print("0011_ContainerWithMostWater ", ContainerWithMostWater.maxArea([1,8,6,2,5,4,8,3,7]))
+print("0015_3Sum ", ThreeSum.threeSum1([1,0,-1]))
+print("0017_LetterCombinationsOfAPhoneNumber ", LetterCombinationsOfAPhoneNumber.letterCombinations1("23"))

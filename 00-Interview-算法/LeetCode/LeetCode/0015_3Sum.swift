@@ -8,6 +8,48 @@
 import Foundation
 
 public class ThreeSum {
+    
+    /// 双指针
+    /// 三个指针，第一个指针从头开始遍历，另外两个左右指针则从两边收缩
+    public class func threeSum1(_ nums: [Int]) -> [[Int]] {
+        guard nums.count >= 3 else { return []}
+        let sortedArray: [Int] = nums.sorted(by:{ $0<$1})
+        var resultArray: [[Int]] = [[Int]]()
+        for i in 0..<sortedArray.count {
+            
+            if sortedArray[i] > 0 { return resultArray } // 剪枝
+            
+            if i > 0 && sortedArray[i] == sortedArray[i - 1] { continue } // 重复操作，剪枝
+            
+            var left: Int = i + 1
+            var right: Int = sortedArray.count - 1
+            
+            while left < right {
+                
+                if sortedArray[left] + sortedArray[right] + sortedArray[i] > 0 {
+                    right -= 1
+                } else if sortedArray[left] + sortedArray[right] + sortedArray[i] < 0 {
+                    left += 1
+                } else {
+                    resultArray.append([sortedArray[i], sortedArray[left], sortedArray[right]])
+                    
+                    while left < right && sortedArray[left] == sortedArray[left + 1] { // 剪枝去重复
+                        left += 1
+                    }
+                    
+                    while left < right && sortedArray[right] == sortedArray[right - 1] { // 剪枝去重复
+                        right -= 1
+                    }
+                    
+                    
+                    left += 1
+                    right -= 1
+                }
+            }
+        }
+        return resultArray
+    }
+    
     // 哈希解法
     public class func threeSum(_ nums: [Int]) -> [[Int]] {
         if nums.count < 3 { return [] }

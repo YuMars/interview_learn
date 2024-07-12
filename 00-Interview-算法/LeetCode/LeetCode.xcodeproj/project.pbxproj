@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EE010A022C40B8EC00A7720F /* 0011_ContainerWithMostWater.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE010A012C40B8EC00A7720F /* 0011_ContainerWithMostWater.swift */; };
 		EE038FE328044BE100969223 /* 0034_ FindFirstandLastPositionofElementinSortedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE038FE228044BE100969223 /* 0034_ FindFirstandLastPositionofElementinSortedArray.swift */; };
 		EE0417062871B1DE0082D34A /* 0203_RemoveLinkedListElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0417052871B1DE0082D34A /* 0203_RemoveLinkedListElements.swift */; };
 		EE054ECF291A553E0030AF8C /* 0435_NonOverlappingIntervals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE054ECE291A553E0030AF8C /* 0435_NonOverlappingIntervals.swift */; };
@@ -140,6 +141,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		EE010A012C40B8EC00A7720F /* 0011_ContainerWithMostWater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0011_ContainerWithMostWater.swift; sourceTree = "<group>"; };
 		EE038FE228044BE100969223 /* 0034_ FindFirstandLastPositionofElementinSortedArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "0034_ FindFirstandLastPositionofElementinSortedArray.swift"; sourceTree = "<group>"; };
 		EE0417052871B1DE0082D34A /* 0203_RemoveLinkedListElements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0203_RemoveLinkedListElements.swift; sourceTree = "<group>"; };
 		EE054ECE291A553E0030AF8C /* 0435_NonOverlappingIntervals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0435_NonOverlappingIntervals.swift; sourceTree = "<group>"; };
@@ -408,6 +410,7 @@
 				EEACD3CB2C3E55040041B37B /* 0003_LongestSubstringWithoutRepeatingCharacters.swift */,
 				EEACD3CD2C3F68BD0041B37B /* 0004_MedianOfTwoSortedArrays.swift */,
 				EEACD3CF2C3FAB870041B37B /* 0005_LongestPalindromicSubstring.swift */,
+				EE010A012C40B8EC00A7720F /* 0011_ContainerWithMostWater.swift */,
 			);
 			path = LeetCode;
 			sourceTree = "<group>";
@@ -523,6 +526,7 @@
 				EE4C223B2A1F4462005B7CCF /* 0518_CoinChange2.swift in Sources */,
 				EEEEF1AD27F3563E0030229F /* 0035_SearchInsertPosition.swift in Sources */,
 				EEA9DB3B2893B59200D17FD1 /* 0239_SlidingWindowMaximum.swift in Sources */,
+				EE010A022C40B8EC00A7720F /* 0011_ContainerWithMostWater.swift in Sources */,
 				EE07651C292BAA870007F1F2 /* 0343_IntgerBreak.swift in Sources */,
 				EECDB2582840B19400D8A2AC /* 0026_RemoveDuplicates.swift in Sources */,
 				EECDB997290D62030015DE08 /* 0053_MaximumSubarray.swift in Sources */,
