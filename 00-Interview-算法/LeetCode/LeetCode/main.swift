@@ -178,3 +178,4 @@ print("0005_LongestPalindromicSubstring ", LongestPalindromicSubstring.longestPa
 print("0011_ContainerWithMostWater ", ContainerWithMostWater.maxArea([1,8,6,2,5,4,8,3,7]))
 print("0015_3Sum ", ThreeSum.threeSum1([1,0,-1]))
 print("0017_LetterCombinationsOfAPhoneNumber ", LetterCombinationsOfAPhoneNumber.letterCombinations1("23"))
+print("0020_ValidParentheses ", ValidParentheses.isValid1("["))
