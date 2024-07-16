@@ -72,6 +72,8 @@
 		EE921E132C42540300CBED48 /* 0021_MergeTwoSortedLists.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE921E122C42540300CBED48 /* 0021_MergeTwoSortedLists.swift */; };
 		EE921E152C44FD3600CBED48 /* 0022_GenerateParentheses.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE921E142C44FD3600CBED48 /* 0022_GenerateParentheses.swift */; };
 		EE921E172C4511E400CBED48 /* 0023_MergeKSortedLists.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE921E162C4511E400CBED48 /* 0023_MergeKSortedLists.swift */; };
+		EE921E192C463CD100CBED48 /* 0031_NextPermutation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE921E182C463CD100CBED48 /* 0031_NextPermutation.swift */; };
+		EE921E1B2C464F6300CBED48 /* 0033_SearchInRotatedSortedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE921E1A2C464F6300CBED48 /* 0033_SearchInRotatedSortedArray.swift */; };
 		EE9D4242291D2AB600990A67 /* 0738_MonotoneIncreasingDigits.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9D4241291D2AB600990A67 /* 0738_MonotoneIncreasingDigits.swift */; };
 		EEA0B2D1286DE744007FF6F9 /* 0904_FruitIntoBaskets.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0B2D0286DE744007FF6F9 /* 0904_FruitIntoBaskets.swift */; };
 		EEA0B2D3286E9E89007FF6F9 /* 0059_SpiralMatrix2.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0B2D2286E9E89007FF6F9 /* 0059_SpiralMatrix2.swift */; };
@@ -209,6 +211,8 @@
 		EE921E122C42540300CBED48 /* 0021_MergeTwoSortedLists.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0021_MergeTwoSortedLists.swift; sourceTree = "<group>"; };
 		EE921E142C44FD3600CBED48 /* 0022_GenerateParentheses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0022_GenerateParentheses.swift; sourceTree = "<group>"; };
 		EE921E162C4511E400CBED48 /* 0023_MergeKSortedLists.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0023_MergeKSortedLists.swift; sourceTree = "<group>"; };
+		EE921E182C463CD100CBED48 /* 0031_NextPermutation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0031_NextPermutation.swift; sourceTree = "<group>"; };
+		EE921E1A2C464F6300CBED48 /* 0033_SearchInRotatedSortedArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0033_SearchInRotatedSortedArray.swift; sourceTree = "<group>"; };
 		EE9D4241291D2AB600990A67 /* 0738_MonotoneIncreasingDigits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0738_MonotoneIncreasingDigits.swift; sourceTree = "<group>"; };
 		EEA0B2D0286DE744007FF6F9 /* 0904_FruitIntoBaskets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0904_FruitIntoBaskets.swift; sourceTree = "<group>"; };
 		EEA0B2D2286E9E89007FF6F9 /* 0059_SpiralMatrix2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0059_SpiralMatrix2.swift; sourceTree = "<group>"; };
@@ -420,6 +424,8 @@
 				EE921E122C42540300CBED48 /* 0021_MergeTwoSortedLists.swift */,
 				EE921E142C44FD3600CBED48 /* 0022_GenerateParentheses.swift */,
 				EE921E162C4511E400CBED48 /* 0023_MergeKSortedLists.swift */,
+				EE921E182C463CD100CBED48 /* 0031_NextPermutation.swift */,
+				EE921E1A2C464F6300CBED48 /* 0033_SearchInRotatedSortedArray.swift */,
 			);
 			path = LeetCode;
 			sourceTree = "<group>";
@@ -544,6 +550,7 @@
 				EE5E23D028ACE23100AA53DB /* 0637_AverageofLevelsinBinaryTree.swift in Sources */,
 				EEE3E97C2BDA1F7C00B74827 /* Sword_3.swift in Sources */,
 				EEC66F97288A537D00755A69 /* R_005_ReplaceSpace.swift in Sources */,
+				EE921E1B2C464F6300CBED48 /* 0033_SearchInRotatedSortedArray.swift in Sources */,
 				EEFFAF2328FE87140091975A /* 0093_RestoreIPAddresses.swift in Sources */,
 				EE29DEEB28F7AB8100DAC7C6 /* 0039_CombinationSum.swift in Sources */,
 				EEEBB77A29192F4F007B6951 /* 0452_MinimumNumberofArrowstoBurstBalloons.swift in Sources */,
@@ -558,6 +565,7 @@
 				EECDB995290C0B290015DE08 /* 0386_WiggleSubsequence.swift in Sources */,
 				EE056D4328AA1A950039402E /* 0094_BinaryTreeInorderTraversal.swift in Sources */,
 				EEE49CC0288FBFFA0035C8B0 /* 0028_ImplementStrStr.swift in Sources */,
+				EE921E192C463CD100CBED48 /* 0031_NextPermutation.swift in Sources */,
 				EEA9DAC22892208400D17FD1 /* 1047_RemoveAllAdjacentDuplicatesInString.swift in Sources */,
 				EE2D384828ADEF1A00BDEA18 /* 0116_PopulatingNextRightPointersInEachNode.swift in Sources */,
 				EE56783629213F9900618CD8 /* 0791_CustomSortString.swift in Sources */,

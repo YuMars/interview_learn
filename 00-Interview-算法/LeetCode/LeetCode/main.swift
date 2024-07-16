@@ -180,3 +180,9 @@ print("0015_3Sum ", ThreeSum.threeSum1([1,0,-1]))
 print("0017_LetterCombinationsOfAPhoneNumber ", LetterCombinationsOfAPhoneNumber.letterCombinations1("23"))
 print("0020_ValidParentheses ", ValidParentheses.isValid1("["))
 print("0022_GenerateParentheses ", GenerateParentheses.generateParenthesis(2))
+var nums31 = [4,1,5,3,6,2,7,8,2]
+print("0031_NextPermutation ", NextPermutation.nextPermutation(&nums31))
+
+nums31 = [4,1,5,3,6,2,7,8,2,3]
+nums31 = [10,9,8,7,6,5,4,3,2,1]
+print("\n" ,"0033_SearchInRotatedSortedArray ", SearchInRotatedSortedArray.quickSort(&nums31, low: 0, high: nums31.count - 1))
