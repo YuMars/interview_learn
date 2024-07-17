@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		EE010A022C40B8EC00A7720F /* 0011_ContainerWithMostWater.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE010A012C40B8EC00A7720F /* 0011_ContainerWithMostWater.swift */; };
-		EE038FE328044BE100969223 /* 0034_ FindFirstandLastPositionofElementinSortedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE038FE228044BE100969223 /* 0034_ FindFirstandLastPositionofElementinSortedArray.swift */; };
+		EE038FE328044BE100969223 /* 0034_FindFirstandLastPositionofElementinSortedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE038FE228044BE100969223 /* 0034_FindFirstandLastPositionofElementinSortedArray.swift */; };
 		EE0417062871B1DE0082D34A /* 0203_RemoveLinkedListElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0417052871B1DE0082D34A /* 0203_RemoveLinkedListElements.swift */; };
 		EE054ECF291A553E0030AF8C /* 0435_NonOverlappingIntervals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE054ECE291A553E0030AF8C /* 0435_NonOverlappingIntervals.swift */; };
 		EE056D3D28A9F84B0039402E /* 0144_BinaryTreePreorderTraversal.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE056D3C28A9F84B0039402E /* 0144_BinaryTreePreorderTraversal.swift */; };
@@ -147,7 +147,7 @@
 
 /* Begin PBXFileReference section */
 		EE010A012C40B8EC00A7720F /* 0011_ContainerWithMostWater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0011_ContainerWithMostWater.swift; sourceTree = "<group>"; };
-		EE038FE228044BE100969223 /* 0034_ FindFirstandLastPositionofElementinSortedArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "0034_ FindFirstandLastPositionofElementinSortedArray.swift"; sourceTree = "<group>"; };
+		EE038FE228044BE100969223 /* 0034_FindFirstandLastPositionofElementinSortedArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0034_FindFirstandLastPositionofElementinSortedArray.swift; sourceTree = "<group>"; };
 		EE0417052871B1DE0082D34A /* 0203_RemoveLinkedListElements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0203_RemoveLinkedListElements.swift; sourceTree = "<group>"; };
 		EE054ECE291A553E0030AF8C /* 0435_NonOverlappingIntervals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0435_NonOverlappingIntervals.swift; sourceTree = "<group>"; };
 		EE056D3C28A9F84B0039402E /* 0144_BinaryTreePreorderTraversal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0144_BinaryTreePreorderTraversal.swift; sourceTree = "<group>"; };
@@ -311,7 +311,7 @@
 				EEB76E0F27F0B9A900D8EA7B /* 0001_TwoSum.swift */,
 				EEEC3DE227F1881200B69E57 /* 0704_BinarySearch.swift */,
 				EEEEF1AC27F3563E0030229F /* 0035_SearchInsertPosition.swift */,
-				EE038FE228044BE100969223 /* 0034_ FindFirstandLastPositionofElementinSortedArray.swift */,
+				EE038FE228044BE100969223 /* 0034_FindFirstandLastPositionofElementinSortedArray.swift */,
 				EE5562B2283F58BF00DB9C1E /* 0027_RemoveElement.swift */,
 				EECDB2572840B19400D8A2AC /* 0026_RemoveDuplicates.swift */,
 				EEDCF9182848B99B00012735 /* 0844_BackspaceStringCompare.swift */,
@@ -545,7 +545,7 @@
 				EE07651C292BAA870007F1F2 /* 0343_IntgerBreak.swift in Sources */,
 				EECDB2582840B19400D8A2AC /* 0026_RemoveDuplicates.swift in Sources */,
 				EECDB997290D62030015DE08 /* 0053_MaximumSubarray.swift in Sources */,
-				EE038FE328044BE100969223 /* 0034_ FindFirstandLastPositionofElementinSortedArray.swift in Sources */,
+				EE038FE328044BE100969223 /* 0034_FindFirstandLastPositionofElementinSortedArray.swift in Sources */,
 				EE85F153288531F200D217CB /* 0349_IntersectionofTwoArrays.swift in Sources */,
 				EE5E23D028ACE23100AA53DB /* 0637_AverageofLevelsinBinaryTree.swift in Sources */,
 				EEE3E97C2BDA1F7C00B74827 /* Sword_3.swift in Sources */,

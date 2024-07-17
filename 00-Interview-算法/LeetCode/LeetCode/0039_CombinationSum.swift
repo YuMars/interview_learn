@@ -16,6 +16,32 @@ import Foundation
  */
 
 public class CombinationSum {
+    
+    
+    /// 回溯法
+    public class func combinationSum1(_ candidates: [Int], _ target: Int) -> [[Int]] {
+        var resultArray: [[Int]] = [[Int]]()
+        let sum: Int = 0
+        var path: [Int] = [Int]()
+        backtrack(candidates, 0, &resultArray, &path, sum, target)
+        return resultArray
+    }
+    
+    public class func backtrack(_ candidates:[Int], _ index: Int, _ resultArray: inout [[Int]], _ path: inout [Int],_ sum: Int, _ target: Int) {
+        if sum == target {
+            resultArray.append(path)
+            return
+        }
+        
+        for i in index..<candidates.count {
+            if candidates[i] + sum <= target {
+                path.append(candidates[i])
+                backtrack(candidates, i, &resultArray, &path, sum + candidates[i], target)
+                path.removeLast()
+            }
+        }
+    }
+    
     public class func combinationSum(_ candidates: [Int], _ target: Int) -> [[Int]] {
         
         var result = [[Int]]()

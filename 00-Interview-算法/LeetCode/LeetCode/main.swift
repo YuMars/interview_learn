@@ -186,3 +186,7 @@ print("0031_NextPermutation ", NextPermutation.nextPermutation(&nums31))
 nums31 = [4,1,5,3,6,2,7,8,2,3]
 nums31 = [10,9,8,7,6,5,4,3,2,1]
 print("\n" ,"0033_SearchInRotatedSortedArray ", SearchInRotatedSortedArray.quickSort(&nums31, low: 0, high: nums31.count - 1))
+
+print("0034_FindFirstandLastPositionofElementinSortedArray ", FindFirstandLastPositionofElementinSortedArray.searchRange3([2,2], 3))
+
+print("0039_CombinationSum ", CombinationSum.combinationSum1([2,3,6,7], 7))

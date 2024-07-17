@@ -1,5 +1,5 @@
 //
-//  0034_ FindFirstandLastPositionofElementinSortedArray.swift
+//  0034_FindFirstandLastPositionofElementinSortedArray.swift
 //  LeetCode
 //
 //  Created by Red-Fish on 2022/4/11.
@@ -30,6 +30,58 @@ class FindFirstandLastPositionofElementinSortedArray {
             }
         }
         return [left, right]
+    }
+    
+    
+    
+    /// 二分法-分两个指针去找target对应的左右区间边界值
+    /// 左边界值往右收缩，右边界值往左收缩
+    public class func searchRange3(_ nums: [Int], _ target: Int) -> [Int] {
+        let left = leftBoard(nums, target)
+        let right = rightBoard(nums, target)
+        
+        if left == -2 || right == -2 {
+            return [-1, -1]
+        }
+        
+        if right - left > 1 {
+            return [left + 1, right - 1]
+        }
+        
+        return [-1, -1]
+    }
+    
+    class func leftBoard(_ nums:[Int], _ target: Int) -> Int{
+        var left: Int = 0
+        var right: Int = nums.count - 1
+        var leftBoard: Int = -2
+        while left <= right {
+            let middle = left + (right - left) / 2
+            if nums[middle] >= target {
+                right = middle - 1
+                leftBoard = right
+            } else {
+                left = middle + 1
+            }
+        }
+        
+        return leftBoard
+    }
+    
+    class func rightBoard(_ nums:[Int], _ target: Int) -> Int{
+        var left: Int = 0
+        var right: Int = nums.count - 1
+        var rightBoard: Int = -2
+        while left <= right {
+            let middle = left + (right - left) / 2
+            if nums[middle] <= target {
+                left = middle + 1
+                rightBoard = left
+            } else {
+                right = middle - 1
+            }
+        }
+        return rightBoard
     }
     
     func searchRange2(_ nums: [Int], _ target: Int) -> [Int] {
