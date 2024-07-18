@@ -18,6 +18,36 @@ import Foundation
  */
 
 public class Permutations {
+    
+    /// 回溯解法
+    public class func permute1(_ nums: [Int]) -> [[Int]] {
+        var resultArray: [[Int]] = [[Int]]()
+        var path: [Int] = [Int]()
+        var used: [Bool] = Array(repeating: false, count: nums.count)
+        backtrack(nums, &resultArray, &path, &used)
+        
+        return resultArray
+    }
+    
+    public class func backtrack(_ nums: [Int], _ resultArray: inout [[Int]], _ path: inout [Int], _ used: inout [Bool]) {
+        
+        if path.count == nums.count { // 结束条件
+            resultArray.append(path)
+            return
+        }
+        
+        for i in 0..<nums.count {
+            
+            if used[i] == true { continue }
+            
+            path.append(nums[i])
+            used[i] = true
+            backtrack(nums, &resultArray, &path, &used)
+            path.removeLast()
+            used[i] = false
+        }
+    }
+    
     public class func permute(_ nums: [Int]) -> [[Int]] {
         var path = [Int]()
         var result = [[Int]]()

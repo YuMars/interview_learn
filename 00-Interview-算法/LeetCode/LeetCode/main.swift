@@ -190,3 +190,6 @@ print("\n" ,"0033_SearchInRotatedSortedArray ", SearchInRotatedSortedArray.quick
 print("0034_FindFirstandLastPositionofElementinSortedArray ", FindFirstandLastPositionofElementinSortedArray.searchRange3([2,2], 3))
 
 print("0039_CombinationSum ", CombinationSum.combinationSum1([2,3,6,7], 7))
+print("0042_TrappingRainWater ", TrappingRainWater.trap1([0,1,0,2,1,0,1,3,2,1,2,1]))
+
+print("0046_Permutations ", Permutations.permute1([1,2,3]))
