@@ -51,6 +51,7 @@ public class MaximumSubarray {
         return result
     }
     
+    /// 暴力解法（超时）
     public class func maxSubArray2(_ nums: [Int]) -> Int {
         var result = Int.min;
         var count = 0;
@@ -62,5 +63,42 @@ public class MaximumSubarray {
             }
         }
         return result;
+    }
+    
+    /// 动态规划方法一
+    /// dp[i] = 当前i能取到的最大sum  dp[i] = max(dp[i - 1] + nums[i], dp[i - 1])
+    public class func maxSubArray4(_ nums: [Int]) -> Int {
+        
+        var sum = 0;
+        var sumMax : Int = nums[0]
+        
+        for i in 0..<nums.count {
+            sum = max(nums[i], sum + nums[i])
+            sumMax = max(sumMax, sum)
+        }
+        
+        return sumMax
+    }
+    
+    /// 动态规划方法二
+    
+    public class func maxSubArray5(_ nums: [Int]) -> Int {
+        var dp:[Int] = Array(repeating: 0, count: nums.count)
+        dp[0] = nums[0]
+        for i in 1..<nums.count {
+            
+            if dp[i - 1] > 0 {
+                dp[i] = dp[i - 1] + nums[i];
+            } else {
+                dp[i] = nums[i]
+            }
+        }
+        
+        var result: Int = dp[0]  //<<< 这里注意
+        for i in 0..<dp.count {
+            result = max(result, dp[i])
+        }
+        
+        return result
     }
 }
