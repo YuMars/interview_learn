@@ -15,6 +15,36 @@ public class MergeIntervals {
     
     public class func merge1(_ intervals: [[Int]]) -> [[Int]] {
         
+        guard intervals.count > 1 else {return intervals }
+        
+        var result: [[Int]] = [[Int]]()
+        
+        let sortArray = intervals.sorted { a1, a2 in
+            a1.first! < a2.first!
+        }
+        
+        result.append(sortArray[0])
+        
+        for i in 0..<sortArray.count {
+            let resultMin:Int = result.last![0]
+            let resultMax:Int = result.last![1]
+            let currentMin:Int = sortArray[i][0]
+            let currentMax:Int = sortArray[i][1]
+            
+            // 如果已经合并的区间和当前将要合并的区间有重叠，则重贴区间，否则就新增一个区间
+            if (resultMax >= currentMin && resultMax <= currentMax) || (resultMax >= currentMax) {
+//                var temp:[Int] = result.last!
+//                temp[1] = sortArray[i][1]
+                result[result.count - 1][0] = min(resultMin, currentMin)
+                result[result.count - 1][1] = max(resultMax, currentMax)
+            } else {
+                result.append(sortArray[i])
+            }
+            
+        }
+        
+        return result
+        
     }
     
     public class func merge(_ intervals: [[Int]]) -> [[Int]] {

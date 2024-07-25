@@ -43,6 +43,7 @@
 		EE4A90D62C48C35700E876BD /* 0042_TrappingRainWater.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4A90D52C48C35700E876BD /* 0042_TrappingRainWater.swift */; };
 		EE4A90D82C4E40FB00E876BD /* 0048_RotateImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4A90D72C4E40FB00E876BD /* 0048_RotateImage.swift */; };
 		EE4A90DA2C50960500E876BD /* 0049_GroupAnagrams.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4A90D92C50960500E876BD /* 0049_GroupAnagrams.swift */; };
+		EE4A90DD2C52265000E876BD /* 0064_MinimumPathSum.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4A90DC2C52265000E876BD /* 0064_MinimumPathSum.swift */; };
 		EE4AC2482872A40A00301517 /* 0206_ReverseLinkedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4AC2472872A40A00301517 /* 0206_ReverseLinkedList.swift */; };
 		EE4AC24A2873184600301517 /* 0024_SwapNodesInPairs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4AC2492873184600301517 /* 0024_SwapNodesInPairs.swift */; };
 		EE4C223B2A1F4462005B7CCF /* 0518_CoinChange2.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4C223A2A1F4462005B7CCF /* 0518_CoinChange2.swift */; };
@@ -185,6 +186,7 @@
 		EE4A90D52C48C35700E876BD /* 0042_TrappingRainWater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0042_TrappingRainWater.swift; sourceTree = "<group>"; };
 		EE4A90D72C4E40FB00E876BD /* 0048_RotateImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0048_RotateImage.swift; sourceTree = "<group>"; };
 		EE4A90D92C50960500E876BD /* 0049_GroupAnagrams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0049_GroupAnagrams.swift; sourceTree = "<group>"; };
+		EE4A90DC2C52265000E876BD /* 0064_MinimumPathSum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0064_MinimumPathSum.swift; sourceTree = "<group>"; };
 		EE4AC2472872A40A00301517 /* 0206_ReverseLinkedList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0206_ReverseLinkedList.swift; sourceTree = "<group>"; };
 		EE4AC2492873184600301517 /* 0024_SwapNodesInPairs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0024_SwapNodesInPairs.swift; sourceTree = "<group>"; };
 		EE4C223A2A1F4462005B7CCF /* 0518_CoinChange2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0518_CoinChange2.swift; sourceTree = "<group>"; };
@@ -435,6 +437,7 @@
 				EE4A90D52C48C35700E876BD /* 0042_TrappingRainWater.swift */,
 				EE4A90D72C4E40FB00E876BD /* 0048_RotateImage.swift */,
 				EE4A90D92C50960500E876BD /* 0049_GroupAnagrams.swift */,
+				EE4A90DC2C52265000E876BD /* 0064_MinimumPathSum.swift */,
 			);
 			path = LeetCode;
 			sourceTree = "<group>";
@@ -565,6 +568,7 @@
 				EEEBB77A29192F4F007B6951 /* 0452_MinimumNumberofArrowstoBurstBalloons.swift in Sources */,
 				EE921E172C4511E400CBED48 /* 0023_MergeKSortedLists.swift in Sources */,
 				EE4A90D82C4E40FB00E876BD /* 0048_RotateImage.swift in Sources */,
+				EE4A90DD2C52265000E876BD /* 0064_MinimumPathSum.swift in Sources */,
 				EEDF15A32A28723800DA8213 /* 0322_CoinChange.swift in Sources */,
 				EE5D5E1228892373007B12F3 /* 0018_4Sum.swift in Sources */,
 				EE9D4242291D2AB600990A67 /* 0738_MonotoneIncreasingDigits.swift in Sources */,

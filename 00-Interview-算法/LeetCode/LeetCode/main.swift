@@ -195,3 +195,11 @@ print("0042_TrappingRainWater ", TrappingRainWater.trap1([0,1,0,2,1,0,1,3,2,1,2,
 print("0046_Permutations ", Permutations.permute1([1,2,3]))
 
 print("0055_JumpGame ", JumpGame.canJump1([0]))
+
+print("0056_MergeIntervals ", MergeIntervals.merge1([[1,3],[2,6],[8,10],[15,18]]))
+print("0062_UniquePath ", UniquePath.uniquePaths3(3, 2))
+
+print("0064_MinimumPathSum ", MinimumPathSum.minPathSum([[1,2,3],[4,5,6]]))
+
+print("0070_ClimbingStairs ", ClimbingStairs.climbStairs4(3))
+

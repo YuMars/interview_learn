@@ -67,4 +67,17 @@ public class UniquePath {
         
         return dp[m - 1][n - 1]
     }
+    
+    
+    /// 动态规划解法
+    public class func uniquePaths3(_ m: Int, _ n: Int) -> Int {
+        var dp: [[Int]] = Array(repeating: Array(repeating: 1, count: n), count: m)
+        
+        for i in 1..<m { // 注意循环的外层是m跟初始化参数有关系
+             for j in 1..<n { // 注意循环的外层是n初始化参数有关系
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1]
+            }
+        }
+        return dp[m - 1][n - 1]
+    }
 }
