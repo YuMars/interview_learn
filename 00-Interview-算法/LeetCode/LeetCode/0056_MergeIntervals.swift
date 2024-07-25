@@ -7,7 +7,16 @@
 
 import Foundation
 
+/*
+ 以数组 intervals 表示若干个区间的集合，其中单个区间为 intervals[i] = [starti, endi] 。请你合并所有重叠的区间，并返回 一个不重叠的区间数组，该数组需恰好覆盖输入中的所有区间 。
+ */
+
 public class MergeIntervals {
+    
+    public class func merge1(_ intervals: [[Int]]) -> [[Int]] {
+        
+    }
+    
     public class func merge(_ intervals: [[Int]]) -> [[Int]] {
         let sortArray = intervals.sorted { p1, p2 in
             return p1.first! < p2.first!

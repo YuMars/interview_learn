@@ -22,6 +22,24 @@ import Foundation
  */
 
 public class JumpGame {
+    
+    /// 迭代解法
+    public class func canJump1(_ nums: [Int]) -> Bool {
+        var currentIndex = 0
+        for i in 0..<nums.count-1 {
+            if nums[i] + i + 1 > nums.count {
+                return true
+            } else {
+                currentIndex = max(currentIndex, i + nums[i])
+                if currentIndex < i + 1 { // 没办法达到
+                    return false
+                }
+            }
+        }
+        
+        return currentIndex + 1 >= nums.count
+    }
+    
     public class func canJump(_ nums: [Int]) -> Bool {
         var coverIndex = 0
         for i in 0 ..< nums.count - 1 {
