@@ -203,3 +203,7 @@ print("0064_MinimumPathSum ", MinimumPathSum.minPathSum([[1,2,3],[4,5,6]]))
 
 print("0070_ClimbingStairs ", ClimbingStairs.climbStairs4(3))
 
+print("0072_EditDistance ", EditDistance.minDistance("distance", "springbok"))
+
+nums31 = [2,0,2,1,1,0]
+print("0075_SortColors ", SortColors.sortColors(&nums31))

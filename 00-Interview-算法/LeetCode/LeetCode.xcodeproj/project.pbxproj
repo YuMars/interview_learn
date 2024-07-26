@@ -44,6 +44,8 @@
 		EE4A90D82C4E40FB00E876BD /* 0048_RotateImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4A90D72C4E40FB00E876BD /* 0048_RotateImage.swift */; };
 		EE4A90DA2C50960500E876BD /* 0049_GroupAnagrams.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4A90D92C50960500E876BD /* 0049_GroupAnagrams.swift */; };
 		EE4A90DD2C52265000E876BD /* 0064_MinimumPathSum.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4A90DC2C52265000E876BD /* 0064_MinimumPathSum.swift */; };
+		EE4A90DF2C534AE000E876BD /* 0072_EditDistance.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4A90DE2C534AE000E876BD /* 0072_EditDistance.swift */; };
+		EE4A90E12C53A3F000E876BD /* 0075_SortColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4A90E02C53A3EF00E876BD /* 0075_SortColors.swift */; };
 		EE4AC2482872A40A00301517 /* 0206_ReverseLinkedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4AC2472872A40A00301517 /* 0206_ReverseLinkedList.swift */; };
 		EE4AC24A2873184600301517 /* 0024_SwapNodesInPairs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4AC2492873184600301517 /* 0024_SwapNodesInPairs.swift */; };
 		EE4C223B2A1F4462005B7CCF /* 0518_CoinChange2.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4C223A2A1F4462005B7CCF /* 0518_CoinChange2.swift */; };
@@ -187,6 +189,8 @@
 		EE4A90D72C4E40FB00E876BD /* 0048_RotateImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0048_RotateImage.swift; sourceTree = "<group>"; };
 		EE4A90D92C50960500E876BD /* 0049_GroupAnagrams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0049_GroupAnagrams.swift; sourceTree = "<group>"; };
 		EE4A90DC2C52265000E876BD /* 0064_MinimumPathSum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0064_MinimumPathSum.swift; sourceTree = "<group>"; };
+		EE4A90DE2C534AE000E876BD /* 0072_EditDistance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0072_EditDistance.swift; sourceTree = "<group>"; };
+		EE4A90E02C53A3EF00E876BD /* 0075_SortColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0075_SortColors.swift; sourceTree = "<group>"; };
 		EE4AC2472872A40A00301517 /* 0206_ReverseLinkedList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0206_ReverseLinkedList.swift; sourceTree = "<group>"; };
 		EE4AC2492873184600301517 /* 0024_SwapNodesInPairs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0024_SwapNodesInPairs.swift; sourceTree = "<group>"; };
 		EE4C223A2A1F4462005B7CCF /* 0518_CoinChange2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0518_CoinChange2.swift; sourceTree = "<group>"; };
@@ -438,6 +442,8 @@
 				EE4A90D72C4E40FB00E876BD /* 0048_RotateImage.swift */,
 				EE4A90D92C50960500E876BD /* 0049_GroupAnagrams.swift */,
 				EE4A90DC2C52265000E876BD /* 0064_MinimumPathSum.swift */,
+				EE4A90DE2C534AE000E876BD /* 0072_EditDistance.swift */,
+				EE4A90E02C53A3EF00E876BD /* 0075_SortColors.swift */,
 			);
 			path = LeetCode;
 			sourceTree = "<group>";
@@ -523,6 +529,7 @@
 				EE5D5E162889456F007B12F3 /* 0541_ReverseString.swift in Sources */,
 				EE8EA1C72935A1D1008FCAAA /* 0029_DivideTwoIntegers.swift in Sources */,
 				EE5D5E1428893C54007B12F3 /* 0344_ReverseString.swift in Sources */,
+				EE4A90DF2C534AE000E876BD /* 0072_EditDistance.swift in Sources */,
 				EEA9DABE289109A500D17FD1 /* 0225_ImplementStackUsingQueues.swift in Sources */,
 				EE5562B3283F58BF00DB9C1E /* 0027_RemoveElement.swift in Sources */,
 				EEA58E2E2906941F004B2896 /* 0332_ReconstructItinerary.swift in Sources */,
@@ -587,6 +594,7 @@
 				EEA0B2D528704421007FF6F9 /* ListNode.swift in Sources */,
 				EE5D5E0A288688C3007B12F3 /* 0202_HappyNum.swift in Sources */,
 				EEACD3CC2C3E55040041B37B /* 0003_LongestSubstringWithoutRepeatingCharacters.swift in Sources */,
+				EE4A90E12C53A3F000E876BD /* 0075_SortColors.swift in Sources */,
 				EEEC3DE327F1881200B69E57 /* 0704_BinarySearch.swift in Sources */,
 				EEFFAF1D28F9369A0091975A /* 0131_PalindromePartitioning.swift in Sources */,
 				EE29DEDA28F556CA00DAC7C6 /* 0077_Combinations.swift in Sources */,

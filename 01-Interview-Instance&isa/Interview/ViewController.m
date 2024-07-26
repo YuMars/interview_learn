@@ -130,7 +130,7 @@ struct my_objc_class {
     size_t size = class_getInstanceSize([NSObject class]);
     NSLog(@"%zu", size);
     
-    // object所指向的内存大小 > 16
+    // object所指 向的内存大小 > 16
     object = [[NSObject alloc] init];
     size_t size2 = malloc_size((__bridge const void *)(object));
     NSLog(@"%zu", size2);
@@ -155,7 +155,7 @@ struct my_objc_class {
     size_t studentSize = class_getInstanceSize([Student class]);
     NSLog(@"%zu", studentSize); // 16
     
-    size_t studentSize2 = malloc_size((__bridge const void *)(student));
+    size_t studentSize2 =  malloc_size((__bridge const void *)(student));
     NSLog(@"%zu", studentSize2); // 16
     
     struct Student_IMPL *studentIMPL = (__bridge  struct Student_IMPL *)student;
