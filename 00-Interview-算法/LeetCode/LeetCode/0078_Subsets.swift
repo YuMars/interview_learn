@@ -17,6 +17,26 @@ import Foundation
  */
 
 public class SubSets {
+    
+    public class func subsets1(_ nums: [Int]) -> [[Int]] {
+        var result = [[Int]]()
+        var path = [Int]()
+        
+        backtracking(nums, 0, &result, &path)
+        return result
+    }
+    
+    public class func backtracking(_ nums:[Int], _ index: Int, _ result: inout [[Int]], _ path:inout [Int]) {
+        
+        result.append(path)
+        
+        for i in index..<nums.count {
+            path.append(nums[i])
+            backtracking(nums, i + 1, &result, &path)
+            path.removeLast()
+        }
+    }
+    
     public class func subsets(_ nums: [Int]) -> [[Int]] {
         var result = [[Int]]()
         var path = [Int]()

@@ -207,3 +207,7 @@ print("0072_EditDistance ", EditDistance.minDistance("distance", "springbok"))
 
 nums31 = [2,0,2,1,1,0]
 print("0075_SortColors ", SortColors.sortColors(&nums31))
+
+print("0076_MinimumWindowSubstring ", MinimumWindowSubstring.minWindow1("ADOBECODEBANC", "ABC"))
+
+print("0078_Subsets ", SubSets.subsets1([1,2,3]))
