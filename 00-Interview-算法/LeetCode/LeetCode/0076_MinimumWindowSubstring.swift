@@ -72,8 +72,65 @@ public class MinimumWindowSubstring {
         return minLen == Int.max ? "" : String(sArr[start..<end])
     }
     
-    
-    
+    /// 滑动窗口解法
+    public class func minWindow2(_ s: String, _ t: String) -> String {
+        let sArray:[Character] = Array(s)
+        let tArray:[Character] = Array(t)
+        
+        var windowMap: [Character : Int] = [Character : Int]()
+        var needMap: [Character : Int] = [Character : Int]()
+        
+        for i in 0..<tArray.count {
+            needMap[tArray[i], default: 0] += 1
+        }
+        
+        var resultLeft: Int = 0
+        var resultRight: Int = Int.max
+        
+        var left: Int = 0
+        var right: Int = 0
+        
+        var matchCount: Int = 0
+        
+        while right < sArray.count {
+            let rightChar: Character = sArray[right]
+            right += 1
+            
+            if needMap[rightChar] == nil { continue }
+            
+            windowMap[rightChar, default: 0] += 1 // 遇到了t字符串中的字符，则统计对应字符出现的次数
+            if windowMap[rightChar] == needMap[rightChar] {
+                matchCount += 1
+            }
+            
+            while matchCount == needMap.count {
+                if right - left < resultRight - resultLeft {
+                    resultLeft = left
+                    resultRight = right
+                }
+                
+                // 左指针开始收缩
+                let leftChar: Character = sArray[left]
+                left += 1
+                if needMap[leftChar] == nil {continue}
+                
+                if needMap[leftChar] == windowMap[leftChar] {
+                    matchCount -= 1
+                }
+                
+                // 滑动窗口左指针向右收缩，对应字符个数减一
+                windowMap[leftChar]! -= 1
+            }
+            
+        }
+        
+        
+        if resultRight == Int.max {
+            return ""
+        }
+        
+        return String(sArray[resultLeft..<resultRight])
+    }
     
     /// 暴力解法
     public class func minWindow(_ s: String, _ t: String) -> String {

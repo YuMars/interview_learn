@@ -3776,6 +3776,7 @@ void prepare_load_methods(const headerType *mhdr)
     classref_t const *classlist = 
         _getObjc2NonlazyClassList(mhdr, &count);
     for (i = 0; i < count; i++) {
+        // 从父类开始调用
         schedule_class_load(remapClass(classlist[i]));
     }
 

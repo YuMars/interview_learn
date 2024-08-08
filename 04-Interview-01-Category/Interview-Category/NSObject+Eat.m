@@ -5,9 +5,17 @@
 //  Created by Red-Fish on 2021/12/13.
 //
 
-#import "Person+Eat.h"
+#import "NSObject+Eat.h"
 
-@implementation Person (Eat)
+@implementation NSObject (Eat)
+
+//+ (void)like {
+//    NSLog(@"+ (void)like");
+//}
+
+- (void)like {
+    NSLog(@"- (void)like");
+}
 
 - (void)run {
     NSLog(@"2");

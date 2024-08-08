@@ -10,6 +10,8 @@
 #import <objc/runtime.h>
 #import "Student+Test1.h"
 #import "Student+Test2.h"
+#import "Person+Test1.h"
+#import "NSObject+Eat.h"
 @interface ViewController ()
 
 @end
@@ -21,6 +23,8 @@
     
     // Q:Category的使用场合是什么？
     // A:类想要拆解成不同的模块
+    
+    [Student like];
     
     // Q:Category的实现原理
     Person *person = [[Person alloc] init];

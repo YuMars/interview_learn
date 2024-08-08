@@ -76,9 +76,9 @@ void add_class_to_loadable_list(Class cls)
     if (loadable_classes_used == loadable_classes_allocated) {
         loadable_classes_allocated = loadable_classes_allocated*2 + 16;
         loadable_classes = (struct loadable_class *)
-            realloc(loadable_classes,
-                              loadable_classes_allocated *
-                              sizeof(struct loadable_class));
+        realloc(loadable_classes,
+                loadable_classes_allocated *
+                sizeof(struct loadable_class));
     }
     
     loadable_classes[loadable_classes_used].cls = cls;

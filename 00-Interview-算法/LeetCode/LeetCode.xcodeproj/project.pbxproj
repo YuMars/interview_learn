@@ -68,6 +68,8 @@
 		EE5E23D228ACECA000AA53DB /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5E23D128ACECA000AA53DB /* Node.swift */; };
 		EE66D32028A3AFAA00E36118 /* 0347_TopKFrequentElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE66D31F28A3AFAA00E36118 /* 0347_TopKFrequentElements.swift */; };
 		EE71678C2C587F5A00340FB8 /* 0076_MinimumWindowSubstring.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71678B2C587F5A00340FB8 /* 0076_MinimumWindowSubstring.swift */; };
+		EE71678E2C59D14100340FB8 /* 0079_WordSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71678D2C59D14100340FB8 /* 0079_WordSearch.swift */; };
+		EE7167902C5CE93E00340FB8 /* 0084_LargestRectangleInHistogram.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71678F2C5CE93D00340FB8 /* 0084_LargestRectangleInHistogram.swift */; };
 		EE7250A328B8954400C9AFF8 /* 0101_SymmetricTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7250A228B8954400C9AFF8 /* 0101_SymmetricTree.swift */; };
 		EE7550C92A1DFC5900DC8883 /* 1049_LastStoneWeight2.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7550C82A1DFC5900DC8883 /* 1049_LastStoneWeight2.swift */; };
 		EE7550CB2A1E0C6100DC8883 /* 0494_TargetSum.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7550CA2A1E0C6100DC8883 /* 0494_TargetSum.swift */; };
@@ -214,6 +216,8 @@
 		EE5E23D128ACECA000AA53DB /* Node.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
 		EE66D31F28A3AFAA00E36118 /* 0347_TopKFrequentElements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0347_TopKFrequentElements.swift; sourceTree = "<group>"; };
 		EE71678B2C587F5A00340FB8 /* 0076_MinimumWindowSubstring.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0076_MinimumWindowSubstring.swift; sourceTree = "<group>"; };
+		EE71678D2C59D14100340FB8 /* 0079_WordSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0079_WordSearch.swift; sourceTree = "<group>"; };
+		EE71678F2C5CE93D00340FB8 /* 0084_LargestRectangleInHistogram.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0084_LargestRectangleInHistogram.swift; sourceTree = "<group>"; };
 		EE7250A228B8954400C9AFF8 /* 0101_SymmetricTree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0101_SymmetricTree.swift; sourceTree = "<group>"; };
 		EE7550C82A1DFC5900DC8883 /* 1049_LastStoneWeight2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 1049_LastStoneWeight2.swift; sourceTree = "<group>"; };
 		EE7550CA2A1E0C6100DC8883 /* 0494_TargetSum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0494_TargetSum.swift; sourceTree = "<group>"; };
@@ -447,6 +451,8 @@
 				EE4A90DE2C534AE000E876BD /* 0072_EditDistance.swift */,
 				EE4A90E02C53A3EF00E876BD /* 0075_SortColors.swift */,
 				EE71678B2C587F5A00340FB8 /* 0076_MinimumWindowSubstring.swift */,
+				EE71678D2C59D14100340FB8 /* 0079_WordSearch.swift */,
+				EE71678F2C5CE93D00340FB8 /* 0084_LargestRectangleInHistogram.swift */,
 			);
 			path = LeetCode;
 			sourceTree = "<group>";
@@ -567,6 +573,7 @@
 				EE07651C292BAA870007F1F2 /* 0343_IntgerBreak.swift in Sources */,
 				EECDB2582840B19400D8A2AC /* 0026_RemoveDuplicates.swift in Sources */,
 				EECDB997290D62030015DE08 /* 0053_MaximumSubarray.swift in Sources */,
+				EE7167902C5CE93E00340FB8 /* 0084_LargestRectangleInHistogram.swift in Sources */,
 				EE038FE328044BE100969223 /* 0034_FindFirstandLastPositionofElementinSortedArray.swift in Sources */,
 				EE85F153288531F200D217CB /* 0349_IntersectionofTwoArrays.swift in Sources */,
 				EE5E23D028ACE23100AA53DB /* 0637_AverageofLevelsinBinaryTree.swift in Sources */,
@@ -599,6 +606,7 @@
 				EE5D5E0A288688C3007B12F3 /* 0202_HappyNum.swift in Sources */,
 				EEACD3CC2C3E55040041B37B /* 0003_LongestSubstringWithoutRepeatingCharacters.swift in Sources */,
 				EE4A90E12C53A3F000E876BD /* 0075_SortColors.swift in Sources */,
+				EE71678E2C59D14100340FB8 /* 0079_WordSearch.swift in Sources */,
 				EEEC3DE327F1881200B69E57 /* 0704_BinarySearch.swift in Sources */,
 				EEFFAF1D28F9369A0091975A /* 0131_PalindromePartitioning.swift in Sources */,
 				EE29DEDA28F556CA00DAC7C6 /* 0077_Combinations.swift in Sources */,

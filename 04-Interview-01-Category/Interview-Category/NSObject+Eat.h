@@ -5,13 +5,15 @@
 //  Created by Red-Fish on 2021/12/13.
 //
 
-#import "Person.h"
+#import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface Person (Eat)
+@interface NSObject (Eat)
 
 - (void)eat;
+
++ (void)like;
 
 @end
 

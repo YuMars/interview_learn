@@ -17,6 +17,10 @@
     NSLog(@"run");
 }
 
+- (void)love {
+    NSLog(@"love");
+}
+
 + (void)load {
     NSLog(@"Person + (void)load");
 }

@@ -16,7 +16,7 @@
 		EEDF5E532766F04800C02C6E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EEDF5E522766F04800C02C6E /* main.m */; };
 		EEDF5E5B2766F32300C02C6E /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = EEDF5E5A2766F32300C02C6E /* Person.m */; };
 		EEDF5E5E2766F33A00C02C6E /* Person+Test.m in Sources */ = {isa = PBXBuildFile; fileRef = EEDF5E5D2766F33A00C02C6E /* Person+Test.m */; };
-		EEDF5E612766F38800C02C6E /* Person+Eat.m in Sources */ = {isa = PBXBuildFile; fileRef = EEDF5E602766F38800C02C6E /* Person+Eat.m */; };
+		EEDF5E612766F38800C02C6E /* NSObject+Eat.m in Sources */ = {isa = PBXBuildFile; fileRef = EEDF5E602766F38800C02C6E /* NSObject+Eat.m */; };
 		EEDF5E6A27677BDD00C02C6E /* Student.m in Sources */ = {isa = PBXBuildFile; fileRef = EEDF5E6927677BDD00C02C6E /* Student.m */; };
 		EEDF5E6D27677BE800C02C6E /* Person+Test1.m in Sources */ = {isa = PBXBuildFile; fileRef = EEDF5E6C27677BE800C02C6E /* Person+Test1.m */; };
 		EEDF5E7027677BF100C02C6E /* Person+Test2.m in Sources */ = {isa = PBXBuildFile; fileRef = EEDF5E6F27677BF100C02C6E /* Person+Test2.m */; };
@@ -42,8 +42,8 @@
 		EEDF5E5A2766F32300C02C6E /* Person.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Person.m; sourceTree = "<group>"; };
 		EEDF5E5C2766F33A00C02C6E /* Person+Test.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Person+Test.h"; sourceTree = "<group>"; };
 		EEDF5E5D2766F33A00C02C6E /* Person+Test.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "Person+Test.m"; sourceTree = "<group>"; };
-		EEDF5E5F2766F38800C02C6E /* Person+Eat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Person+Eat.h"; sourceTree = "<group>"; };
-		EEDF5E602766F38800C02C6E /* Person+Eat.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "Person+Eat.m"; sourceTree = "<group>"; };
+		EEDF5E5F2766F38800C02C6E /* NSObject+Eat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+Eat.h"; sourceTree = "<group>"; };
+		EEDF5E602766F38800C02C6E /* NSObject+Eat.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+Eat.m"; sourceTree = "<group>"; };
 		EEDF5E622767291100C02C6E /* Person.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Person.cpp; sourceTree = "<group>"; };
 		EEDF5E6427672BF500C02C6E /* ViewController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ViewController.cpp; sourceTree = "<group>"; };
 		EEDF5E6627672C3300C02C6E /* Person+Test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "Person+Test.cpp"; sourceTree = "<group>"; };
@@ -112,8 +112,8 @@
 				EEDF5E6F27677BF100C02C6E /* Person+Test2.m */,
 				EEDF5E5C2766F33A00C02C6E /* Person+Test.h */,
 				EEDF5E5D2766F33A00C02C6E /* Person+Test.m */,
-				EEDF5E5F2766F38800C02C6E /* Person+Eat.h */,
-				EEDF5E602766F38800C02C6E /* Person+Eat.m */,
+				EEDF5E5F2766F38800C02C6E /* NSObject+Eat.h */,
+				EEDF5E602766F38800C02C6E /* NSObject+Eat.m */,
 				EEDF5E492766F04700C02C6E /* Main.storyboard */,
 				EEDF5E4C2766F04800C02C6E /* Assets.xcassets */,
 				EEDF5E4E2766F04800C02C6E /* LaunchScreen.storyboard */,
@@ -195,7 +195,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EEDF5E7327677BFC00C02C6E /* Student+Test1.m in Sources */,
-				EEDF5E612766F38800C02C6E /* Person+Eat.m in Sources */,
+				EEDF5E612766F38800C02C6E /* NSObject+Eat.m in Sources */,
 				EEDF5E5E2766F33A00C02C6E /* Person+Test.m in Sources */,
 				EEDF5E482766F04700C02C6E /* ViewController.m in Sources */,
 				EEDF5E7027677BF100C02C6E /* Person+Test2.m in Sources */,

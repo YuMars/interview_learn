@@ -15,6 +15,8 @@
 		EE3B3CCA2760630100DD56D4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EE3B3CC82760630100DD56D4 /* LaunchScreen.storyboard */; };
 		EE3B3CCD2760630100DD56D4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EE3B3CCC2760630100DD56D4 /* main.m */; };
 		EE3B3CD5276084BE00DD56D4 /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = EE3B3CD4276084BE00DD56D4 /* Person.m */; };
+		EEB0A7562C622557008ED055 /* KVO&KVC（汇总，面试前看） in Resources */ = {isa = PBXBuildFile; fileRef = EEB0A7542C622557008ED055 /* KVO&KVC（汇总，面试前看） */; };
+		EEB0A7572C622557008ED055 /* KVO&KVC面试题&&答案 in Resources */ = {isa = PBXBuildFile; fileRef = EEB0A7552C622557008ED055 /* KVO&KVC面试题&&答案 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +36,8 @@
 		EE3B3CD4276084BE00DD56D4 /* Person.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Person.m; sourceTree = "<group>"; };
 		EE3B3CD627609B1E00DD56D4 /* NSKVONotifying_Person.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSKVONotifying_Person.h; sourceTree = "<group>"; };
 		EE3B3CD727609B1E00DD56D4 /* NSKVONotifying_Person.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSKVONotifying_Person.m; sourceTree = "<group>"; };
+		EEB0A7542C622557008ED055 /* KVO&KVC（汇总，面试前看） */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "KVO&KVC（汇总，面试前看）"; sourceTree = SOURCE_ROOT; };
+		EEB0A7552C622557008ED055 /* KVO&KVC面试题&&答案 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "KVO&KVC面试题&&答案"; sourceTree = SOURCE_ROOT; };
 		EEE3C89B27F1F724003C33D9 /* KVO.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = KVO.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -73,6 +77,8 @@
 				EE3B3CBE2760630000DD56D4 /* SceneDelegate.m */,
 				EE3B3CC02760630000DD56D4 /* ViewController.h */,
 				EE3B3CC12760630000DD56D4 /* ViewController.m */,
+				EEB0A7542C622557008ED055 /* KVO&KVC（汇总，面试前看） */,
+				EEB0A7552C622557008ED055 /* KVO&KVC面试题&&答案 */,
 				EEE3C89B27F1F724003C33D9 /* KVO.md */,
 				EE3B3CD3276084BE00DD56D4 /* Person.h */,
 				EE3B3CD4276084BE00DD56D4 /* Person.m */,
@@ -144,8 +150,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EEB0A7562C622557008ED055 /* KVO&KVC（汇总，面试前看） in Resources */,
 				EE3B3CCA2760630100DD56D4 /* LaunchScreen.storyboard in Resources */,
 				EE3B3CC72760630100DD56D4 /* Assets.xcassets in Resources */,
+				EEB0A7572C622557008ED055 /* KVO&KVC面试题&&答案 in Resources */,
 				EE3B3CC52760630000DD56D4 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

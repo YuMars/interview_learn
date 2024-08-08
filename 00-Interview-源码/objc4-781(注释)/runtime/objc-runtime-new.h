@@ -889,6 +889,9 @@ class list_array_tt {
         }
     }
 
+    /*
+     所有分类的对方方法、属性、协议，附加到类对应的列表中去 
+     */
     void attachLists(List* const * addedLists, uint32_t addedCount) {
         if (addedCount == 0) return;
 
@@ -1647,7 +1650,7 @@ struct swift_class_t : objc_class {
 };
 
 
-struct category_t {
+struct  category_t {
     const char *name;
     classref_t cls;
     struct method_list_t *instanceMethods;

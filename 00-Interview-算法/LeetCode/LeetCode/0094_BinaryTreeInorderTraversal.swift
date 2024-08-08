@@ -39,4 +39,43 @@ public class BinaryTreeInorderTraversal {
         }
         return res
     }
+    
+    
+    /// 递归解法
+    public class func inorderTraversal3(_ root: TreeNode?) -> [Int] {
+        var result: [Int] = [Int]()
+        recursivee(root, &result)
+        return result
+    }
+    
+    public class func recursivee(_ root: TreeNode?, _ result: inout [Int]) {
+        
+        guard let node = root else { return }
+        
+        recursivee(node.left, &result)
+        result.append(node.val)
+        recursivee(node.right, &result)
+    }
+    
+    /// 循环解法
+    public class func inorderTraversal4(_ root: TreeNode?) -> [Int] {
+        
+        guard root != nil else { return []}
+        
+        var result: [Int] = [Int]()
+        var curNode: TreeNode? = root
+        var stack: [TreeNode] = [TreeNode]()
+        while curNode != nil || stack.isEmpty == false {
+            if let node = curNode {
+                stack.append(node)
+                curNode = node.left
+            } else {
+                curNode = stack.removeLast()
+                result.append(curNode!.val)
+                curNode = curNode?.right
+            }
+        }
+        
+        return result
+    }
 }

@@ -17,6 +17,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)tttt;
 
++ (void)love;
+
 @end
 
 NS_ASSUME_NONNULL_END
