@@ -20,6 +20,7 @@
 		EE07651A29291E890007F1F2 /* 01732_FindTheHighestAltitude.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE07651929291E890007F1F2 /* 01732_FindTheHighestAltitude.swift */; };
 		EE07651C292BAA870007F1F2 /* 0343_IntgerBreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE07651B292BAA870007F1F2 /* 0343_IntgerBreak.swift */; };
 		EE0EBB8B2A135FA500460D86 /* 0416_PartitionEqualSubsetSum.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0EBB8A2A135FA500460D86 /* 0416_PartitionEqualSubsetSum.swift */; };
+		EE104C032C6464A300A940E6 /* 0085_MaximalRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE104C022C6464A300A940E6 /* 0085_MaximalRectangle.swift */; };
 		EE1118D52923B12C000383B0 /* 0509_FibonacciNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1118D42923B12C000383B0 /* 0509_FibonacciNumber.swift */; };
 		EE1118D72923B855000383B0 /* 0070_ClimbingStairs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1118D62923B855000383B0 /* 0070_ClimbingStairs.swift */; };
 		EE1B2B702917EF52008D4B84 /* 0860_LemonadeChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1B2B6F2917EF52008D4B84 /* 0860_LemonadeChange.swift */; };
@@ -168,6 +169,7 @@
 		EE07651929291E890007F1F2 /* 01732_FindTheHighestAltitude.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 01732_FindTheHighestAltitude.swift; sourceTree = "<group>"; };
 		EE07651B292BAA870007F1F2 /* 0343_IntgerBreak.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0343_IntgerBreak.swift; sourceTree = "<group>"; };
 		EE0EBB8A2A135FA500460D86 /* 0416_PartitionEqualSubsetSum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0416_PartitionEqualSubsetSum.swift; sourceTree = "<group>"; };
+		EE104C022C6464A300A940E6 /* 0085_MaximalRectangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0085_MaximalRectangle.swift; sourceTree = "<group>"; };
 		EE1118D42923B12C000383B0 /* 0509_FibonacciNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0509_FibonacciNumber.swift; sourceTree = "<group>"; };
 		EE1118D62923B855000383B0 /* 0070_ClimbingStairs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0070_ClimbingStairs.swift; sourceTree = "<group>"; };
 		EE1B2B6F2917EF52008D4B84 /* 0860_LemonadeChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = 0860_LemonadeChange.swift; sourceTree = "<group>"; };
@@ -453,6 +455,7 @@
 				EE71678B2C587F5A00340FB8 /* 0076_MinimumWindowSubstring.swift */,
 				EE71678D2C59D14100340FB8 /* 0079_WordSearch.swift */,
 				EE71678F2C5CE93D00340FB8 /* 0084_LargestRectangleInHistogram.swift */,
+				EE104C022C6464A300A940E6 /* 0085_MaximalRectangle.swift */,
 			);
 			path = LeetCode;
 			sourceTree = "<group>";
@@ -535,6 +538,7 @@
 				EE567834291FE1D400618CD8 /* 0121_BestTimeToBuyAndSellStock.swift in Sources */,
 				EE29DEED28F7DF5200DAC7C6 /* 0040_CombinationSum2.swift in Sources */,
 				EEA58E2C29066C64004B2896 /* 0047_Permutations3.swift in Sources */,
+				EE104C032C6464A300A940E6 /* 0085_MaximalRectangle.swift in Sources */,
 				EE5D5E162889456F007B12F3 /* 0541_ReverseString.swift in Sources */,
 				EE8EA1C72935A1D1008FCAAA /* 0029_DivideTwoIntegers.swift in Sources */,
 				EE5D5E1428893C54007B12F3 /* 0344_ReverseString.swift in Sources */,

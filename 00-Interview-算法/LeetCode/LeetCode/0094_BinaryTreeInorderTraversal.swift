@@ -78,4 +78,19 @@ public class BinaryTreeInorderTraversal {
         
         return result
     }
+    
+    /// 递归解法
+    public class func inorderTraversal5(_ root: TreeNode?) -> [Int] {
+        var result: [Int] = [Int]()
+        recurOrder(root, &result)
+        return result
+    }
+    
+    public class func recurOrder(_ root: TreeNode?,_ result: inout [Int]) {
+        guard let node = root else { return }
+        
+        recurOrder(node.left, &result)
+        result.append(node.val)
+        recurOrder(node.right, &result)
+    }
 }
