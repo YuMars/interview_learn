@@ -216,3 +216,4 @@ print("0079_WordSearch ", WordSearch.exist([["a","b"],["c","d"]], "abcd"))
 
 print("0084_LargestRectangleInHistogram ", LargestRectangleInHistogram.argestRectangleArea2([6,7,5,2,4,5,9,3]))
 
+print("0096_UniqueBinarySearchTrees ", UniqueBinarySearchTrees.numTrees2(3))

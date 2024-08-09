@@ -38,4 +38,68 @@ public class UniqueBinarySearchTrees {
         }
         return dp[n]
     }
+    
+    
+//    // 递归解法
+    public class func numTrees1(_ n: Int) -> Int {
+        guard n >= 2 else { return 1 } // n= 2的时候，有 1=root 2=right   和 2=root 1=left
+        var result: Int = 0
+        result = recursiveTree(n)
+        return result
+    }
+    
+    public class func recursiveTree(_ n: Int) -> Int {
+        if n == 0 || n == 1 {
+            return 1
+        }
+        var result: Int = 0
+        for i in 1...n {
+            result = result + recursiveTree(i - 1) * recursiveTree(n - i)
+        }
+        
+        return result
+    }
+    
+    // 递归优化解法
+    public class func numTrees2(_ n: Int) -> Int {
+        guard n >= 2 else { return 1 } // n= 2的时候，有 1=root 2=right   和 2=root 1=left
+        var result: Int = 0
+        var map: [Int: Int] = [Int: Int]()
+        result = recursiveTree2(n, &map)
+        return result
+    }
+    
+    public class func recursiveTree2(_ n: Int, _ map: inout [Int: Int]) -> Int {
+        
+        if let value = map[n] {
+            return value
+        }
+        
+        if n == 0 || n == 1 {
+            return 1
+        }
+        
+        var result: Int = 0
+        
+        for i in 1...n {
+            result = result + recursiveTree2(i - 1, &map) * recursiveTree2(n - i, &map)
+        }
+        
+        map[n] = result
+        
+        return result
+    }
+    
+    // 动态规划解法
+    public class func numTrees3(_ n: Int) -> Int {
+        var dp: [Int] = [Int](repeating: 0, count: n + 1)
+        dp[0] = 0
+        for i in 1...n {
+            for j in 1...n {
+                dp[i] += dp[j - 1] * dp[n - j]
+            }
+        }
+        return dp[n]
+        
+    }
 }
