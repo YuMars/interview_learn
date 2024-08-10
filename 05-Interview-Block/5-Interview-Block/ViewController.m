@@ -255,6 +255,11 @@ static void __ViewController__viewDidLoad_block_func_0(struct __ViewController__
     //Person未释放
     NSLog(@"----");
     
+    NSArray *arr ;
+    [arr enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        
+    }];
+    
     BlockAuto autoblock;
 
     {

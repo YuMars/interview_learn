@@ -31,4 +31,35 @@ public class BinaryTreeLevelOrderTraversal {
         }
         return res
     }
+    
+    
+    public class func levelOrder1(_ root: TreeNode?) -> [[Int]] {
+        guard root != nil else {return []}
+        
+        var result:[[Int]] = [[Int]]()
+        var queue: [TreeNode?] = [TreeNode?]()
+        
+        queue.append(root)
+        while !queue.isEmpty {
+            
+            var levelArray: [Int] = [Int]()
+            let count: Int = queue.count
+            
+            for _ in 0..<count {
+                let node: TreeNode! = queue.removeFirst()
+                levelArray.append(node!.val)
+                
+                if let left = node?.left {
+                    queue.append(left)
+                }
+                
+                if let right = node?.right {
+                    queue.append(right)
+                }
+            }
+            result.append(levelArray)
+        }
+        
+        return result
+    }
 }

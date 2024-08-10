@@ -175,7 +175,7 @@ void _object_set_associative_reference(id object, const void *key, id value, uin
         _objc_fatal("objc_setAssociatedObject called on instance (%p) of class %s which does not allow associated objects", object, object_getClassName(object));
 
     DisguisedPtr<objc_object> disguised{(objc_object *)object};
-    ObjcAssociation association{policy, value};
+    ObjcAssociation association{policy, value}; // <- association (policy, value)
  
     // retain the new value (if any) outside the lock.
     association.acquireValue();
@@ -185,22 +185,20 @@ void _object_set_associative_reference(id object, const void *key, id value, uin
         //manager在这里是利用构造函数、析构函数特性来自动加锁、解锁，manager.get()从_mapStorage中读出所有的关联表associations。
         
         AssociationsManager manager;
-        AssociationsHashMap &associations(manager.get());
+        AssociationsHashMap &associations(manager.get()); // <- AssociationsHashMap
 
-        if (value) {
-            //如果新的关联值不为空
+        if (value) { //如果新的关联值不为空
+            
             //根据disguised查找一个对应的ObjectAssociationMap，没有的话会创建一个并插入到associations中。
-            auto refs_result = associations.try_emplace(disguised, ObjectAssociationMap{});
+            auto refs_result = associations.try_emplace(disguised, ObjectAssociationMap{}); // disguised 和 ObjectAssociationMap
             if (refs_result.second) {
-                /* it's the first association we make */
                 object->setHasAssociatedObjects();
             }
 
-            /* establish or replace the association */
             // 建立或者替换association（关联）
             auto &refs = refs_result.first->second;
             //根据key查找对应的bucket(key和association的封装)，替换掉原有的或插入新的association，并设置关联策略
-            auto result = refs.try_emplace(key, std::move(association));
+            auto result = refs.try_emplace(key, std::move(association)); // <- key 和 association
             if (!result.second) {
                 association.swap(result.first->second);
             }

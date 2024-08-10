@@ -38,18 +38,18 @@ public class SymmetricTree {
         queue.append(root?.left)
         queue.append(root?.right)
         while !queue.isEmpty {
-            let left = queue.removeFirst()
-            let right = queue.removeFirst()
-            if left == nil && right == nil {
+            let t1 = queue.removeFirst()
+            let t2 = queue.removeFirst()
+            if t1 == nil && t2 == nil {
                 continue
             }
-            if left == nil || right == nil || left?.val != right?.val {
+            if t1 == nil || t2 == nil || t1?.val != t2?.val {
                 return false
             }
-            queue.append(left?.left)
-            queue.append(right?.right)
-            queue.append(left?.right)
-            queue.append(right?.left)
+            queue.append(t1?.left)
+            queue.append(t2?.right)
+            queue.append(t1?.right)
+            queue.append(t2?.left)
         }
         return true
     }
@@ -78,5 +78,60 @@ public class SymmetricTree {
                 stack.append(right!.left)
             }
             return true
+    }
+    
+    // 递归解法逐一判断每一层值是否相等是否都为空
+    public class func isSymmetric4(_ root: TreeNode?) -> Bool {
+        return recursive(root?.left, root?.right)
+    }
+    
+    public class func recursive(_ left: TreeNode?, _ right: TreeNode?) -> Bool{
+        
+        if left == nil && right == nil {
+            return true
+        } else if left == nil && right != nil {
+            return false
+        } else if left != nil && right == nil {
+            return false
+        } else if left?.val != right?.val {
+            return false
+        }
+        
+        var inside: Bool = recursive(left?.right, right?.left)
+        var outside: Bool = recursive(left?.left, right?.right)
+        return inside && outside
+        
+    }
+    
+    // 迭代解法-队列
+    public class func isSymmetric5(_ root: TreeNode?) -> Bool {
+        guard root != nil else {return true}
+        
+        var queue: [TreeNode?] = [TreeNode?]()
+        queue.append(root?.left)
+        queue.append(root?.right)
+        
+        while !queue.isEmpty {
+            var left: TreeNode? = queue.removeFirst()
+            var right: TreeNode? = queue.removeFirst()
+            
+            if left == nil && right == nil {
+                continue
+            } else if left != nil && right == nil {
+                return false
+            } else if left == nil && right != nil {
+                return false
+            } else if left?.val != right?.val {
+                return false
+            }
+            
+            queue.append(left?.left)
+            queue.append(right?.right)
+            queue.append(left?.right)
+            queue.append(right?.left)
+
+        }
+        
+        return true
     }
 }
