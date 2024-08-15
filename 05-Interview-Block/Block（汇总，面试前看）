@@ -380,7 +380,7 @@ ARC:
         weakSelf = nil;
     };
     
-    self.blocl();
+    self.block();
     
 MRC:
     用__unsafe_unretain解决
