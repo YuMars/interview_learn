@@ -31,7 +31,7 @@
     
     Foundation:NSRunLoop
     
-    Cor Foundation:CFRunLoopRef
+    Core Foundation:CFRunLoopRef
     
     1.每条线程有唯一的一个与之对应的Runloop对象
     2.Runloop保存在一个全局的Dictionary里，线程作为key，runloop作为value
@@ -165,3 +165,7 @@
     //Q: runloop的mode作用是什么？
     //A: 
 }
+
+
+
+

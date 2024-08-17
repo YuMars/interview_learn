@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		EE03104226D345D700ADC599 /* YJTOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = EE03104126D345D700ADC599 /* YJTOperation.m */; };
+		EE104C0F2C6EE5A900A940E6 /* NSOperation NSOperationQueue.md in Resources */ = {isa = PBXBuildFile; fileRef = EE104C0E2C6EE5A900A940E6 /* NSOperation NSOperationQueue.md */; };
 		EEDF6F4D26CFB30F0001F87F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EEDF6F4C26CFB30F0001F87F /* AppDelegate.m */; };
 		EEDF6F5326CFB30F0001F87F /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EEDF6F5226CFB30F0001F87F /* ViewController.m */; };
 		EEDF6F5626CFB30F0001F87F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EEDF6F5426CFB30F0001F87F /* Main.storyboard */; };
@@ -19,6 +20,7 @@
 /* Begin PBXFileReference section */
 		EE03104026D345D700ADC599 /* YJTOperation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YJTOperation.h; sourceTree = "<group>"; };
 		EE03104126D345D700ADC599 /* YJTOperation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YJTOperation.m; sourceTree = "<group>"; };
+		EE104C0E2C6EE5A900A940E6 /* NSOperation NSOperationQueue.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = "NSOperation NSOperationQueue.md"; path = "../../NSOperation NSOperationQueue.md"; sourceTree = "<group>"; };
 		EEDF6F4826CFB30F0001F87F /* NSOperation.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NSOperation.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EEDF6F4B26CFB30F0001F87F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		EEDF6F4C26CFB30F0001F87F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -61,6 +63,7 @@
 		EEDF6F4A26CFB30F0001F87F /* NSOperation */ = {
 			isa = PBXGroup;
 			children = (
+				EE104C0E2C6EE5A900A940E6 /* NSOperation NSOperationQueue.md */,
 				EEDF6F4B26CFB30F0001F87F /* AppDelegate.h */,
 				EEDF6F4C26CFB30F0001F87F /* AppDelegate.m */,
 				EEDF6F5126CFB30F0001F87F /* ViewController.h */,
@@ -135,6 +138,7 @@
 				EEDF6F5B26CFB3100001F87F /* LaunchScreen.storyboard in Resources */,
 				EEDF6F5826CFB3100001F87F /* Assets.xcassets in Resources */,
 				EEDF6F5626CFB30F0001F87F /* Main.storyboard in Resources */,
+				EE104C0F2C6EE5A900A940E6 /* NSOperation NSOperationQueue.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

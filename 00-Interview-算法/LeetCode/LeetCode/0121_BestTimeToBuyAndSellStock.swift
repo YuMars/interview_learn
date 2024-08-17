@@ -30,4 +30,30 @@ public class BestTimeToBuyAndSellStock {
         }
         return result
     }
+    
+    // 解法一：暴力解法
+    public class func maxProfit1(_ prices: [Int]) -> Int {
+        var minPrice: Int = Int.max
+        var result: Int = 0
+        for i in 0..<prices.count {
+            minPrice = min(minPrice, prices[i])
+            result = max(prices[i] - minPrice, result)
+        }
+        
+        return result
+    }
+    
+    // 解法二：动态规划解法
+    public class func maxProfit2(_ prices: [Int]) -> Int {
+        guard prices.count > 0 else {return 0}
+        var minPrice: Int = prices[0]
+        var dp:[Int] = [Int](repeating: 0, count: prices.count) // dp[i]表示 第i天的最大利润 dp[i] = max(dp[i - 1], prices[i] - minprices)
+        dp[0] = 0
+        for i in 1..<prices.count {
+            minPrice = min(minPrice, prices[i])
+            dp[i] = max(dp[i - 1], prices[i] - minPrice)
+        }
+        
+        return dp[prices.count - 1]
+    }
 }

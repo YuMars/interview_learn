@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EE104C0B2C6E129000A940E6 /* RunLoop.md in Resources */ = {isa = PBXBuildFile; fileRef = EE104C0A2C6E129000A940E6 /* RunLoop.md */; };
 		EEC38F54280D975800C42805 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EEC38F53280D975800C42805 /* AppDelegate.m */; };
 		EEC38F57280D975800C42805 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EEC38F56280D975800C42805 /* SceneDelegate.m */; };
 		EEC38F5A280D975800C42805 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EEC38F59280D975800C42805 /* ViewController.m */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EE104C0A2C6E129000A940E6 /* RunLoop.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = RunLoop.md; sourceTree = SOURCE_ROOT; };
 		EEC38F4F280D975800C42805 /* 07-Interview-Runloop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "07-Interview-Runloop.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EEC38F52280D975800C42805 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		EEC38F53280D975800C42805 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -67,6 +69,7 @@
 			children = (
 				EEF0428A28C9BD4D00B61092 /* CFRunLoop.h */,
 				EEF0428B28C9BD4D00B61092 /* CFRunLoop.c */,
+				EE104C0A2C6E129000A940E6 /* RunLoop.md */,
 				EEC38F6B280D97B300C42805 /* Runloop.md */,
 				EEC38F52280D975800C42805 /* AppDelegate.h */,
 				EEC38F53280D975800C42805 /* AppDelegate.m */,
@@ -140,6 +143,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EE104C0B2C6E129000A940E6 /* RunLoop.md in Resources */,
 				EEC38F62280D975900C42805 /* LaunchScreen.storyboard in Resources */,
 				EEC38F5F280D975900C42805 /* Assets.xcassets in Resources */,
 				EEC38F5D280D975800C42805 /* Main.storyboard in Resources */,

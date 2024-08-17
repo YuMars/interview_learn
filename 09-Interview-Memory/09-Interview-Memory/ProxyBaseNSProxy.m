@@ -21,6 +21,6 @@
 
 - (void)forwardInvocation:(NSInvocation *)invocation {
     [invocation invokeWithTarget:self.target];
-}
+} 
 
 @end

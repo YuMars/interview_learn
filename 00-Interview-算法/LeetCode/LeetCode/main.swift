@@ -217,3 +217,8 @@ print("0079_WordSearch ", WordSearch.exist([["a","b"],["c","d"]], "abcd"))
 print("0084_LargestRectangleInHistogram ", LargestRectangleInHistogram.argestRectangleArea2([6,7,5,2,4,5,9,3]))
 
 print("0096_UniqueBinarySearchTrees ", UniqueBinarySearchTrees.numTrees2(3))
+
+
+print("0105_ConstructBinaryTreeFromPreorderAndInorderTraversal ", ConstructBinaryTreeFromPreorderAndInorderTraversal.buildTree([3,9,20,15,7], [9,3,15,20,7]))
+
+print("0121_BestTimeToBuyAndSellStock ", BestTimeToBuyAndSellStock.maxProfit2([7,1,5,3,6,4]))

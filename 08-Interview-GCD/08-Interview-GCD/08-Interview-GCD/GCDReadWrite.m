@@ -31,7 +31,6 @@
 }
 
 - (void)write {
-    
     pthread_rwlock_wrlock(&_lock);
     NSLog(@"%@", NSStringFromSelector(_cmd));
     pthread_rwlock_unlock(&_lock);

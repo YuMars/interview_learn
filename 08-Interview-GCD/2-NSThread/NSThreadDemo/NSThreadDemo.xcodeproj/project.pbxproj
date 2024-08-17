@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EE104C0D2C6EE59900A940E6 /* pthread NSThread.md in Resources */ = {isa = PBXBuildFile; fileRef = EE104C0C2C6EE59900A940E6 /* pthread NSThread.md */; };
 		EE47E00426CA86FB00C42E9E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EE47E00326CA86FB00C42E9E /* AppDelegate.m */; };
 		EE47E00A26CA86FB00C42E9E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EE47E00926CA86FB00C42E9E /* ViewController.m */; };
 		EE47E00D26CA86FB00C42E9E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EE47E00B26CA86FB00C42E9E /* Main.storyboard */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EE104C0C2C6EE59900A940E6 /* pthread NSThread.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = "pthread NSThread.md"; path = "../../pthread NSThread.md"; sourceTree = "<group>"; };
 		EE47DFFF26CA86FB00C42E9E /* NSThreadDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NSThreadDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE47E00226CA86FB00C42E9E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		EE47E00326CA86FB00C42E9E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -58,6 +60,7 @@
 		EE47E00126CA86FB00C42E9E /* NSThreadDemo */ = {
 			isa = PBXGroup;
 			children = (
+				EE104C0C2C6EE59900A940E6 /* pthread NSThread.md */,
 				EE47E00226CA86FB00C42E9E /* AppDelegate.h */,
 				EE47E00326CA86FB00C42E9E /* AppDelegate.m */,
 				EE47E00826CA86FB00C42E9E /* ViewController.h */,
@@ -130,6 +133,7 @@
 				EE47E01226CA86FB00C42E9E /* LaunchScreen.storyboard in Resources */,
 				EE47E00F26CA86FB00C42E9E /* Assets.xcassets in Resources */,
 				EE47E00D26CA86FB00C42E9E /* Main.storyboard in Resources */,
+				EE104C0D2C6EE59900A940E6 /* pthread NSThread.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

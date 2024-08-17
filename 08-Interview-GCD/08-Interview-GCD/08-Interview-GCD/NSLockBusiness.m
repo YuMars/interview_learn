@@ -27,11 +27,11 @@
 
 - (void)saleTicket {
     
-    [self.ticketLock lock];
-    
-    [super saleTicket];
-    
-    [self.ticketLock unlock];
+[self.ticketLock lock];
+
+[super saleTicket];
+
+[self.ticketLock unlock];
 }
 
 - (void)saveMoney {
