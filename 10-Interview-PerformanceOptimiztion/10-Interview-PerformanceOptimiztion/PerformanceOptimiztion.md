@@ -18,7 +18,7 @@
         
     卡顿优化-CPU
         1.尽量使用轻量级的对象
-            用不到事件处理的，可以用CALayer取代UIView
+            用不到事件处理的地方，可以用CALayer取代UIView
         2.不要频繁调用UIView的相关属性，比如frame、bounds、transform
         3.提前计算好布局，在有需要时一次性调整对应的属性，不要多次修改
         4.Autolayout会不直接设置frame消耗更多的CPU资源
