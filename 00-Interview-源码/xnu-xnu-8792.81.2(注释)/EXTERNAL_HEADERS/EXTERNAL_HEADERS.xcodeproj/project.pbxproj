@@ -1,0 +1,180 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXFileReference section */
+		EE5EFC8B2C8004AE00EA76DE /* AvailabilityMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AvailabilityMacros.h; sourceTree = "<group>"; };
+		EE5EFC8C2C8004AE00EA76DE /* acpi */ = {isa = PBXFileReference; lastKnownFileType = folder; path = acpi; sourceTree = "<group>"; };
+		EE5EFC8D2C8004AE00EA76DE /* AssertMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AssertMacros.h; sourceTree = "<group>"; };
+		EE5EFC8E2C8004AE00EA76DE /* ptrcheck.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ptrcheck.h; sourceTree = "<group>"; };
+		EE5EFC8F2C8004AE00EA76DE /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		EE5EFC902C8004AE00EA76DE /* stddef.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stddef.h; sourceTree = "<group>"; };
+		EE5EFC912C8004AE00EA76DE /* Availability.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Availability.h; sourceTree = "<group>"; };
+		EE5EFC922C8004AE00EA76DE /* AvailabilityInternal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AvailabilityInternal.h; sourceTree = "<group>"; };
+		EE5EFC932C8004AE00EA76DE /* architecture */ = {isa = PBXFileReference; lastKnownFileType = folder; path = architecture; sourceTree = "<group>"; };
+		EE5EFC942C8004AE00EA76DE /* sys */ = {isa = PBXFileReference; lastKnownFileType = folder; path = sys; sourceTree = "<group>"; };
+		EE5EFC952C8004AE00EA76DE /* img4 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = img4; sourceTree = "<group>"; };
+		EE5EFC962C8004AE00EA76DE /* coretrust */ = {isa = PBXFileReference; lastKnownFileType = folder; path = coretrust; sourceTree = "<group>"; };
+		EE5EFC972C8004AE00EA76DE /* stdbool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stdbool.h; sourceTree = "<group>"; };
+		EE5EFC982C8004AE00EA76DE /* ptrauth.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ptrauth.h; sourceTree = "<group>"; };
+		EE5EFC992C8004AE00EA76DE /* corecrypto */ = {isa = PBXFileReference; lastKnownFileType = folder; path = corecrypto; sourceTree = "<group>"; };
+		EE5EFC9A2C8004AE00EA76DE /* mach-o */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "mach-o"; sourceTree = "<group>"; };
+		EE5EFC9B2C8004AE00EA76DE /* stdarg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stdarg.h; sourceTree = "<group>"; };
+		EE5EFC9C2C8004AE00EA76DE /* stdatomic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stdatomic.h; sourceTree = "<group>"; };
+		EE5EFC9D2C8004AE00EA76DE /* TrustCache */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TrustCache; sourceTree = "<group>"; };
+		EE5EFC9E2C8004AE00EA76DE /* CoreEntitlements */ = {isa = PBXFileReference; lastKnownFileType = folder; path = CoreEntitlements; sourceTree = "<group>"; };
+		EE5EFC9F2C8004AE00EA76DE /* stdint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stdint.h; sourceTree = "<group>"; };
+		EE5EFCA02C8004AE00EA76DE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		EE5EFC852C8004AE00EA76DE = {
+			isa = PBXGroup;
+			children = (
+				EE5EFC8B2C8004AE00EA76DE /* AvailabilityMacros.h */,
+				EE5EFC8C2C8004AE00EA76DE /* acpi */,
+				EE5EFC8D2C8004AE00EA76DE /* AssertMacros.h */,
+				EE5EFC8E2C8004AE00EA76DE /* ptrcheck.h */,
+				EE5EFC8F2C8004AE00EA76DE /* Makefile */,
+				EE5EFC902C8004AE00EA76DE /* stddef.h */,
+				EE5EFC912C8004AE00EA76DE /* Availability.h */,
+				EE5EFC922C8004AE00EA76DE /* AvailabilityInternal.h */,
+				EE5EFC932C8004AE00EA76DE /* architecture */,
+				EE5EFC942C8004AE00EA76DE /* sys */,
+				EE5EFC952C8004AE00EA76DE /* img4 */,
+				EE5EFC962C8004AE00EA76DE /* coretrust */,
+				EE5EFC972C8004AE00EA76DE /* stdbool.h */,
+				EE5EFC982C8004AE00EA76DE /* ptrauth.h */,
+				EE5EFC992C8004AE00EA76DE /* corecrypto */,
+				EE5EFC9A2C8004AE00EA76DE /* mach-o */,
+				EE5EFC9B2C8004AE00EA76DE /* stdarg.h */,
+				EE5EFC9C2C8004AE00EA76DE /* stdatomic.h */,
+				EE5EFC9D2C8004AE00EA76DE /* TrustCache */,
+				EE5EFC9E2C8004AE00EA76DE /* CoreEntitlements */,
+				EE5EFC9F2C8004AE00EA76DE /* stdint.h */,
+				EE5EFCA02C8004AE00EA76DE /* Info.plist */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		EE5EFC8A2C8004AE00EA76DE /* EXTERNAL_HEADERS */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = EE5EFCA12C8004AE00EA76DE /* Build configuration list for PBXLegacyTarget "EXTERNAL_HEADERS" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/bin/make;
+			buildWorkingDirectory = "/Users/red-fish/Desktop/Learn/00-Interview-源码/xnu-xnu-8792.81.2(注释)/EXTERNAL_HEADERS";
+			dependencies = (
+			);
+			name = EXTERNAL_HEADERS;
+			passBuildSettingsInEnvironment = 1;
+			productName = EXTERNAL_HEADERS;
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXProject section */
+		EE5EFC862C8004AE00EA76DE /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+			};
+			buildConfigurationList = EE5EFC892C8004AE00EA76DE /* Build configuration list for PBXProject "EXTERNAL_HEADERS" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = EE5EFC852C8004AE00EA76DE;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				EE5EFC8A2C8004AE00EA76DE /* EXTERNAL_HEADERS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		EE5EFC872C8004AE00EA76DE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx10.6;
+			};
+			name = Debug;
+		};
+		EE5EFC882C8004AE00EA76DE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+		EE5EFCA22C8004AE00EA76DE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = EXTERNAL_HEADERS;
+			};
+			name = Debug;
+		};
+		EE5EFCA32C8004AE00EA76DE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = EXTERNAL_HEADERS;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		EE5EFC892C8004AE00EA76DE /* Build configuration list for PBXProject "EXTERNAL_HEADERS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EE5EFC872C8004AE00EA76DE /* Debug */,
+				EE5EFC882C8004AE00EA76DE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EE5EFCA12C8004AE00EA76DE /* Build configuration list for PBXLegacyTarget "EXTERNAL_HEADERS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EE5EFCA22C8004AE00EA76DE /* Debug */,
+				EE5EFCA32C8004AE00EA76DE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = EE5EFC862C8004AE00EA76DE /* Project object */;
+}

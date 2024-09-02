@@ -1,23 +1,23 @@
 /* A fast (Inline) map/hash table implementation for NSObjects
  * Copyright (C) 1998,1999  Free Software Foundation, Inc.
- * 
+ *
  * Author:	Richard Frith-Macdonald <richard@brainstorm.co.uk>
  * Created:	Thu Oct  1 09:30:00 GMT 1998
- * 
+ *
  * Based on original o_map code by Albin L. Jones <Albin.L.Jones@Dartmouth.EDU>
  *
  * This file is part of the GNUstep Base Library.
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
@@ -112,7 +112,7 @@ extern "C" {
  *
  *      GSI_MAP_ZEROED()
  *              Define this macro to check whether a map uses keys which may
- *              be zeroed weak pointers.  
+ *              be zeroed weak pointers.
  */
 
 #ifndef	GSI_MAP_HAS_VALUE
@@ -158,11 +158,11 @@ extern "C" {
 #endif
 #if	GSI_MAP_HAS_VALUE
 #define GSI_MAP_NODE_IS_EMPTY(M, node) \
-  (((GSI_MAP_READ_KEY(M, &node->key).addr) == 0) \
-  || ((GSI_MAP_READ_VALUE(M, &node->value).addr == 0)))
+(((GSI_MAP_READ_KEY(M, &node->key).addr) == 0) \
+|| ((GSI_MAP_READ_VALUE(M, &node->value).addr == 0)))
 #else
 #define GSI_MAP_NODE_IS_EMPTY(M, node) \
-  (((GSI_MAP_READ_KEY(M, &node->key).addr) == 0))
+(((GSI_MAP_READ_KEY(M, &node->key).addr) == 0))
 #endif
 
 /*
@@ -211,7 +211,7 @@ extern "C" {
 #elif  (GSI_MAP_KTYPES) & GSUNION_PTR
 #define GSI_MAP_CLEAR_KEY(node)  GSI_MAP_WRITE_KEY(map, &node->key, (GSIMapKey)(void *)NULL)
 #else
-#define GSI_MAP_CLEAR_KEY(node)  
+#define GSI_MAP_CLEAR_KEY(node)
 #endif
 
 /*
@@ -263,7 +263,7 @@ extern "C" {
 #elif  (GSI_MAP_VTYPES) & GSUNION_PTR
 #define GSI_MAP_CLEAR_VAL(node)  GSI_MAP_WRITE_VAL(map, &node->value, (GSIMapVal)(void *)NULL)
 #else
-#define GSI_MAP_CLEAR_VAL(node)  
+#define GSI_MAP_CLEAR_VAL(node)
 #endif
 
 /*
@@ -276,12 +276,12 @@ extern "C" {
  *
  *  The first view is best described as follows:
  *
- *   _GSIMapTable   ----->  C-array of buckets 
+ *   _GSIMapTable   ----->  C-array of buckets
  *
  *  Where each bucket contains a count (nodeCount), describing the number
  *  of nodes in the bucket and a pointer (firstNode) to a single linked
  *  list of nodes.
- *  
+ *
  *  The second view is slightly more complicated.
  *  The individual nodes are allocated and deallocated in chunks.
  *  In order to keep track of this we have:
@@ -299,22 +299,22 @@ extern "C" {
  *  Also EVERY node is part of chunk, due to the way the nodes are allocated.
  *
  *  A rough picture is include below:
- *   
- *  
+ *
+ *
  *   This is the map                C - array of the buckets
  *   +---------------+             +---------------+
- *   | _GSIMapTable  |      /----->| nodeCount     |  
- *   |---------------|     /       | firstNode ----+--\  
+ *   | _GSIMapTable  |      /----->| nodeCount     |
+ *   |---------------|     /       | firstNode ----+--\
  *   | buckets    ---+----/        | ..........    |  |
  *   | bucketCount  =| size of --> | nodeCount     |  |
  *   | nodeChunks ---+--\          | firstNode     |  |
- *   | chunkCount  =-+\ |          |     .         |  | 
+ *   | chunkCount  =-+\ |          |     .         |  |
  *   |   ....        || |          |     .         |  |
  *   +---------------+| |          | nodeCount     |  |
- *                    | |          | fistNode      |  | 
- *                    / |          +---------------+  | 
+ *                    | |          | fistNode      |  |
+ *                    / |          +---------------+  |
  *         ----------   v                             v
- *       /       +----------+      +---------------------------+ 
+ *       /       +----------+      +---------------------------+
  *       |       |  * ------+----->| Node1 | Node2 | Node3 ... | a chunk
  *   chunkCount  |  * ------+--\   +---------------------------+
  *  is size of = |  .       |   \  +-------------------------------+
@@ -347,16 +347,16 @@ typedef GSIMapNode_t *GSIMapNode;
 #endif
 
 struct	_GSIMapNode {
-  GSIMapNode	nextInBucket;	/* Linked list of bucket.	*/
-  GSIMapKey	key;
+    GSIMapNode	nextInBucket;	/* Linked list of bucket.	*/
+    GSIMapKey	key;
 #if	GSI_MAP_HAS_VALUE
-  GSIMapVal	value;
+    GSIMapVal	value;
 #endif
 };
 
 struct	_GSIMapBucket {
-  uintptr_t	nodeCount;	/* Number of nodes in bucket.	*/
-  GSIMapNode	firstNode;	/* The linked list of nodes.	*/
+    uintptr_t	nodeCount;	/* Number of nodes in bucket.	*/
+    GSIMapNode	firstNode;	/* The linked list of nodes.	*/
 };
 
 #if	defined(GSI_MAP_TABLE_T)
@@ -366,16 +366,16 @@ typedef struct _GSIMapTable GSIMapTable_t;
 typedef GSIMapTable_t *GSIMapTable;
 
 struct	_GSIMapTable {
-  NSZone	*zone;
-  uintptr_t	nodeCount;	/* Number of used nodes in map.	*/
-  uintptr_t	bucketCount;	/* Number of buckets in map.	*/
-  GSIMapBucket	buckets;	/* Array of buckets.		*/
-  GSIMapNode	freeNodes;	/* List of unused nodes.	*/
-  uintptr_t	chunkCount;	/* Number of chunks in array.	*/
-  GSIMapNode	*nodeChunks;	/* Chunks of allocated memory.	*/
-  uintptr_t	increment;
+    NSZone	*zone;
+    uintptr_t	nodeCount;	/* Number of used nodes in map.	*/
+    uintptr_t	bucketCount;	/* Number of buckets in map.	*/
+    GSIMapBucket	buckets;	/* Array of buckets.		*/
+    GSIMapNode	freeNodes;	/* List of unused nodes.	*/
+    uintptr_t	chunkCount;	/* Number of chunks in array.	*/
+    GSIMapNode	*nodeChunks;	/* Chunks of allocated memory.	*/
+    uintptr_t	increment;
 #ifdef	GSI_MAP_EXTRA
-  GSI_MAP_EXTRA	extra;
+    GSI_MAP_EXTRA	extra;
 #endif
 };
 #define GSI_MAP_TABLE_T GSIMapTable_t
@@ -386,9 +386,9 @@ struct	_GSIMapTable {
 #endif
 
 typedef struct	_GSIMapEnumerator {
-  GSIMapTable	map;		/* the map being enumerated.	*/
-  GSIMapNode	node;		/* The next node to use.	*/
-  uintptr_t	bucket;		/* The next bucket to use.	*/
+    GSIMapTable	map;		/* the map being enumerated.	*/
+    GSIMapNode	node;		/* The next node to use.	*/
+    uintptr_t	bucket;		/* The next bucket to use.	*/
 } *_GSIE;
 
 #ifdef	GSI_MAP_ENUMERATOR
@@ -401,318 +401,296 @@ typedef GSIMapEnumerator_t	*GSIMapEnumerator;
 GS_STATIC_INLINE GSIMapBucket
 GSIMapPickBucket(unsigned hash, GSIMapBucket buckets, uintptr_t bucketCount)
 {
-  return buckets + hash % bucketCount;
+    return buckets + hash % bucketCount;
 }
 
 GS_STATIC_INLINE GSIMapBucket
 GSIMapBucketForKey(GSIMapTable map, GSIMapKey key)
 {
-  return GSIMapPickBucket(GSI_MAP_HASH(map, key),
-    map->buckets, map->bucketCount);
+    return GSIMapPickBucket(GSI_MAP_HASH(map, key),
+                            map->buckets, map->bucketCount);
 }
 
 GS_STATIC_INLINE void
 GSIMapLinkNodeIntoBucket(GSIMapBucket bucket, GSIMapNode node)
 {
-  node->nextInBucket = bucket->firstNode;
-  bucket->firstNode = node;
+    node->nextInBucket = bucket->firstNode;
+    bucket->firstNode = node;
 }
 
 GS_STATIC_INLINE void
 GSIMapUnlinkNodeFromBucket(GSIMapBucket bucket, GSIMapNode node)
 {
-  if (node == bucket->firstNode)
+    if (node == bucket->firstNode)
     {
-      bucket->firstNode = node->nextInBucket;
+        bucket->firstNode = node->nextInBucket;
     }
-  else
+    else
     {
-      GSIMapNode	tmp = bucket->firstNode;
-
-      while (tmp->nextInBucket != node)
-	{
-	  tmp = tmp->nextInBucket;
-	}
-      tmp->nextInBucket = node->nextInBucket;
+        GSIMapNode	tmp = bucket->firstNode;
+        
+        while (tmp->nextInBucket != node)
+        {
+            tmp = tmp->nextInBucket;
+        }
+        tmp->nextInBucket = node->nextInBucket;
     }
-  node->nextInBucket = 0;
+    node->nextInBucket = 0;
 }
 
 GS_STATIC_INLINE void
 GSIMapAddNodeToBucket(GSIMapBucket bucket, GSIMapNode node)
 {
-  GSIMapLinkNodeIntoBucket(bucket, node);
-  bucket->nodeCount += 1;
+    GSIMapLinkNodeIntoBucket(bucket, node);
+    bucket->nodeCount += 1;
 }
 
 GS_STATIC_INLINE void
 GSIMapAddNodeToMap(GSIMapTable map, GSIMapNode node)
 {
-  GSIMapBucket	bucket;
-
-  bucket = GSIMapBucketForKey(map, GSI_MAP_READ_KEY(map, &node->key));
-  GSIMapAddNodeToBucket(bucket, node);
-  map->nodeCount++;
+    GSIMapBucket	bucket;
+    
+    bucket = GSIMapBucketForKey(map, GSI_MAP_READ_KEY(map, &node->key));
+    GSIMapAddNodeToBucket(bucket, node);
+    map->nodeCount++;
 }
 
 GS_STATIC_INLINE void
 GSIMapRemoveNodeFromBucket(GSIMapBucket bucket, GSIMapNode node)
 {
-  bucket->nodeCount--;
-  GSIMapUnlinkNodeFromBucket(bucket, node);
+    bucket->nodeCount--;
+    GSIMapUnlinkNodeFromBucket(bucket, node);
 }
 
 GS_STATIC_INLINE void
 GSIMapRemoveNodeFromMap(GSIMapTable map, GSIMapBucket bkt, GSIMapNode node)
 {
-  map->nodeCount--;
-  GSIMapRemoveNodeFromBucket(bkt, node);
+    map->nodeCount--;
+    GSIMapRemoveNodeFromBucket(bkt, node);
 }
 
 GS_STATIC_INLINE void
 GSIMapFreeNode(GSIMapTable map, GSIMapNode node)
 {
-  GSI_MAP_RELEASE_KEY(map, node->key);
-  GSI_MAP_CLEAR_KEY(node);
+    GSI_MAP_RELEASE_KEY(map, node->key);
+    GSI_MAP_CLEAR_KEY(node);
 #if	GSI_MAP_HAS_VALUE
-  GSI_MAP_RELEASE_VAL(map, node->value);
-  GSI_MAP_CLEAR_VAL(node);
+    GSI_MAP_RELEASE_VAL(map, node->value);
+    GSI_MAP_CLEAR_VAL(node);
 #endif
-  
-  node->nextInBucket = map->freeNodes;
-  map->freeNodes = node;
+    
+    node->nextInBucket = map->freeNodes;
+    map->freeNodes = node;
 }
 
 GS_STATIC_INLINE GSIMapNode
 GSIMapRemoveAndFreeNode(GSIMapTable map, uintptr_t bkt, GSIMapNode node)
 {
-  GSIMapNode	next = node->nextInBucket;
-  GSIMapRemoveNodeFromMap(map, &(map->buckets[bkt]), node);
-  GSIMapFreeNode(map, node);
-  return next;
+    GSIMapNode	next = node->nextInBucket;
+    GSIMapRemoveNodeFromMap(map, &(map->buckets[bkt]), node);
+    GSIMapFreeNode(map, node);
+    return next;
 }
 
 GS_STATIC_INLINE void
 GSIMapRemoveWeak(GSIMapTable map)
 {
-  if (GSI_MAP_ZEROED(map))
+    if (GSI_MAP_ZEROED(map))
     {
-      uintptr_t bucketCount = map->bucketCount;
-      GSIMapBucket bucket = map->buckets;
-
-      while (bucketCount-- > 0)
+        uintptr_t bucketCount = map->bucketCount;
+        GSIMapBucket bucket = map->buckets;
+        
+        while (bucketCount-- > 0)
         {
-          GSIMapNode node = bucket->firstNode;
-
-          while (node != 0)
+            GSIMapNode node = bucket->firstNode;
+            
+            while (node != 0)
             {
-              GSIMapNode next = node->nextInBucket;
-              if (GSI_MAP_NODE_IS_EMPTY(map, node))
+                GSIMapNode next = node->nextInBucket;
+                if (GSI_MAP_NODE_IS_EMPTY(map, node))
                 {
-                  GSIMapRemoveNodeFromMap(map, bucket, node);
-                  GSIMapFreeNode(map, node);
+                    GSIMapRemoveNodeFromMap(map, bucket, node);
+                    GSIMapFreeNode(map, node);
                 }
-              node = next;
+                node = next;
             }
-          bucket++;
+            bucket++;
         }
-      return;
+        return;
     }
 }
 
 GS_STATIC_INLINE void
 GSIMapRemangleBuckets(GSIMapTable map,
-  GSIMapBucket old_buckets, uintptr_t old_bucketCount,
-  GSIMapBucket new_buckets, uintptr_t new_bucketCount)
+                      GSIMapBucket old_buckets, uintptr_t old_bucketCount,
+                      GSIMapBucket new_buckets, uintptr_t new_bucketCount)
 {
-  if (GSI_MAP_ZEROED(map))
+    if (GSI_MAP_ZEROED(map))
     {
-      while (old_bucketCount-- > 0)
-	{
-	  GSIMapNode	node;
-
-	  while ((node = old_buckets->firstNode) != 0)
-	    {
-	      if (GSI_MAP_NODE_IS_EMPTY(map, node))
-		{
-		  GSIMapRemoveNodeFromMap(map, old_buckets, node);
-		  GSIMapFreeNode(map, node);
-		}
-	      else
-		{
-		  GSIMapBucket	bkt;
-
-		  GSIMapRemoveNodeFromBucket(old_buckets, node);
-		  bkt = GSIMapPickBucket(GSI_MAP_HASH(map,
-		    GSI_MAP_READ_KEY(map, &node->key)),
-		      new_buckets, new_bucketCount);
-		  GSIMapAddNodeToBucket(bkt, node);
-		}
-	    }
-	  old_buckets++;
-	}
-      return;
+        while (old_bucketCount-- > 0)
+        {
+            GSIMapNode	node;
+            
+            while ((node = old_buckets->firstNode) != 0)
+            {
+                if (GSI_MAP_NODE_IS_EMPTY(map, node))
+                {
+                    GSIMapRemoveNodeFromMap(map, old_buckets, node);
+                    GSIMapFreeNode(map, node);
+                }
+                else
+                {
+                    GSIMapBucket	bkt;
+                    
+                    GSIMapRemoveNodeFromBucket(old_buckets, node);
+                    bkt = GSIMapPickBucket(GSI_MAP_HASH(map,
+                                                        GSI_MAP_READ_KEY(map, &node->key)),
+                                           new_buckets, new_bucketCount);
+                    GSIMapAddNodeToBucket(bkt, node);
+                }
+            }
+            old_buckets++;
+        }
+        return;
     }
-  while (old_bucketCount-- > 0)
+    while (old_bucketCount-- > 0)
     {
-      GSIMapNode	node;
-
-      while ((node = old_buckets->firstNode) != 0)
-	{
-	  GSIMapBucket	bkt;
-
-	  GSIMapRemoveNodeFromBucket(old_buckets, node);
-	  bkt = GSIMapPickBucket(GSI_MAP_HASH(map,
-	    GSI_MAP_READ_KEY(map, &node->key)),
-	      new_buckets, new_bucketCount);
-	  GSIMapAddNodeToBucket(bkt, node);
-	}
-      old_buckets++;
+        GSIMapNode	node;
+        
+        while ((node = old_buckets->firstNode) != 0)
+        {
+            GSIMapBucket	bkt;
+            
+            GSIMapRemoveNodeFromBucket(old_buckets, node);
+            bkt = GSIMapPickBucket(GSI_MAP_HASH(map,
+                                                GSI_MAP_READ_KEY(map, &node->key)),
+                                   new_buckets, new_bucketCount);
+            GSIMapAddNodeToBucket(bkt, node);
+        }
+        old_buckets++;
     }
 }
 
 GS_STATIC_INLINE void
 GSIMapMoreNodes(GSIMapTable map, unsigned required)
 {
-  GSIMapNode	*newArray;
-
-  newArray = (GSIMapNode*)NSZoneCalloc(map->zone,
-    (map->chunkCount+1), sizeof(GSIMapNode));
-  if (newArray)
+    GSIMapNode	*newArray;
+    
+    newArray = (GSIMapNode*)NSZoneCalloc(map->zone,
+                                         (map->chunkCount+1), sizeof(GSIMapNode));
+    if (newArray)
     {
-      GSIMapNode	newNodes;
-      uintptr_t		chunkCount;
-
-      if (map->nodeChunks != 0)
-	{
-	  memcpy(newArray, map->nodeChunks,
-	    (map->chunkCount)*sizeof(GSIMapNode));
-	  NSZoneFree(map->zone, map->nodeChunks);
-	}
-      map->nodeChunks = newArray;
-
-      if (required == 0)
-	{
-	  if (map->chunkCount == 0)
-	    {
-	      chunkCount = map->bucketCount > 1 ? map->bucketCount : 2;
-	    }
-	  else
-	    {
-	      chunkCount = ((map->nodeCount>>2)+1)<<1;
-	    }
-	}
-      else
-	{
-	  chunkCount = required;
-	}
-      newNodes
+        GSIMapNode	newNodes;
+        uintptr_t		chunkCount;
+        
+        if (map->nodeChunks != 0)
+        {
+            memcpy(newArray, map->nodeChunks,
+                   (map->chunkCount)*sizeof(GSIMapNode));
+            NSZoneFree(map->zone, map->nodeChunks);
+        }
+        map->nodeChunks = newArray;
+        
+        if (required == 0)
+        {
+            if (map->chunkCount == 0)
+            {
+                chunkCount = map->bucketCount > 1 ? map->bucketCount : 2;
+            }
+            else
+            {
+                chunkCount = ((map->nodeCount>>2)+1)<<1;
+            }
+        }
+        else
+        {
+            chunkCount = required;
+        }
+        newNodes
         = (GSIMapNode)NSZoneCalloc(map->zone, chunkCount, sizeof(GSIMapNode_t));
-      if (newNodes)
-	{
-	  map->nodeChunks[map->chunkCount++] = newNodes;
-	  newNodes[--chunkCount].nextInBucket = map->freeNodes;
-	  while (chunkCount--)
-	    {
-	      newNodes[chunkCount].nextInBucket = &newNodes[chunkCount+1];
-	    }
-	  map->freeNodes = newNodes;
-	}
-      else
-	{
-	  [NSException raise: NSMallocException format: @"No memory for nodes"];
-	}
+        if (newNodes)
+        {
+            map->nodeChunks[map->chunkCount++] = newNodes;
+            newNodes[--chunkCount].nextInBucket = map->freeNodes;
+            while (chunkCount--)
+            {
+                newNodes[chunkCount].nextInBucket = &newNodes[chunkCount+1];
+            }
+            map->freeNodes = newNodes;
+        }
+        else
+        {
+            [NSException raise: NSMallocException format: @"No memory for nodes"];
+        }
     }
-  else
+    else
     {
-      [NSException raise: NSMallocException format: @"No memory for chunks"];
+        [NSException raise: NSMallocException format: @"No memory for chunks"];
     }
 }
 
-GS_STATIC_INLINE GSIMapNode 
-GSIMapNodeForKeyInBucket(GSIMapTable map, GSIMapBucket bucket, GSIMapKey key)
-{
-  GSIMapNode	node = bucket->firstNode;
-
-  if (GSI_MAP_ZEROED(map))
-    {
-      while ((node != 0)
-	&& GSI_MAP_EQUAL(map, GSI_MAP_READ_KEY(map, &node->key), key) == NO)
-	{
-	  GSIMapNode	tmp = node->nextInBucket;
-
-	  if (GSI_MAP_NODE_IS_EMPTY(map, node))
-	    {
-	      GSIMapRemoveNodeFromMap(map, bucket, node);
-	      GSIMapFreeNode(map, node);
-	    }
-	  node = tmp;
-	}
-      return node;
+GS_STATIC_INLINE GSIMapNode GSIMapNodeForKeyInBucket(GSIMapTable map, GSIMapBucket bucket, GSIMapKey key) {
+    
+    GSIMapNode	node = bucket->firstNode;
+    
+    if (GSI_MAP_ZEROED(map)) {
+        while ((node != 0) && GSI_MAP_EQUAL(map, GSI_MAP_READ_KEY(map, &node->key), key) == NO) {
+            GSIMapNode	tmp = node->nextInBucket;
+            
+            if (GSI_MAP_NODE_IS_EMPTY(map, node)) {
+                GSIMapRemoveNodeFromMap(map, bucket, node);
+                GSIMapFreeNode(map, node);
+            }
+            node = tmp;
+        }
+        return node;
     }
-  while ((node != 0)
-    && GSI_MAP_EQUAL(map, GSI_MAP_READ_KEY(map, &node->key), key) == NO)
-    {
-      node = node->nextInBucket;
+    while ((node != 0) && GSI_MAP_EQUAL(map, GSI_MAP_READ_KEY(map, &node->key), key) == NO) {
+        node = node->nextInBucket;
     }
-  return node;
+    return node;
 }
 
-GS_STATIC_INLINE GSIMapNode 
-GSIMapNodeForKey(GSIMapTable map, GSIMapKey key)
-{
-  GSIMapBucket	bucket;
-  GSIMapNode	node;
-
-  if (map->nodeCount == 0)
-    {
-      return 0;
-    }
-  bucket = GSIMapBucketForKey(map, key);
-  node = GSIMapNodeForKeyInBucket(map, bucket, key);
-  return node;
+GS_STATIC_INLINE GSIMapNode GSIMapNodeForKey(GSIMapTable map, GSIMapKey key) {
+    GSIMapBucket	bucket;
+    GSIMapNode	node;
+    
+    if (map->nodeCount == 0) { return 0; }
+    bucket = GSIMapBucketForKey(map, key);
+    node = GSIMapNodeForKeyInBucket(map, bucket, key);
+    return node;
 }
 
-GS_STATIC_INLINE GSIMapNode 
-GSIMapFirstNode(GSIMapTable map)
-{
-  if (map->nodeCount > 0)
-    {
-      uintptr_t		count = map->bucketCount;
-      uintptr_t		bucket = 0;
-      GSIMapNode	node = 0;
-
-      if (GSI_MAP_ZEROED(map))
-	{
-	  while (bucket < count)
-	    {
-	      node = map->buckets[bucket].firstNode;
-	      while (node != 0 && GSI_MAP_NODE_IS_EMPTY(map, node))
-		{
-		  node = GSIMapRemoveAndFreeNode(map, bucket, node);
-		}
-	      if (node != 0)
-		{
-		  break;
-		}
-	      bucket++;
-	    }
-	  return node;
-	}
-      while (bucket < count)
-	{
-	  node = map->buckets[bucket].firstNode;
-	  if (node != 0)
-	    {
-	      break;
-	    }
-	  bucket++;
-	}
-      return node;
-    }
-  else
-    {
-      return 0;
+GS_STATIC_INLINE GSIMapNode  GSIMapFirstNode(GSIMapTable map) {
+    if (map->nodeCount > 0) {
+        uintptr_t		count = map->bucketCount;
+        uintptr_t		bucket = 0;
+        GSIMapNode	node = 0;
+        
+        if (GSI_MAP_ZEROED(map)) {
+            while (bucket < count) {
+                node = map->buckets[bucket].firstNode;
+                while (node != 0 && GSI_MAP_NODE_IS_EMPTY(map, node)) {
+                    node = GSIMapRemoveAndFreeNode(map, bucket, node);
+                }
+                if (node != 0) {
+                    break;
+                }
+                bucket++;
+            }
+            return node;
+        }
+        while (bucket < count) {
+            node = map->buckets[bucket].firstNode;
+            if (node != 0)
+            {
+                break;
+            }
+            bucket++;
+        }
+        return node;
+    } else {
+        return 0;
     }
 }
 
@@ -722,97 +700,89 @@ GSIMapFirstNode(GSIMapTable map)
  * or pointer values that are their own hash values (when converted to unsigned
  * integers) and can be compared with a test for integer equality.
  */
-GS_STATIC_INLINE GSIMapNode 
-GSIMapNodeForSimpleKey(GSIMapTable map, GSIMapKey key)
-{
-  GSIMapBucket	bucket;
-  GSIMapNode	node;
-
-  if (map->nodeCount == 0)
-    {
-      return 0;
+GS_STATIC_INLINE GSIMapNode
+GSIMapNodeForSimpleKey(GSIMapTable map, GSIMapKey key) {
+    GSIMapBucket	bucket;
+    GSIMapNode	node;
+    
+    if (map->nodeCount == 0) { return 0; }
+    bucket = map->buckets + ((unsigned)key.addr) % map->bucketCount;
+    node = bucket->firstNode;
+    if (GSI_MAP_ZEROED(map)) {
+        while ((node != 0) && GSI_MAP_READ_KEY(map, &node->key).addr != key.addr) {
+            GSIMapNode	tmp = node->nextInBucket;
+            
+            if (GSI_MAP_NODE_IS_EMPTY(map, node)) {
+                GSIMapRemoveNodeFromMap(map, bucket, node);
+                GSIMapFreeNode(map, node);
+            }
+            node = tmp;
+        }
+        return node;
     }
-  bucket = map->buckets + ((unsigned)key.addr) % map->bucketCount;
-  node = bucket->firstNode;
-  if (GSI_MAP_ZEROED(map))
-    {
-      while ((node != 0) && GSI_MAP_READ_KEY(map, &node->key).addr != key.addr)
-	{
-	  GSIMapNode	tmp = node->nextInBucket;
-
-	  if (GSI_MAP_NODE_IS_EMPTY(map, node))
-	    {
-	      GSIMapRemoveNodeFromMap(map, bucket, node);
-	      GSIMapFreeNode(map, node);
-	    }
-	  node = tmp;
-	}
-      return node;
+    while ((node != 0) && GSI_MAP_READ_KEY(map, &node->key).addr != key.addr) {
+        node = node->nextInBucket;
     }
-  while ((node != 0) && GSI_MAP_READ_KEY(map, &node->key).addr != key.addr)
-    {
-      node = node->nextInBucket;
-    }
-  return node;
+    return node;
 }
 #endif
 
 GS_STATIC_INLINE void
 GSIMapResize(GSIMapTable map, uintptr_t new_capacity)
 {
-  GSIMapBucket	new_buckets;
-  uintptr_t	size = 1;
-  uintptr_t	old = 1;
-
-  /*
-   *	Find next size up in the fibonacci series
-   */
-  while (size < new_capacity)
+    GSIMapBucket	new_buckets;
+    uintptr_t	size = 1;
+    uintptr_t	old = 1;
+    
+    /*
+     *	Find next size up in the fibonacci series
+     */
+    while (size < new_capacity)
     {
-      uintptr_t	tmp = old;
-
-      old = size;
-      size += tmp;
+        uintptr_t	tmp = old;
+        
+        old = size;
+        size += tmp;
     }
-  /*
-   *	Avoid even numbers - since hash functions frequently generate uneven
-   *	distributions around powers of two -
-   *	we don't want lots of keys falling into a single bucket.
-   */
-  if (size % 2 == 0)
+    /*
+     *	Avoid even numbers - since hash functions frequently generate uneven
+     *	distributions around powers of two -
+     *	we don't want lots of keys falling into a single bucket.
+     */
+    if (size % 2 == 0)
     {
-      size++;
+        size++;
     }
-
-  /* Use the zone specified for this map.
-   */
-  new_buckets = (GSIMapBucket)NSZoneCalloc(map->zone, size,
-    sizeof(GSIMapBucket_t));
-
-  if (new_buckets != 0)
+    
+    /* Use the zone specified for this map.
+     */
+    new_buckets = (GSIMapBucket)NSZoneCalloc(map->zone, size,
+                                             sizeof(GSIMapBucket_t));
+    
+    if (new_buckets != 0)
     {
-      GSIMapRemangleBuckets(map, map->buckets, map->bucketCount, new_buckets,
-	size);
-      if (map->buckets != 0)
-	{
-	  NSZoneFree(map->zone, map->buckets);
-	}
-      map->buckets = new_buckets;
-      map->bucketCount = size;
+        GSIMapRemangleBuckets(map, map->buckets, map->bucketCount, new_buckets,
+                              size);
+        if (map->buckets != 0)
+        {
+            NSZoneFree(map->zone, map->buckets);
+        }
+        map->buckets = new_buckets;
+        map->bucketCount = size;
     }
 }
 
 GS_STATIC_INLINE void
 GSIMapRightSizeMap(GSIMapTable map, uintptr_t capacity)
 {
-  /* FIXME: Now, this is a guess, based solely on my intuition.  If anyone
-   * knows of a better ratio (or other test, for that matter) and can
-   * provide evidence of its goodness, please get in touch with me, Albin
-   * L. Jones <Albin.L.Jones@Dartmouth.EDU>. */
-
-  if (3 * capacity >= 4 * map->bucketCount)
+    /* FIXME: Now, this is a guess, based solely on my intuition.  If anyone
+     * knows of a better ratio (or other test, for that matter) and can
+     * provide evidence of its goodness, please get in touch with me, Albin
+     * L. Jones <Albin.L.Jones@Dartmouth.EDU>. */
+    
+    if (3 * capacity >= 4 * map->bucketCount)
     {
-      GSIMapResize(map, (3 * capacity)/4 + 1);
+        GSIMapResize(map, (3 * capacity)/4 + 1);
     }
 }
 
@@ -839,42 +809,42 @@ GSIMapRightSizeMap(GSIMapTable map, uintptr_t capacity)
 GS_STATIC_INLINE GSIMapEnumerator_t
 GSIMapEnumeratorForMap(GSIMapTable map)
 {
-  GSIMapEnumerator_t	enumerator;
-
-  enumerator.map = map;
-  enumerator.node = 0;
-  enumerator.bucket = 0;
-  /*
-   * Locate next bucket and node to be returned.
-   */
-  if (GSI_MAP_ZEROED(map))
+    GSIMapEnumerator_t	enumerator;
+    
+    enumerator.map = map;
+    enumerator.node = 0;
+    enumerator.bucket = 0;
+    /*
+     * Locate next bucket and node to be returned.
+     */
+    if (GSI_MAP_ZEROED(map))
     {
-      while (enumerator.bucket < map->bucketCount)
-	{
-	  GSIMapNode	node = map->buckets[enumerator.bucket].firstNode;
-
-	  while (node != 0 && GSI_MAP_READ_KEY(map, &node->key).addr == 0)
-	    {
-	      node = GSIMapRemoveAndFreeNode(map, enumerator.bucket, node);
-	    }
-	  if ((enumerator.node = node) != 0)
-	    {
-	      return enumerator;
-	    }
-	  enumerator.bucket++;
-	}
+        while (enumerator.bucket < map->bucketCount)
+        {
+            GSIMapNode	node = map->buckets[enumerator.bucket].firstNode;
+            
+            while (node != 0 && GSI_MAP_READ_KEY(map, &node->key).addr == 0)
+            {
+                node = GSIMapRemoveAndFreeNode(map, enumerator.bucket, node);
+            }
+            if ((enumerator.node = node) != 0)
+            {
+                return enumerator;
+            }
+            enumerator.bucket++;
+        }
     }
-  while (enumerator.bucket < map->bucketCount)
+    while (enumerator.bucket < map->bucketCount)
     {
-      enumerator.node = map->buckets[enumerator.bucket].firstNode;
-      if (enumerator.node != 0)
-	{
-	  return enumerator;	// Got first node, and recorded its bucket.
-	}
-      enumerator.bucket++;
+        enumerator.node = map->buckets[enumerator.bucket].firstNode;
+        if (enumerator.node != 0)
+        {
+            return enumerator;	// Got first node, and recorded its bucket.
+        }
+        enumerator.bucket++;
     }
-
-  return enumerator;
+    
+    return enumerator;
 }
 
 /**
@@ -883,9 +853,9 @@ GSIMapEnumeratorForMap(GSIMapTable map)
 GS_STATIC_INLINE void
 GSIMapEndEnumerator(GSIMapEnumerator enumerator)
 {
-  ((_GSIE)enumerator)->map = 0;
-  ((_GSIE)enumerator)->node = 0;
-  ((_GSIE)enumerator)->bucket = 0;
+    ((_GSIE)enumerator)->map = 0;
+    ((_GSIE)enumerator)->node = 0;
+    ((_GSIE)enumerator)->bucket = 0;
 }
 
 /**
@@ -894,229 +864,229 @@ GSIMapEndEnumerator(GSIMapEnumerator enumerator)
  * bucket and node to remove the node from the map using the
  * GSIMapRemoveNodeFromMap() function.
  */
-GS_STATIC_INLINE GSIMapBucket 
+GS_STATIC_INLINE GSIMapBucket
 GSIMapEnumeratorBucket(GSIMapEnumerator enumerator)
 {
-  if (((_GSIE)enumerator)->node != 0)
+    if (((_GSIE)enumerator)->node != 0)
     {
-      GSIMapTable	map = ((_GSIE)enumerator)->map;
-
-      return &((map->buckets)[((_GSIE)enumerator)->bucket]);
+        GSIMapTable	map = ((_GSIE)enumerator)->map;
+        
+        return &((map->buckets)[((_GSIE)enumerator)->bucket]);
     }
-  return 0;
+    return 0;
 }
 
 /**
  * Returns the next node in the map, or a nul pointer if at the end.
  */
-GS_STATIC_INLINE GSIMapNode 
+GS_STATIC_INLINE GSIMapNode
 GSIMapEnumeratorNextNode(GSIMapEnumerator enumerator)
 {
-  GSIMapNode	node = ((_GSIE)enumerator)->node;
-  GSIMapTable	map = ((_GSIE)enumerator)->map;
-
-  /* Find the frst available non-zeroed node.
-   */
-  if (node != 0 && GSI_MAP_ZEROED(map)
-    && GSI_MAP_READ_KEY(map, &node->key).addr == 0)
+    GSIMapNode	node = ((_GSIE)enumerator)->node;
+    GSIMapTable	map = ((_GSIE)enumerator)->map;
+    
+    /* Find the frst available non-zeroed node.
+     */
+    if (node != 0 && GSI_MAP_ZEROED(map)
+        && GSI_MAP_READ_KEY(map, &node->key).addr == 0)
     {
-      uintptr_t		bucketCount = map->bucketCount;
-      uintptr_t		bucket = ((_GSIE)enumerator)->bucket;
-
-      while (node != 0 && GSI_MAP_READ_KEY(map, &node->key).addr == 0)
-	{
-	  node = GSIMapRemoveAndFreeNode(map, bucket, node);
-	  while (node == 0 && ++bucket < bucketCount)
-	    {
-	      node = (map->buckets[bucket]).firstNode;
-	      while (node != 0 && GSI_MAP_READ_KEY(map, &node->key).addr == 0)
-		{
-		  node = GSIMapRemoveAndFreeNode(map, bucket, node);
-		}
-	    }
-	  ((_GSIE)enumerator)->bucket = bucket;
-	  ((_GSIE)enumerator)->node = node;
-	}
+        uintptr_t		bucketCount = map->bucketCount;
+        uintptr_t		bucket = ((_GSIE)enumerator)->bucket;
+        
+        while (node != 0 && GSI_MAP_READ_KEY(map, &node->key).addr == 0)
+        {
+            node = GSIMapRemoveAndFreeNode(map, bucket, node);
+            while (node == 0 && ++bucket < bucketCount)
+            {
+                node = (map->buckets[bucket]).firstNode;
+                while (node != 0 && GSI_MAP_READ_KEY(map, &node->key).addr == 0)
+                {
+                    node = GSIMapRemoveAndFreeNode(map, bucket, node);
+                }
+            }
+            ((_GSIE)enumerator)->bucket = bucket;
+            ((_GSIE)enumerator)->node = node;
+        }
     }
-
-  if (node != 0)
+    
+    if (node != 0)
     {
-      GSIMapNode	next = node->nextInBucket;
-
-      if (GSI_MAP_ZEROED(map))
-	{
-	  uintptr_t	bucket = ((_GSIE)enumerator)->bucket;
-
-	  while (next != 0 && GSI_MAP_NODE_IS_EMPTY(map, next))
-	    {
-	      next = GSIMapRemoveAndFreeNode(map, bucket, next);
-	    }
-	}
-
-      if (next == 0)
-	{
-	  uintptr_t	bucketCount = map->bucketCount;
-	  uintptr_t	bucket = ((_GSIE)enumerator)->bucket;
-
-	  if (GSI_MAP_ZEROED(map))
-	    {
-	      while (next == 0 && ++bucket < bucketCount)
-		{
-		  next = (map->buckets[bucket]).firstNode;
-		  while (next != 0 && GSI_MAP_NODE_IS_EMPTY(map, next))
-		    {
-		      next = GSIMapRemoveAndFreeNode(map, bucket, next);
-		    }
-		}
-	      ((_GSIE)enumerator)->bucket = bucket;
-	      ((_GSIE)enumerator)->node = next;
-	      return node;
-	    }
-	  while (next == 0 && ++bucket < bucketCount)
-	    {
-	      next = (map->buckets[bucket]).firstNode;
-	    }
-	  ((_GSIE)enumerator)->bucket = bucket;
-	}
-      ((_GSIE)enumerator)->node = next;
+        GSIMapNode	next = node->nextInBucket;
+        
+        if (GSI_MAP_ZEROED(map))
+        {
+            uintptr_t	bucket = ((_GSIE)enumerator)->bucket;
+            
+            while (next != 0 && GSI_MAP_NODE_IS_EMPTY(map, next))
+            {
+                next = GSIMapRemoveAndFreeNode(map, bucket, next);
+            }
+        }
+        
+        if (next == 0)
+        {
+            uintptr_t	bucketCount = map->bucketCount;
+            uintptr_t	bucket = ((_GSIE)enumerator)->bucket;
+            
+            if (GSI_MAP_ZEROED(map))
+            {
+                while (next == 0 && ++bucket < bucketCount)
+                {
+                    next = (map->buckets[bucket]).firstNode;
+                    while (next != 0 && GSI_MAP_NODE_IS_EMPTY(map, next))
+                    {
+                        next = GSIMapRemoveAndFreeNode(map, bucket, next);
+                    }
+                }
+                ((_GSIE)enumerator)->bucket = bucket;
+                ((_GSIE)enumerator)->node = next;
+                return node;
+            }
+            while (next == 0 && ++bucket < bucketCount)
+            {
+                next = (map->buckets[bucket]).firstNode;
+            }
+            ((_GSIE)enumerator)->bucket = bucket;
+        }
+        ((_GSIE)enumerator)->node = next;
     }
-  return node;
+    return node;
 }
 
 /**
  * Used to implement fast enumeration methods in classes that use GSIMap for
  * their data storage.
  */
-GS_STATIC_INLINE NSUInteger 
+GS_STATIC_INLINE NSUInteger
 GSIMapCountByEnumeratingWithStateObjectsCount(GSIMapTable map,
-  NSFastEnumerationState *state, id *stackbuf, NSUInteger len)
+                                              NSFastEnumerationState *state, id *stackbuf, NSUInteger len)
 {
-  NSInteger count;
-  NSInteger i;
-
-  /* We can store a GSIMapEnumerator inside the extra buffer in state on all
-   * platforms that don't suck beyond belief (i.e. everything except win64),
-   * but we can't on anything where long is 32 bits and pointers are 64 bits,
-   * so we have to construct it here to avoid breaking on that platform.
-   */
-  struct GSPartMapEnumerator
+    NSInteger count;
+    NSInteger i;
+    
+    /* We can store a GSIMapEnumerator inside the extra buffer in state on all
+     * platforms that don't suck beyond belief (i.e. everything except win64),
+     * but we can't on anything where long is 32 bits and pointers are 64 bits,
+     * so we have to construct it here to avoid breaking on that platform.
+     */
+    struct GSPartMapEnumerator
     {
-      GSIMapNode node;
-      uintptr_t bucket;
+        GSIMapNode node;
+        uintptr_t bucket;
     };
-  GSIMapEnumerator_t enumerator;
-
-  count = MIN(len, map->nodeCount - state->state);
-
-  /* Construct the real enumerator */
-  if (0 == state->state)
+    GSIMapEnumerator_t enumerator;
+    
+    count = MIN(len, map->nodeCount - state->state);
+    
+    /* Construct the real enumerator */
+    if (0 == state->state)
     {
-      enumerator = GSIMapEnumeratorForMap(map);
+        enumerator = GSIMapEnumeratorForMap(map);
     }
-  else
+    else
     {
-      enumerator.map = map;
-      enumerator.node = ((struct GSPartMapEnumerator*)(state->extra))->node; 
-      enumerator.bucket = ((struct GSPartMapEnumerator*)(state->extra))->bucket;
+        enumerator.map = map;
+        enumerator.node = ((struct GSPartMapEnumerator*)(state->extra))->node;
+        enumerator.bucket = ((struct GSPartMapEnumerator*)(state->extra))->bucket;
     }
-  /* Get the next count objects and put them in the stack buffer. */
-  for (i = 0; i < count; i++)
+    /* Get the next count objects and put them in the stack buffer. */
+    for (i = 0; i < count; i++)
     {
-      GSIMapNode node = GSIMapEnumeratorNextNode(&enumerator);
-      if (0 != node)
+        GSIMapNode node = GSIMapEnumeratorNextNode(&enumerator);
+        if (0 != node)
         {
-          /* UGLY HACK: Lets this compile with any key type.  Fast enumeration
-           * will only work with things that are id-sized, however, so don't
-           * try using it with non-object collections.
-           */
-          stackbuf[i] = (id)GSI_MAP_READ_KEY(map, &node->key).addr;
+            /* UGLY HACK: Lets this compile with any key type.  Fast enumeration
+             * will only work with things that are id-sized, however, so don't
+             * try using it with non-object collections.
+             */
+            stackbuf[i] = (id)GSI_MAP_READ_KEY(map, &node->key).addr;
         }
     }
-  /* Store the important bits of the enumerator in the caller. */
-  ((struct GSPartMapEnumerator*)(state->extra))->node = enumerator.node;
-  ((struct GSPartMapEnumerator*)(state->extra))->bucket = enumerator.bucket;
-  /* Update the rest of the state. */
-  state->state += count;
-  state->itemsPtr = stackbuf;
-  return count;
+    /* Store the important bits of the enumerator in the caller. */
+    ((struct GSPartMapEnumerator*)(state->extra))->node = enumerator.node;
+    ((struct GSPartMapEnumerator*)(state->extra))->bucket = enumerator.bucket;
+    /* Update the rest of the state. */
+    state->state += count;
+    state->itemsPtr = stackbuf;
+    return count;
 }
 
 #if	GSI_MAP_HAS_VALUE
 GS_STATIC_INLINE GSIMapNode
 GSIMapAddPairNoRetain(GSIMapTable map, GSIMapKey key, GSIMapVal value)
 {
-  GSIMapNode	node = map->freeNodes;
-
-  if (node == 0)
+    GSIMapNode	node = map->freeNodes;
+    
+    if (node == 0)
     {
-      GSIMapMoreNodes(map, map->nodeCount < map->increment ? 0: map->increment);
-      node = map->freeNodes;
+        GSIMapMoreNodes(map, map->nodeCount < map->increment ? 0: map->increment);
+        node = map->freeNodes;
     }
-  map->freeNodes = node->nextInBucket;
-  GSI_MAP_WRITE_KEY(map, &node->key, key);
-  GSI_MAP_WRITE_VAL(map, &node->value, value);
-  node->nextInBucket = 0;
-  GSIMapRightSizeMap(map, map->nodeCount);
-  GSIMapAddNodeToMap(map, node);
-  return node;
+    map->freeNodes = node->nextInBucket;
+    GSI_MAP_WRITE_KEY(map, &node->key, key);
+    GSI_MAP_WRITE_VAL(map, &node->value, value);
+    node->nextInBucket = 0;
+    GSIMapRightSizeMap(map, map->nodeCount);
+    GSIMapAddNodeToMap(map, node);
+    return node;
 }
 
 GS_STATIC_INLINE GSIMapNode
 GSIMapAddPair(GSIMapTable map, GSIMapKey key, GSIMapVal value)
 {
-  GSIMapNode	node = map->freeNodes;
-
-  if (node == 0)
+    GSIMapNode	node = map->freeNodes;
+    
+    if (node == 0)
     {
-      GSIMapMoreNodes(map, map->nodeCount < map->increment ? 0: map->increment);
-      node = map->freeNodes;
+        GSIMapMoreNodes(map, map->nodeCount < map->increment ? 0: map->increment);
+        node = map->freeNodes;
     }
-  map->freeNodes = node->nextInBucket;
-  GSI_MAP_WRITE_KEY(map, &node->key, key);
-  GSI_MAP_RETAIN_KEY(map, node->key);
-  GSI_MAP_WRITE_VAL(map, &node->value, value);
-  GSI_MAP_RETAIN_VAL(map, node->value);
-  node->nextInBucket = 0;
-  GSIMapRightSizeMap(map, map->nodeCount);
-  GSIMapAddNodeToMap(map, node);
-  return node;
+    map->freeNodes = node->nextInBucket;
+    GSI_MAP_WRITE_KEY(map, &node->key, key);
+    GSI_MAP_RETAIN_KEY(map, node->key);
+    GSI_MAP_WRITE_VAL(map, &node->value, value);
+    GSI_MAP_RETAIN_VAL(map, node->value);
+    node->nextInBucket = 0;
+    GSIMapRightSizeMap(map, map->nodeCount);
+    GSIMapAddNodeToMap(map, node);
+    return node;
 }
 #else
 GS_STATIC_INLINE GSIMapNode
 GSIMapAddKeyNoRetain(GSIMapTable map, GSIMapKey key)
 {
-  GSIMapNode	node = map->freeNodes;
-
-  if (node == 0)
+    GSIMapNode	node = map->freeNodes;
+    
+    if (node == 0)
     {
-      GSIMapMoreNodes(map, map->nodeCount < map->increment ? 0: map->increment);
-      node = map->freeNodes;
+        GSIMapMoreNodes(map, map->nodeCount < map->increment ? 0: map->increment);
+        node = map->freeNodes;
     }
-  map->freeNodes = node->nextInBucket;
-  GSI_MAP_WRITE_KEY(map, &node->key, key);
-  node->nextInBucket = 0;
-  GSIMapRightSizeMap(map, map->nodeCount);
-  GSIMapAddNodeToMap(map, node);
-  return node;
+    map->freeNodes = node->nextInBucket;
+    GSI_MAP_WRITE_KEY(map, &node->key, key);
+    node->nextInBucket = 0;
+    GSIMapRightSizeMap(map, map->nodeCount);
+    GSIMapAddNodeToMap(map, node);
+    return node;
 }
 
 GS_STATIC_INLINE GSIMapNode
 GSIMapAddKey(GSIMapTable map, GSIMapKey key)
 {
-  GSIMapNode	node = map->freeNodes;
-
-  if (node == 0)
+    GSIMapNode	node = map->freeNodes;
+    
+    if (node == 0)
     {
-      GSIMapMoreNodes(map, map->nodeCount < map->increment ? 0: map->increment);
-      node = map->freeNodes;
+        GSIMapMoreNodes(map, map->nodeCount < map->increment ? 0: map->increment);
+        node = map->freeNodes;
     }
-  map->freeNodes = node->nextInBucket;
-  GSI_MAP_WRITE_KEY(map, &node->key, key);
-  GSI_MAP_RETAIN_KEY(map, node->key);
-  node->nextInBucket = 0;
-  GSIMapRightSizeMap(map, map->nodeCount);
-  GSIMapAddNodeToMap(map, node);
-  return node;
+    map->freeNodes = node->nextInBucket;
+    GSI_MAP_WRITE_KEY(map, &node->key, key);
+    GSI_MAP_RETAIN_KEY(map, node->key);
+    node->nextInBucket = 0;
+    GSIMapRightSizeMap(map, map->nodeCount);
+    GSIMapAddNodeToMap(map, node);
+    return node;
 }
 #endif
 
@@ -1127,63 +1097,63 @@ GSIMapAddKey(GSIMapTable map, GSIMapKey key)
 GS_STATIC_INLINE BOOL
 GSIMapRemoveKey(GSIMapTable map, GSIMapKey key)
 {
-  GSIMapBucket	bucket = GSIMapBucketForKey(map, key);
-  GSIMapNode	node;
-  
-  node = GSIMapNodeForKeyInBucket(map, bucket, key);
-  if (node != 0)
+    GSIMapBucket	bucket = GSIMapBucketForKey(map, key);
+    GSIMapNode	node;
+    
+    node = GSIMapNodeForKeyInBucket(map, bucket, key);
+    if (node != 0)
     {
-      GSIMapRemoveNodeFromMap(map, bucket, node);
-      GSIMapFreeNode(map, node);
-      return YES;
+        GSIMapRemoveNodeFromMap(map, bucket, node);
+        GSIMapFreeNode(map, node);
+        return YES;
     }
-  return NO;
+    return NO;
 }
 
 GS_STATIC_INLINE void
 GSIMapCleanMap(GSIMapTable map)
 {
-  if (map->nodeCount > 0)
+    if (map->nodeCount > 0)
     {
-      GSIMapBucket	bucket = map->buckets;
-      unsigned int	i;
-      GSIMapNode	startNode = 0;
-      GSIMapNode	prevNode = 0;
-      GSIMapNode	node;
-      
-      map->nodeCount = 0;
-      for (i = 0; i < map->bucketCount; i++)
-	{
-	  node = bucket->firstNode;
-	  if (prevNode != 0)
-	    {
-	      prevNode->nextInBucket = node;
-	    }
-	  else
-	    {
-	      startNode = node;
-	    }
-	  while(node != 0)
-	    {
-	      GSI_MAP_RELEASE_KEY(map, node->key);
-	      GSI_MAP_CLEAR_KEY(node);
-	  
+        GSIMapBucket	bucket = map->buckets;
+        unsigned int	i;
+        GSIMapNode	startNode = 0;
+        GSIMapNode	prevNode = 0;
+        GSIMapNode	node;
+        
+        map->nodeCount = 0;
+        for (i = 0; i < map->bucketCount; i++)
+        {
+            node = bucket->firstNode;
+            if (prevNode != 0)
+            {
+                prevNode->nextInBucket = node;
+            }
+            else
+            {
+                startNode = node;
+            }
+            while(node != 0)
+            {
+                GSI_MAP_RELEASE_KEY(map, node->key);
+                GSI_MAP_CLEAR_KEY(node);
+                
 #if	GSI_MAP_HAS_VALUE
-	      GSI_MAP_RELEASE_VAL(map, node->value);
-	      GSI_MAP_CLEAR_VAL(node);
+                GSI_MAP_RELEASE_VAL(map, node->value);
+                GSI_MAP_CLEAR_VAL(node);
 #endif
-	      prevNode = node;
-	      node = node->nextInBucket;
-	    }
-	  bucket->nodeCount = 0;
-	  bucket->firstNode = 0;
-	  bucket++;
-	}
-      if (prevNode != 0)
-	{
-          prevNode->nextInBucket = map->freeNodes;
-	}
-      map->freeNodes = startNode;
+                prevNode = node;
+                node = node->nextInBucket;
+            }
+            bucket->nodeCount = 0;
+            bucket->firstNode = 0;
+            bucket++;
+        }
+        if (prevNode != 0)
+        {
+            prevNode->nextInBucket = map->freeNodes;
+        }
+        map->freeNodes = startNode;
     }
 }
 
@@ -1191,83 +1161,83 @@ GS_STATIC_INLINE void
 GSIMapEmptyMap(GSIMapTable map)
 {
 #ifdef	GSI_MAP_NOCLEAN
-  if (GSI_MAP_NOCLEAN)
+    if (GSI_MAP_NOCLEAN)
     {
-      map->nodeCount = 0;
+        map->nodeCount = 0;
     }
-  else
+    else
     {
-      GSIMapCleanMap(map);
+        GSIMapCleanMap(map);
     }
 #else
-  GSIMapCleanMap(map);
+    GSIMapCleanMap(map);
 #endif
-  if (map->buckets != 0)
+    if (map->buckets != 0)
     {
-      NSZoneFree(map->zone, map->buckets);
-      map->buckets = 0;
-      map->bucketCount = 0;
+        NSZoneFree(map->zone, map->buckets);
+        map->buckets = 0;
+        map->bucketCount = 0;
     }
-  if (map->nodeChunks != 0)
+    if (map->nodeChunks != 0)
     {
-      unsigned int	i;
-
-      for (i = 0; i < map->chunkCount; i++)
-	{
-	  NSZoneFree(map->zone, map->nodeChunks[i]);
-	}
-      NSZoneFree(map->zone, map->nodeChunks);
-      map->chunkCount = 0;
-      map->nodeChunks = 0;
+        unsigned int	i;
+        
+        for (i = 0; i < map->chunkCount; i++)
+        {
+            NSZoneFree(map->zone, map->nodeChunks[i]);
+        }
+        NSZoneFree(map->zone, map->nodeChunks);
+        map->chunkCount = 0;
+        map->nodeChunks = 0;
     }
-  map->freeNodes = 0;
-  map->zone = 0;
+    map->freeNodes = 0;
+    map->zone = 0;
 }
 
-GS_STATIC_INLINE void 
+GS_STATIC_INLINE void
 GSIMapInitWithZoneAndCapacity(GSIMapTable map, NSZone *zone, uintptr_t capacity)
 {
-  map->zone = zone;
-  map->nodeCount = 0;
-  map->bucketCount = 0;
-  map->buckets = 0;
-  map->nodeChunks = 0;
-  map->freeNodes = 0;
-  map->chunkCount = 0;
-  map->increment = 300000;   // choosen so the chunksize will be less than 4Mb
-  GSIMapRightSizeMap(map, capacity);
-  GSIMapMoreNodes(map, capacity);
+    map->zone = zone;
+    map->nodeCount = 0;
+    map->bucketCount = 0;
+    map->buckets = 0;
+    map->nodeChunks = 0;
+    map->freeNodes = 0;
+    map->chunkCount = 0;
+    map->increment = 300000;   // choosen so the chunksize will be less than 4Mb
+    GSIMapRightSizeMap(map, capacity);
+    GSIMapMoreNodes(map, capacity);
 }
 
-GS_STATIC_INLINE NSUInteger 
+GS_STATIC_INLINE NSUInteger
 GSIMapSize(GSIMapTable map)
 {
-  NSUInteger    index;
-  NSUInteger    size;
-  GSIMapNode	node;
-
-  /* Map table plus arrays of pointers to chunks
-   */
-  size = GSI_MAP_TABLE_S + map->chunkCount * sizeof(void*);
-
-  /* Add the array of buckets.
-   */
-  size += map->bucketCount * sizeof(GSIMapBucket_t);
-
-  /* Add the free nodes.
-   */
-  for (node = map->freeNodes; 0 != node; node = node->nextInBucket)
+    NSUInteger    index;
+    NSUInteger    size;
+    GSIMapNode	node;
+    
+    /* Map table plus arrays of pointers to chunks
+     */
+    size = GSI_MAP_TABLE_S + map->chunkCount * sizeof(void*);
+    
+    /* Add the array of buckets.
+     */
+    size += map->bucketCount * sizeof(GSIMapBucket_t);
+    
+    /* Add the free nodes.
+     */
+    for (node = map->freeNodes; 0 != node; node = node->nextInBucket)
     {
-      size += sizeof(GSIMapNode_t);
+        size += sizeof(GSIMapNode_t);
     }
-
-  /* Add the used nodes (in the buckets).
-   */
-  for (index = 0; index < map->bucketCount; index++)
+    
+    /* Add the used nodes (in the buckets).
+     */
+    for (index = 0; index < map->bucketCount; index++)
     {
-      size += sizeof(GSIMapNode_t) * map->buckets[index].nodeCount;
+        size += sizeof(GSIMapNode_t) * map->buckets[index].nodeCount;
     }
-  return size;
+    return size;
 }
 
 #if	defined(__cplusplus)

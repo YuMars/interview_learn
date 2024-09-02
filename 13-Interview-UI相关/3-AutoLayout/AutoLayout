@@ -29,9 +29,7 @@ Auto Layout是苹果公司在iOS6发布的界面布局技术，并随着iOS SDK�
 ### NSLayoutAttribute布局属性
 布局属性												表示意义
 NSLayoutAttributeWidth、NSLayoutAttributeHeight	表示视图的尺寸：宽、高
-
 NSLayoutAttributeLeading、NSLayoutAttributeTrailing	表示视图的X轴方向的位置：前、后
-
 NSLayoutAttributeLeft、NSLayoutAttributeRight	表示视图的X轴方向的位置：左、右
 NSLayoutAttributeTop、 NSLayoutAttributeBottom	表示视图Y轴方向的位置：顶、底
 NSLayoutAttributeBaseline	表示视图Y轴方向的位置：底部基准线

@@ -29,7 +29,6 @@
     NSLog(@"layer1对象实际分配的内存大小:%zd", malloc_size((__bridge const void *)(view)));
     NSLog(@"layer2对象实际分配的内存大小:%zd", malloc_size((__bridge const void *)(view)));
     
-    UIRotationGestureRecognizer
 }
 
 

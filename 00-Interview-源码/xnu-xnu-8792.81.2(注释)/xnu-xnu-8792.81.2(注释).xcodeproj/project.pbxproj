@@ -1,0 +1,180 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXFileReference section */
+		EE5EFD2F2C80055000EA76DE /* tools */ = {isa = PBXFileReference; lastKnownFileType = folder; path = tools; sourceTree = "<group>"; };
+		EE5EFD302C80055000EA76DE /* .DS_Store */ = {isa = PBXFileReference; lastKnownFileType = file; path = .DS_Store; sourceTree = "<group>"; };
+		EE5EFD312C80055000EA76DE /* libsa */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libsa; sourceTree = "<group>"; };
+		EE5EFD322C80055000EA76DE /* APPLE_LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = APPLE_LICENSE; sourceTree = "<group>"; };
+		EE5EFD332C80055000EA76DE /* config */ = {isa = PBXFileReference; lastKnownFileType = folder; path = config; sourceTree = "<group>"; };
+		EE5EFD342C80055000EA76DE /* security */ = {isa = PBXFileReference; lastKnownFileType = folder; path = security; sourceTree = "<group>"; };
+		EE5EFD352C80055000EA76DE /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		EE5EFD362C80055000EA76DE /* iokit */ = {isa = PBXFileReference; lastKnownFileType = folder; path = iokit; sourceTree = "<group>"; };
+		EE5EFD372C80055000EA76DE /* SETUP */ = {isa = PBXFileReference; lastKnownFileType = folder; path = SETUP; sourceTree = "<group>"; };
+		EE5EFD382C80055000EA76DE /* tests */ = {isa = PBXFileReference; lastKnownFileType = folder; path = tests; sourceTree = "<group>"; };
+		EE5EFD392C80055000EA76DE /* bsd */ = {isa = PBXFileReference; lastKnownFileType = folder; path = bsd; sourceTree = "<group>"; };
+		EE5EFD3A2C80055000EA76DE /* EXTERNAL_HEADERS */ = {isa = PBXFileReference; lastKnownFileType = folder; path = EXTERNAL_HEADERS; sourceTree = "<group>"; };
+		EE5EFD3B2C80055000EA76DE /* libsyscall */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libsyscall; sourceTree = "<group>"; };
+		EE5EFD3C2C80055000EA76DE /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		EE5EFD3D2C80055000EA76DE /* makedefs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = makedefs; sourceTree = "<group>"; };
+		EE5EFD3E2C80055000EA76DE /* pexpert */ = {isa = PBXFileReference; lastKnownFileType = folder; path = pexpert; sourceTree = "<group>"; };
+		EE5EFD3F2C80055000EA76DE /* san */ = {isa = PBXFileReference; lastKnownFileType = folder; path = san; sourceTree = "<group>"; };
+		EE5EFD402C80055000EA76DE /* doc */ = {isa = PBXFileReference; lastKnownFileType = folder; path = doc; sourceTree = "<group>"; };
+		EE5EFD412C80055000EA76DE /* libkdd */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libkdd; sourceTree = "<group>"; };
+		EE5EFD422C80055000EA76DE /* osfmk */ = {isa = PBXFileReference; lastKnownFileType = folder; path = osfmk; sourceTree = "<group>"; };
+		EE5EFD432C80055000EA76DE /* libkern */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libkern; sourceTree = "<group>"; };
+		EE5EFD442C80055000EA76DE /* .upstream_base_commits */ = {isa = PBXFileReference; lastKnownFileType = text; path = .upstream_base_commits; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		EE5EFD292C80055000EA76DE = {
+			isa = PBXGroup;
+			children = (
+				EE5EFD2F2C80055000EA76DE /* tools */,
+				EE5EFD302C80055000EA76DE /* .DS_Store */,
+				EE5EFD312C80055000EA76DE /* libsa */,
+				EE5EFD322C80055000EA76DE /* APPLE_LICENSE */,
+				EE5EFD332C80055000EA76DE /* config */,
+				EE5EFD342C80055000EA76DE /* security */,
+				EE5EFD352C80055000EA76DE /* Makefile */,
+				EE5EFD362C80055000EA76DE /* iokit */,
+				EE5EFD372C80055000EA76DE /* SETUP */,
+				EE5EFD382C80055000EA76DE /* tests */,
+				EE5EFD392C80055000EA76DE /* bsd */,
+				EE5EFD3A2C80055000EA76DE /* EXTERNAL_HEADERS */,
+				EE5EFD3B2C80055000EA76DE /* libsyscall */,
+				EE5EFD3C2C80055000EA76DE /* README.md */,
+				EE5EFD3D2C80055000EA76DE /* makedefs */,
+				EE5EFD3E2C80055000EA76DE /* pexpert */,
+				EE5EFD3F2C80055000EA76DE /* san */,
+				EE5EFD402C80055000EA76DE /* doc */,
+				EE5EFD412C80055000EA76DE /* libkdd */,
+				EE5EFD422C80055000EA76DE /* osfmk */,
+				EE5EFD432C80055000EA76DE /* libkern */,
+				EE5EFD442C80055000EA76DE /* .upstream_base_commits */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		EE5EFD2E2C80055000EA76DE /* xnu-xnu-8792.81.2(注释) */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = EE5EFD452C80055000EA76DE /* Build configuration list for PBXLegacyTarget "xnu-xnu-8792.81.2(注释)" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/bin/make;
+			buildWorkingDirectory = "/Users/red-fish/Desktop/Learn/00-Interview-源码/xnu-xnu-8792.81.2(注释)";
+			dependencies = (
+			);
+			name = "xnu-xnu-8792.81.2(注释)";
+			passBuildSettingsInEnvironment = 1;
+			productName = "xnu-xnu-8792.81.2(注释)";
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXProject section */
+		EE5EFD2A2C80055000EA76DE /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+			};
+			buildConfigurationList = EE5EFD2D2C80055000EA76DE /* Build configuration list for PBXProject "xnu-xnu-8792.81.2(注释)" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = EE5EFD292C80055000EA76DE;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				EE5EFD2E2C80055000EA76DE /* xnu-xnu-8792.81.2(注释) */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		EE5EFD2B2C80055000EA76DE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx10.6;
+			};
+			name = Debug;
+		};
+		EE5EFD2C2C80055000EA76DE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+		EE5EFD462C80055000EA76DE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "xnu-xnu-8792.81.2(注释)";
+			};
+			name = Debug;
+		};
+		EE5EFD472C80055000EA76DE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "xnu-xnu-8792.81.2(注释)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		EE5EFD2D2C80055000EA76DE /* Build configuration list for PBXProject "xnu-xnu-8792.81.2(注释)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EE5EFD2B2C80055000EA76DE /* Debug */,
+				EE5EFD2C2C80055000EA76DE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EE5EFD452C80055000EA76DE /* Build configuration list for PBXLegacyTarget "xnu-xnu-8792.81.2(注释)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EE5EFD462C80055000EA76DE /* Debug */,
+				EE5EFD472C80055000EA76DE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = EE5EFD2A2C80055000EA76DE /* Project object */;
+}
