@@ -288,9 +288,9 @@ template <HaveOld haveOld, HaveNew haveNew, CrashIfDeallocating crashIfDeallocat
     SideTable *oldTable;
     SideTable *newTable;
 
-    // Acquire locks for old and new values.为旧值和新值获取锁。
-    // Order by lock address to prevent lock ordering problems.根据锁地址排序
-    // Retry if the old value changes underneath us.
+    // 为旧值和新值获取锁。
+    // 根据锁地址排序以防止锁顺序问题
+    // 如果旧值发生变化，则重试
  retry:
     if (haveOld) {
         // 如果weak 指针之前指向过其他对象，取出这个旧对象
@@ -315,9 +315,8 @@ template <HaveOld haveOld, HaveNew haveNew, CrashIfDeallocating crashIfDeallocat
         goto retry;
     }
 
-    // Prevent a deadlock between the weak reference machinery 防止弱引用间死锁
-    // and the +initialize machinery by ensuring that no
-    // weakly-referenced object has an un-+initialized isa. 并且通过 +initialize 初始化构造器保证所有弱引用的isa 非空指向,防止+initialized和弱引用引起是死锁
+    // 防止弱引用间死锁
+    // 并且通过 +initialize 初始化构造器保证所有弱引用的isa 非空指向,防止+initialized和弱引用引起是死锁
     if (haveNew  &&  newObj) {
         // 获得新对象的 isa 指针
         Class cls = newObj->getIsa();
@@ -329,41 +328,38 @@ template <HaveOld haveOld, HaveNew haveNew, CrashIfDeallocating crashIfDeallocat
             // 对其 isa 指针进行初始化
             class_initialize(cls, (id)newObj);
 
-            // If this class is finished with +initialize then we're good. 如果该类已经完成执行 +initialize 方法是最理想情况
-            // If this class is still running +initialize on this thread  如果该类 +initialize 在线程中
-            // (i.e. +initialize called storeWeak on an instance of itself) 例如 +initialize 正在调用 storeWeak 方法
-            // then we may proceed but it will appear initializing and 
-            // not yet initialized to the check above.
-            // Instead set previouslyInitializedClass to recognize it on retry. 需要手动对其增加保护策略，并设置 previouslyInitializedClass 指针进行标记
+            // 如果该类已经完成执行 +initialize 方法是最理想情况
+            // 如果该类 +initialize 在线程中
+            // 例如 +initialize 正在调用 storeWeak 方法
+            // 需要手动对其增加保护策略，并设置 previouslyInitializedClass 指针进行标记
             previouslyInitializedClass = cls;
 
             goto retry;
         }
     }
 
-    // Clean up old value, if any. 清除旧值，
+    // 清除旧值，
     if (haveOld) {
         // 取消注册已经注册的弱引用
         weak_unregister_no_lock(&oldTable->weak_table, oldObj, location);
     }
 
-    // Assign new value, if any. 分配新值
+    // 分配新值
     if (haveNew) {
         newObj = (objc_object *)
             weak_register_no_lock(&newTable->weak_table, (id)newObj, location, 
                                   crashIfDeallocating);
-        // weak_register_no_lock returns nil if weak store should be rejected 如果弱引用被释放 weak_register_no_lock 方法返回 nil
+        // 如果弱引用被释放 weak_register_no_lock 方法返回 nil
 
-        // Set is-weakly-referenced bit in refcount table. 在引用计数表中设置若引用标记位
+        // 在引用计数表中设置若引用标记位
         if (newObj  &&  !newObj->isTaggedPointer()) {
             newObj->setWeaklyReferenced_nolock();
         }
 
-        // Do not set *location anywhere else. That would introduce a race.之前不要设置 location 对象，这里需要更改指针指向
+        // 之前不要设置 location 对象，这里需要更改指针指向
         *location = (id)newObj;
-    }
-    else {
-        // No new value. The storage is not changed. 没有新值，则无需更改
+    } else {
+        // 没有新值，则无需更改
     }
     
     SideTable::unlockTwo<haveOld, haveNew>(oldTable, newTable);
@@ -398,8 +394,7 @@ id objc_storeWeak(id *location, id newObj) {
  * @return The value stored (either the new object or nil)
  */
 id
-objc_storeWeakOrNil(id *location, id newObj)
-{
+objc_storeWeakOrNil(id *location, id newObj) {
     return storeWeak<DoHaveOld, DoHaveNew, DontCrashIfDeallocating>
         (location, (objc_object *)newObj);
 }
@@ -456,8 +451,7 @@ id objc_initWeakOrNil(id *location, id newObj) {
  * @param location The weak pointer address. 
  */
 void
-objc_destroyWeak(id *location)
-{
+objc_destroyWeak(id *location) {
     (void)storeWeak<DoHaveOld, DontHaveNew, DontCrashIfDeallocating>
         (location, nil);
 }

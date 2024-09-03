@@ -16,6 +16,14 @@ iOS点击触摸事件
     ### IOHIDEvent -> UIEvent
     应用程序主线程的 runloop 申请了一个 mach port 用于监听 IOHIDEvent 的 Source1 事件，回调方法是 __IOHIDEventSystemClientQueueCallback()，内部又进一步分发 Source0 事件，而 Source0 事件都是自定义的，非基于端口 port，包括触摸，滚动，selector选择器事件，它的回调方法是 __UIApplicationHandleEventQueue()，将接收到的 IOHIDEvent 事件对象封装成我们熟悉的 UIEvent 事件；然后调用 UIApplication 实例对象的 sendEvent: 方法，将 UIEvent 传递给 UIWindow 做一些逻辑判断工作：比如触摸事件产生于哪些视图上，有可能有多个，那又要确定哪个是最佳选项呢？ 等等一系列操作。这里先按下不表。
 
+    ### Hit-Testing 寻找最佳响应者
+    Source0 回调中将封装好的触摸事件 UIEvent（里面有多个UITouch 即手势点击对象），传递给视图 UIWindow，其目的在于找到最佳响应者，这个过程称之为 Hit-Testing，字面上理解：hit 即触碰了屏幕某块区域，这个区域可能有多个视图叠加而成，那么这个触摸讲道理响应者有多个喽，那么“最佳”又该如何评判？这里要牢记几个规则：
+
+    1。事件是自下而上传递，即 UIApplication -> UIWindow -> 子视图 -> ...->子视图中的子视图;
+    2.后加的视图响应程度更高，即更靠近我们的视图;
+    3.如果某个视图不想响应，则传递给比它响应程度稍低一级的视图，若能响应，你还得继续往下传递，若某个视图能响应了，但是没有子视图 它就是最佳响应者。
+    4.寻找最佳响应者的过程中， UIEvent 中的 UITouch 会不断打上标签：比如 HitTest View 是哪个，superview 是哪个？关联了什么 Gesture Recognizer?
+
 iOS的事件有好几种：
     Touch Events(触摸事件)
     Motion Events(运动事件，比如重力感应和摇一摇等)、
@@ -109,62 +117,44 @@ hitTest:withEvevt:从Window开始，判断当前位置是否在window内，如�
 * frame #0： 0x800000010275164c TouchEvent’-[HitTestview hitTest:withEvent:1(se1f=0x800000156de5dde，
 _cmd-"hitTest:withEvent:", point=(x = 148.66666666666666, y = 258.33333333333331),
 event=0x0000600003270680） at HitTestView.m：14:9
-frame #1: 0x000000010a088b4 UIKitCore'-[UIView(Geometry) _hitTest:withEvent:windowServerHitTestwindow:] +
-80
-frame #2: 0x000000010a087a8 UIKitCore'
-_38-[UIView (Geometry) hitTest:withEvent: ]_block_invoke + 108
-frame #3: 0x0000000180376d94 CoreFoundation*_-NSARRAY_IS_CALLING_OUT_TO_A_BLOCK_.
-+ 16
+frame #1: 0x000000010a088b4 UIKitCore'-[UIView(Geometry) _hitTest:withEvent:windowServerHitTestwindow:] + 80
+frame #2: 0x000000010a087a8 UIKitCore'_38-[UIView (Geometry) hitTest:withEvent: ]_block_invoke + 108
+frame #3: 0x0000000180376d94 CoreFoundation*_-NSARRAY_IS_CALLING_OUT_TO_A_BLOCK_. + 16
 frame #4: 0x00000001802f904 CoreFoundation'-[__NSArrayM enumerateObjectsWithOptions:usingBlock:] + 460
 frame #5: 0x000000010a0e851c UIKitCore'-[UIView(Geometry) hitTest:withEvent: ] + 680
-frame #6: 0x000000010a088b4 UIKitCore'-[UIView(Geometry) _hitTest:withEvent :windowServerHitTestWindow:] + 80 frame #7: 0x000000010a0e87a8 UIKitCore'
-_38-[UIView (Geometry) hitTest:withEvent:]_block_invoke + 108
-frame #8: 0×0000000180376d94 CoreFoundation'
-_NSARRAY_IS_CALLING_OUT_TO_A_BLOCK_
-+ 16
-frame #9: 0×00000001802d904 CoreFoundation'-[_
-_NSArrayM enumerateObjectsWithOptions:usingBlock: ] + 460
-frame #10: 0x000000010a0e851c UIKitCore
--[UIView(Geometry) hitTest:withEvent:] +680
+frame #6: 0x000000010a088b4 UIKitCore'-[UIView(Geometry) _hitTest:withEvent :windowServerHitTestWindow:] + 80 
+frame #7: 0x000000010a0e87a8 UIKitCore'_38-[UIView (Geometry) hitTest:withEvent:]_block_invoke + 108
+frame #8: 0×0000000180376d94 CoreFoundation' _NSARRAY_IS_CALLING_OUT_TO_A_BLOCK_、 + 16
+frame #9: 0×00000001802d904 CoreFoundation'-[__NSArrayM enumerateObjectsWithOptions:usingBlock: ] + 460
+frame #10: 0x000000010a0e851c UIKitCore -[UIView(Geometry) hitTest:withEvent:] +680
 frame #11: 0x000000010a0b6c20 UIKitcore’-[UIDropShadowview hitTest:withEvent:]+ 216
 frame #12: 0x00e000010a0e88b4 UIKitcore’-[UIview(Geometry)_hitTest:withEvent:windowserverHitTestwindow：] + 8
-rame #13: Bx000000019aGe87a8 UIkitcore’-_38-[UTView(Geometry) hitTest: withEvent:1_block_invoke + 108
+frame #13: Bx000000019aGe87a8 UIkitcore’-_38-[UTView(Geometry) hitTest: withEvent:1_block_invoke + 108
 frame #14： 9x0060060180376d94 coreFoundation’-_NSARRAY _IS_CALLING_OUT_TO_A_BLOCK_-+16
 frame #15: 0x9eee0001802fd994 CoreFoundation’-[ NSArrayM enumerateObjectsWithoptions: usingBlock:]+460
 frame #16: 日xeeee00010aee851c UIKitCore'-[UIview( Geometry) hitTest:withEvent: ] + 680
-frame #17: 0x000000010a0cac70 UIKitCore
--[UITransitionview hitTest: withEvent:] +
-48
-frame #18: 0x000000010a0e884 UIKitCore
-‘-[UIview( Geometry) _hitTest :withEvent:windowserverHitTestwindow：] +80
-frame #19: 0x000000010a087a8 UIKitCore'
-_38-[UIView (Geometry) hitTest:withEvent:1_block_invoke + 108
+frame #17: 0x000000010a0cac70 UIKitCore-[UITransitionview hitTest: withEvent:] +48
+frame #18: 0x000000010a0e884 UIKitCore ‘-[UIview( Geometry) _hitTest :withEvent:windowserverHitTestwindow：] +80
+frame #19: 0x000000010a087a8 UIKitCore'_38-[UIView (Geometry) hitTest:withEvent:1_block_invoke + 108
 frame #20: 0x0000000180376d94 CoreFoundation*__NSARRAY_IS_CALLING_OUT_TO_A_BLOCK_- + 16
 frame #21: 0x00000001802d904 CoreFoundation'-[__NSArrayM enumerateObjectsWithOptions:usingBlock:] + 460
-frame #22: 0x000000010a0851c UIKitCore*-[UIView(Geometry) hitTest:withEvent:] + 680 frame #23: 0x000000010a088b4 UIKitCore*-[UIView(Geometry)
-_hitTest:withEvent:windowServerHitTestWindow:]+ 80
-frame #24: 0x0000000109cab960 UIKitCore'-[UIWindow _hitTestLocation: sceneLocationz: inScene:withWindowServerHitTestwindow:event:] + 92 frame #25: 0x0000000109cab7d0 UIKitCore'
---75+[UIWindow _hitTestToPoint:scenePointz:forEvent:windowserverHitTestwindow:J_block_invoke + 64
-frame #26: 0x0000000109e93804 UIKitCore
-__64-[UIWindowScene _topVisibleWindownumeratingAsCopy:passingTest:1_block_invoke + 108
+frame #22: 0x000000010a0851c UIKitCore*-[UIView(Geometry) hitTest:withEvent:] + 680 frame #23: 0x000000010a088b4 UIKitCore*-[UIView(Geometry)_hitTest:withEvent:windowServerHitTestWindow:]+ 80
+frame #24: 0x0000000109cab960 UIKitCore'-[UIWindow _hitTestLocation: sceneLocationz: inScene:withWindowServerHitTestwindow:event:] + 92 
+frame #25: 0x0000000109cab7d0 UIKitCore'--75+[UIWindow_hitTestToPoint:scenePointz:forEvent:windowserverHitTestwindow:J_block_invoke + 64
+frame #26: 0x0000000109e93804 UIKitCore__64-[UIWindowScene _topVisibleWindownumeratingAsCopy:passingTest:1_block_invoke + 108
 frame #27: 0x0000000109939c0 UIKitCore'-[UIWindowScene_enumerateWindowsIncludingInternalWindows:onlyVisibleWindows:asCopy:stopped:withBlock:]+308
 frame #28： 0x0ece00610ge93718 UIKitcore’-[UIwindowscene _topvisiblewindowEnumeratingAsCopy :passing Test: ] + 372
 frame #29: 0x0000000109cab73c UIKitcore'+[UIWindow _hitTestToPoint:scenePointz：forEvent:windowserverHitTestwindow： ] + 192
 frame #30: 0x00e0000109caba40 UIKitcore’-[UIwindow _targetwindowForPathIndex:atPoint:scenePointz:forEvent:windowServerHitTestwindow：] +184
-frame #31: 0x0000000109c5d8 UIKitCore
--updateToucheswithDigitizerEventAndDetermineIfshouldsend_block_invoke.27 +5380
-frame #32: 0x0000000109d05f50 UIKitCore
-UIEventHIDEnumerateChildren + 160
-frame #33: 0x0000000109cf877c UIKitCore _-dispatchPreprocessedEventFromEventQueue + 2232 frame #34: 0x0000000109cf5d0 UIKitCore' __processEventQueue + 5612 frame #35: 0x0000000109cf44ac UIKitCore' _eventFetcherSourceCallback + 220 frame #36: 0×000000018037318c CoreFoundation'
-__CFRUNLOOP_IS_CALLING_OUT_TO_A_SOURCE0_PERFORM_FUNCTION_.
-_ + 24
-frame #37: 0x00000001803730d4 CoreFoundation'
-__CFRunLoopDoSource + 172
-frame #38: 0x0000000180372844 CoreFoundation'
-__ CFRunLoopDoSources® + 232
-frame
-#39: 0x000000018036ceb0 CoreFoundation'
-CFRunLoopRun + 756
+frame #31: 0x0000000109c5d8 UIKitCore-updateToucheswithDigitizerEventAndDetermineIfshouldsend_block_invoke.27 +5380
+frame #32: 0x0000000109d05f50 UIKitCore UIEventHIDEnumerateChildren + 160
+frame #33: 0x0000000109cf877c UIKitCore _-dispatchPreprocessedEventFromEventQueue + 2232 
+frame #34: 0x0000000109cf5d0 UIKitCore' __processEventQueue + 5612 
+frame #35: 0x0000000109cf44acUIKitCore' _eventFetcherSourceCallback + 220 
+frame #36: 0×000000018037318c CoreFoundation'__CFRUNLOOP_IS_CALLING_OUT_TO_A_SOURCE0_PERFORM_FUNCTION_._ + 24
+frame #37: 0x00000001803730d4 CoreFoundation'__CFRunLoopDoSource + 172
+frame #38: 0x0000000180372844 CoreFoundation'__ CFRunLoopDoSources® + 232
+frame #39: 0x000000018036ceb0 CoreFoundation'CFRunLoopRun + 756
 frame #40: 0x000000018036c7a4 CoreFoundation'CFRunLoopRunSpecific + 584
 frame #41: 0x0000000188f7c98 GraphicsServices'GSEventRunModal+160
 frame #42: 0x0000000109c6237c UIKitCore'-[UIApplication_run]+ 868
