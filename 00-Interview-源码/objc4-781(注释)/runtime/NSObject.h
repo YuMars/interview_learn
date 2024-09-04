@@ -2,9 +2,6 @@
 	Copyright (c) 1994-2012, Apple Inc. All rights reserved.
 */
 
-#ifndef _OBJC_NSOBJECT_H_
-#define _OBJC_NSOBJECT_H_
-
 #if __OBJC__
 
 #include <objc/objc.h>

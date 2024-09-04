@@ -895,8 +895,7 @@ class list_array_tt {
     void attachLists(List* const * addedLists, uint32_t addedCount) {
         if (addedCount == 0) return;
 
-        if (hasArray()) {
-            // many lists -> many lists
+        if (hasArray()) {// 多->多
             uint32_t oldCount = array()->count;
             uint32_t newCount = oldCount + addedCount;
             setArray((array_t *)realloc(array(), array_t::byteSize(newCount))); // 重新分配内存
@@ -906,12 +905,9 @@ class list_array_tt {
             memcpy(array()->lists, addedLists, 
                    addedCount * sizeof(array()->lists[0]));// 扩容后复制新增的(也就意味着相同方法，会先调用后编译的分类)
         }
-        else if (!list  &&  addedCount == 1) {
-            // 0 lists -> 1 list
+        else if (!list  &&  addedCount == 1) {  // 0 -> 1
             list = addedLists[0];
-        } 
-        else {
-            // 1 list -> many lists
+        }  else { // 1 -> 多
             List* oldList = list;
             uint32_t oldCount = oldList ? 1 : 0;
             uint32_t newCount = oldCount + addedCount;
@@ -1657,7 +1653,6 @@ struct  category_t {
     struct method_list_t *classMethods;
     struct protocol_list_t *protocols;
     struct property_list_t *instanceProperties;
-    // Fields below this point are not always present on disk.
     struct property_list_t *_classProperties;
 
     method_list_t *methodsForMeta(bool isMeta) {

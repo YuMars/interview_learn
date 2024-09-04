@@ -387,8 +387,7 @@ void weak_unregister_no_lock(weak_table_t *weak_table, id referent_id/*oldObj*/,
         // 判断out_of_line的动态数组referrers中是否有值
         if (entry->out_of_line()  &&  entry->num_refs != 0) {
             empty = false;
-        }
-        else { //判断entry的定长数组inline_referrers中是否有值
+        } else { //判断entry的定长数组inline_referrers中是否有值
             for (size_t i = 0; i < WEAK_INLINE_COUNT; i++) {
                 if (entry->inline_referrers[i]) {
                     empty = false; 

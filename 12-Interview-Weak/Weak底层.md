@@ -178,7 +178,7 @@ Type &get() {
 ```
 
 ### 3.3
-`StripedMap` 是一个以`void *p`为 key，`PaddedT`为 value 的表，实现如下：
+`StripedMap` 是一个以`void *p  (实际为objc_object *)`为 key，`PaddedT`为 value 的表，实现如下：
 
 ```
 template<typename T>
@@ -366,7 +366,7 @@ typedef DisguisedPtr<objc_object *> weak_referrer_t;
 ```
 
 ## 4
-我们结合上面提到的`storeWeak`方法中进行具体分享，代码如下，
+我们结合上面提到的`storeWeak`方法中进行具体分析，代码如下，
 
 ```
 template <HaveOld haveOld, HaveNew haveNew,

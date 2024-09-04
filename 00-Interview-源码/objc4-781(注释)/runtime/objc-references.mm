@@ -166,9 +166,6 @@ id _object_get_associative_reference(id object, const void *key) {
 }
 
 void _object_set_associative_reference(id object, const void *key, id value, uintptr_t policy) {
-    // This code used to work when nil was passed for object and key. Some code
-    // probably relies on that to not crash. Check and handle it explicitly.
-    // rdar://problem/44094390
     if (!object && !value) return;
 
     if (object->getIsa()->forbidsAssociatedObjects())

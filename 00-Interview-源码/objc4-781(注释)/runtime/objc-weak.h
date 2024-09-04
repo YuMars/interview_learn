@@ -79,14 +79,14 @@ typedef DisguisedPtr<objc_object *> weak_referrer_t;
 // inline_referrers[1] is a DisguisedPtr of a pointer-aligned address.
 // The low two bits of a pointer-aligned DisguisedPtr will always be 0b00
 // (disguised nil or 0x80..00) or 0b11 (any other address).
-// Therefore out_of_line_ness == 0b10 is used to mark the out-of-line state.
+// Therefore out_ofremove_referrer state.
 #define REFERRERS_OUT_OF_LINE 2
 
 struct weak_entry_t {
     DisguisedPtr<objc_object> referent; // 弱引用的对象
     union {
         
-        struct {  (找到的资料是4，个人感觉上REFERRERS_OUT_OF_LINE代表的2，out_of_line_ness == 0b10 (0b10 = 2))
+        struct {  //(找到的资料是4，个人感觉上REFERRERS_OUT_OF_LINE代表的2，out_of_line_ness == 0b10 (0b10 = 2))
             weak_referrer_t *referrers; // 二维指针数组,存储指向该对象的弱引用
             uintptr_t        out_of_line_ness : 2;
             uintptr_t        num_refs : PTR_MINUS_2; // 引用数值

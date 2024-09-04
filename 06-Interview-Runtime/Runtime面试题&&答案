@@ -286,7 +286,7 @@ OC的函数调用称为消息发送。属于动态调用过程。在编译的时
 
 
 9.在⽅法调⽤的时候，⽅法查询-> 动态解析-> 消息转发 之前做了什么
-·首先检查selector是不是要忽略（MacOS有了垃圾回收就不会例会retain，release）
+·首先检查selector是不是要忽略（MacOS有了垃圾回收就不会理会retain，release）
 ·检查这个selector的target是不是nil，如果是nil就不会crash运行时被忽略
 
 

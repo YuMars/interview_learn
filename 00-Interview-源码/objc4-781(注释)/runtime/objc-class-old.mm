@@ -26,7 +26,7 @@
 * Support for old-ABI classes, methods, and categories.
 **********************************************************************/
 
-#if !__OBJC2__
+
 
 #include "objc-private.h"
 #include "objc-runtime-old.h"
@@ -2607,4 +2607,4 @@ Class class_setSuperclass(Class cls, Class newSuper)
     flush_caches(cls, YES);
     return oldSuper;
 }
-#endif
+

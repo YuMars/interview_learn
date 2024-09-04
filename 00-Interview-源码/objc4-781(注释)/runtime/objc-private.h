@@ -72,7 +72,6 @@ union isa_t {
 
     Class cls;
     uintptr_t bits;
-#if defined(ISA_BITFIELD)
     struct {
         ISA_BITFIELD;  // defined in isa.h
         /*
@@ -87,7 +86,6 @@ union isa_t {
          uintptr_t extra_rc          : 19 // (里面存储的值是引用计数器减一)
          */
     };
-#endif
 };
 
 

@@ -911,8 +911,7 @@ void _objc_atfork_child()
 * Called by libSystem BEFORE library initialization time
 **********************************************************************/
 
-void _objc_init(void)
-{
+void _objc_init(void) {
     static bool initialized = false;
     if (initialized) return;
     initialized = true;
