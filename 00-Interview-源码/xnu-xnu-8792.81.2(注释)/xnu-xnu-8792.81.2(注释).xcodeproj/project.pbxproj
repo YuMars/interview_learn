@@ -138,6 +138,7 @@
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "xnu-xnu-8792.81.2(注释)";
+				SDKROOT = macos;
 			};
 			name = Debug;
 		};
@@ -150,6 +151,7 @@
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "xnu-xnu-8792.81.2(注释)";
+				SDKROOT = macos;
 			};
 			name = Release;
 		};

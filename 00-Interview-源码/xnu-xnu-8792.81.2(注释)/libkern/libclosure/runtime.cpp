@@ -268,9 +268,7 @@ _Block_call_dispose_helper(struct Block_layout *aBlock)
 #endif
 
 // Copy, or bump refcount, of a block.  If really copying, call the copy helper if present.
-void *
-_Block_copy(const void *arg)
-{
+void * _Block_copy(const void *arg) {
 	struct Block_layout *aBlock;
 
 	if (!arg) {
@@ -593,9 +591,7 @@ _Block_extended_layout(void *aBlock)
 // When Blocks or Block_byrefs hold objects then their copy routine helpers use this entry point
 // to do the assignment.
 //
-void
-_Block_object_assign(void *destArg, const void *object, const int flags)
-{
+void _Block_object_assign(void *destArg, const void *object, const int flags) {
 	const void **dest = (const void **)destArg;
 	switch (os_assumes(flags & BLOCK_ALL_COPY_DISPOSE_FLAGS)) {
 	case BLOCK_FIELD_IS_OBJECT:

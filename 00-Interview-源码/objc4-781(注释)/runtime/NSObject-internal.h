@@ -124,12 +124,12 @@ class AutoreleasePoolPage;
 struct AutoreleasePoolPageData
 {
 	magic_t const magic;
-	__unsafe_unretained id *next;
+	__unsafe_unretained id *next; // 下一个将要自动释放的对象的指针
 	pthread_t const thread;
-	AutoreleasePoolPage * const parent;
-	AutoreleasePoolPage *child;
-	uint32_t const depth;
-	uint32_t hiwat; // 56个字节
+	AutoreleasePoolPage * const parent; //上一页AutoreleasePoolPageData表的地址
+	AutoreleasePoolPage *child;//下一页AutoreleasePoolPageData表的地址
+	uint32_t const depth;// 当前页在链表中的深度
+	uint32_t hiwat; // 当前页内存使用的最高点
 
     
 	AutoreleasePoolPageData(__unsafe_unretained id* _next, pthread_t _thread, AutoreleasePoolPage* _parent, uint32_t _depth, uint32_t _hiwat)

@@ -176,8 +176,7 @@
 * object_getClass.
 * Locking: None. If you add locking, tell gdb (rdar://7516456).
 **********************************************************************/
-Class object_getClass(id obj)
-{
+Class object_getClass(id obj) {
     if (obj) return obj->getIsa();
     else return Nil;
 }

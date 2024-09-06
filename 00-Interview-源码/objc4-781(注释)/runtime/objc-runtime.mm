@@ -138,10 +138,8 @@ void _objc_isDebugBuild(void) { }
 * which may create a new class.
 * Warning: doesn't work if aClassName is the name of a posed-for class's isa!
 **********************************************************************/
-Class objc_getClass(const char *aClassName)
-{
+Class objc_getClass(const char *aClassName) {
     if (!aClassName) return Nil;
-
     // NO unconnected, YES class handler
     return look_up_class(aClassName, NO, YES);
 }

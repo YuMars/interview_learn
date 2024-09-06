@@ -40,8 +40,16 @@
     NSLog(@"end");
 }
 
+
+
 - (void)funRun {
-    
+    NSTimer *timer = [NSTimer timerWithTimeInterval:1 repeats:YES block:^(NSTimer
+    * _Nonnull timer) {
+     NSLog(@"timer 定时任务");
+    }];
+    NSRunLoop *runloop = [NSRunLoop currentRunLoop];
+    [runloop addTimer:timer forMode:NSDefaultRunLoopMode];
+    [runloop run];
 }
 
 // NStimer在滑动时候优化
