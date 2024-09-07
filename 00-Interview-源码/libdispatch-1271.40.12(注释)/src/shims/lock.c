@@ -644,9 +644,7 @@ _dispatch_unfair_lock_unlock_slow(dispatch_unfair_lock_t dul, dispatch_lock cur)
 
 #pragma mark - gate lock
 
-void
-_dispatch_once_wait(dispatch_once_gate_t dgo)
-{
+void _dispatch_once_wait(dispatch_once_gate_t dgo) {
 	dispatch_lock self = _dispatch_lock_value_for_self();
 	uintptr_t old_v, new_v;
 #if HAVE_UL_UNFAIR_LOCK || HAVE_FUTEX

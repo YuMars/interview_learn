@@ -76,10 +76,7 @@ dispatch_once(dispatch_once_t *predicate,
 #if DISPATCH_ONCE_INLINE_FASTPATH
 DISPATCH_INLINE DISPATCH_ALWAYS_INLINE DISPATCH_NONNULL_ALL DISPATCH_NOTHROW
 DISPATCH_SWIFT3_UNAVAILABLE("Use lazily initialized globals instead")
-void
-_dispatch_once(dispatch_once_t *predicate,
-		DISPATCH_NOESCAPE dispatch_block_t block)
-{
+void _dispatch_once(dispatch_once_t *predicate, DISPATCH_NOESCAPE dispatch_block_t block) {
 	if (DISPATCH_EXPECT(*predicate, ~0l) != ~0l) {
 		dispatch_once(predicate, block);
 	} else {

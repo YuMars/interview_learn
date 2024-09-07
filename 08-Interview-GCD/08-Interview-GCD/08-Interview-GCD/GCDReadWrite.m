@@ -25,6 +25,7 @@
 }
 
 - (void)read {
+
     pthread_rwlock_rdlock(&_lock);
     NSLog(@"%@", NSStringFromSelector(_cmd));
     pthread_rwlock_rdlock(&_lock);

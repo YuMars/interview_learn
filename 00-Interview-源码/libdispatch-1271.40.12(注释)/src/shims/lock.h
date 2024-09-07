@@ -629,9 +629,7 @@ _dispatch_once_mark_quiescing(dispatch_once_gate_t dgo)
 }
 
 DISPATCH_ALWAYS_INLINE
-static inline void
-_dispatch_once_mark_done_if_quiesced(dispatch_once_gate_t dgo, uintptr_t gen)
-{
+static inline void _dispatch_once_mark_done_if_quiesced(dispatch_once_gate_t dgo, uintptr_t gen) {
 	if (_dispatch_once_generation() - gen >= DISPATCH_ONCE_GEN_SAFE_DELTA) {
 		/*
 		 * See explanation above, when the quiescing counter approach is taken
@@ -672,9 +670,7 @@ _dispatch_gate_broadcast(dispatch_gate_t l)
 }
 
 DISPATCH_ALWAYS_INLINE
-static inline bool
-_dispatch_once_gate_tryenter(dispatch_once_gate_t l)
-{
+static inline bool _dispatch_once_gate_tryenter(dispatch_once_gate_t l) {
 	return os_atomic_cmpxchg(&l->dgo_once, DLOCK_ONCE_UNLOCKED,
 			(uintptr_t)_dispatch_lock_value_for_self(), relaxed);
 }

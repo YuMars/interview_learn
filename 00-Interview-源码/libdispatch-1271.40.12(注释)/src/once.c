@@ -25,9 +25,7 @@
 
 
 #ifdef __BLOCKS__
-void
-dispatch_once(dispatch_once_t *val, dispatch_block_t block)
-{
+void dispatch_once(dispatch_once_t *val, dispatch_block_t block) {
 	dispatch_once_f(val, block, _dispatch_Block_invoke(block));
 }
 #endif
@@ -39,18 +37,13 @@ dispatch_once(dispatch_once_t *val, dispatch_block_t block)
 #endif // DISPATCH_ONCE_INLINE_FASTPATH
 
 DISPATCH_NOINLINE
-static void
-_dispatch_once_callout(dispatch_once_gate_t l, void *ctxt,
-		dispatch_function_t func)
-{
+static void _dispatch_once_callout(dispatch_once_gate_t l, void *ctxt, dispatch_function_t func) {
 	_dispatch_client_callout(ctxt, func);
 	_dispatch_once_gate_broadcast(l);
 }
 
 DISPATCH_NOINLINE
-void
-dispatch_once_f(dispatch_once_t *val, void *ctxt, dispatch_function_t func)
-{
+void dispatch_once_f(dispatch_once_t *val, void *ctxt, dispatch_function_t func) {
 	dispatch_once_gate_t l = (dispatch_once_gate_t)val;
 
 #if !DISPATCH_ONCE_INLINE_FASTPATH || DISPATCH_ONCE_USE_QUIESCENT_COUNTER
