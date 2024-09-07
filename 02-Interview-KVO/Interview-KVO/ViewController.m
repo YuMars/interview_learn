@@ -149,6 +149,7 @@
     self.person.weight = 300;
     self.person2.age = 30;
     
+    
 //    [self.person willChangeValueForKey:@"height"];
 //    self.person -> _height = 30;
 //    [self.person didChangeValueForKey:@"height"];
