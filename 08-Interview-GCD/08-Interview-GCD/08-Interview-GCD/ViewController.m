@@ -15,6 +15,8 @@
 
 @interface ViewController ()
 
+@property (nonatomic, assign) NSInteger num;
+
 @property (nonatomic, strong) NSThread *thread;
 
 
@@ -25,12 +27,24 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.num = 0;
+    
 //    BaseBusiness *demo = [[BaseBusiness alloc] init];
 //    [demo businessBank];
 //    [demo saleTickets];
     
     NSConditionLockBusiniess *demo = [[NSConditionLockBusiniess alloc] init];
     [demo otherTest];
+    
+//    [self interview3];
+    
+    while (self.num < 5) {
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            self.num ++;
+        });
+    }
+    
+    NSLog(@"self.num:%ld", self.num);
     
 //    self.thread = [[NSThread alloc] initWithBlock:^{
 //        NSLog(@"1111");

@@ -257,21 +257,21 @@ synchroinzed中主要的方法：
 	    return result;
 	}
 
-	代码流程：
-		根据传入的objcect作为key，从sDataList取出对应的SyncList中存储的SyncData和lock对象
-		三个步骤查找：
-			1.线程局部存储中
-				使用fastCacheOccupied标记，是否已经有快速缓存
-				判断是否命中 TLS 快速缓存，对应代码 SyncData *data = (SyncData*)tls_get_direct(SYNC_DATA_DIRECT_KEY);
-			2.苹果实现的SyncCache中
-				未命中则判断是否命中⼆级缓存 SyncCache , 对应代码 SyncCache *cache = fetch_cache(NO);
-			3.遍历全局sDataList表
-				如果两个缓存都没有命中，则会遍历全局表 SyncDataLists , 此时为了防⽌多线程影响查询，使⽤了 SyncList结构中的 lock加锁（注意区分和SyncData中lock的作⽤）。查找到则说明存在⼀个 SyncData 对象供其他线程在使⽤，当前线程使⽤需要设置 threadCount + 1 然后存储到上⽂的缓存中；
-			4.如果以上查找都未找到，则会⽣成⼀个 SyncData 节点, 并通过 done 代码段填充到缓存中
+代码流程：
+	根据传入的objcect作为key，从sDataList取出对应的SyncList中存储的SyncData和lock对象
+	三个步骤查找：
+		1.线程局部存储中
+			使用fastCacheOccupied标记，是否已经有快速缓存
+			判断是否命中 TLS 快速缓存，对应代码 SyncData *data = (SyncData*)tls_get_direct(SYNC_DATA_DIRECT_KEY);
+		2.苹果实现的SyncCache中
+			未命中则判断是否命中⼆级缓存 SyncCache , 对应代码 SyncCache *cache = fetch_cache(NO);
+		3.遍历全局sDataList表
+			如果两个缓存都没有命中，则会遍历全局表 SyncDataLists , 此时为了防⽌多线程影响查询，使⽤了 SyncList结构中的 lock加锁（注意区分和SyncData中lock的作⽤）。查找到则说明存在⼀个 SyncData 对象供其他线程在使⽤，当前线程使⽤需要设置 threadCount + 1 然后存储到上⽂的缓存中；
+		4.如果以上查找都未找到，则会⽣成⼀个 SyncData 节点, 并通过 done 代码段填充到缓存中
 
-		命中逻辑类似，如果有result，
-			加锁，则将 lockCount ++，记录 key object 对应的 SyncData 变量lock 的加锁次数，再次存储回对应的缓存
-			解锁，同样 lockCount--，如果 ==0，表示当前线程中 object 关联的锁不再使⽤了，对应缓存中SyncData 的 threadCount 减1，当前线程中 object 作为 key 的加锁代码块完全释放
+	命中逻辑类似，如果有result，
+		加锁，则将 lockCount ++，记录 key object 对应的 SyncData 变量lock 的加锁次数，再次存储回对应的缓存
+		解锁，同样 lockCount--，如果 ==0，表示当前线程中 object 关联的锁不再使⽤了，对应缓存中SyncData 的 threadCount 减1，当前线程中 object 作为 key 的加锁代码块完全释放
 
 
 
