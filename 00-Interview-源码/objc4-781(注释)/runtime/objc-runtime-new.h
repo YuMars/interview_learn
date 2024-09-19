@@ -697,7 +697,7 @@ struct protocol_list_t {
 };
 
 struct class_ro_t {
-    uint32_t flags;
+    uint32_t flags; // 是否是ARC
     uint32_t instanceStart;
     uint32_t instanceSize;
 #ifdef __LP64__

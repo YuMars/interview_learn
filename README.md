@@ -1613,7 +1613,333 @@ dispatch_once死锁：
 
 > dispatch_source_t不受当前runloopMode的影响，时效基本上误差较小。
 
+## 13.TODO:@synchronize的原理
 
+synchroinzed中主要的数据结构：
+SyncData:
+SyncList:
+sDataLists:
+
+
+SyncList:
+```
+// SyncList 作为表中的⾸节点存在，存储着 SyncData 链表的头结点
+struct SyncList {
+    SyncData *data;// 指向的 SyncData 对象
+    spinlock_t lock; // 操作 SyncList 时防⽌多线程资源竞争的锁，这⾥要和 SyncData 中的 mutex 区分开作⽤，SyncData 中的 mutex 才是实际代码块加锁使⽤的
+
+    constexpr SyncList() : data(nil), lock(fork_unsafe_lock) { }
+};
+```
+
+SyncData:
+```
+typedef struct alignas(CacheLineSize) SyncData {
+    struct SyncData* nextData; // 指向下⼀个 SyncData 节点，作⽤类似链表
+    DisguisedPtr<objc_object> object; // 绑定的作为 key 的对象
+    int32_t threadCount;  // number of THREADS using this block 使⽤当前 obj 作为 key 的线程数
+    recursive_mutex_t mutex; // 递归锁，根据源码继承链其实是 apple ⾃⼰封装了os_unfair_lock 实现的递归锁
+} SyncData;
+```
+
+sDataList:
+```
+static StripedMap<SyncList> sDataLists;  // 哈希表，以关联的 obj 内存地址作为 key，value是 SyncList 类 型
+```
+
+```
+static SyncData* id2data(id object, enum usage why) {
+    spinlock_t *lockp = &LOCK_FOR_OBJ(object);
+    SyncData **listp = &LIST_FOR_OBJ(object); // object作为key，通过hash map维护一个递归锁
+    SyncData* result = NULL;
+
+    // 1.快速缓存方案(TLS Cache)
+#if SUPPORT_DIRECT_THREAD_KEYS
+    // Check per-thread single-entry fast cache for matching object
+    bool fastCacheOccupied = NO; // 快速缓存是否被占用
+    SyncData *data = (SyncData *)tls_get_direct(SYNC_DATA_DIRECT_KEY); // ⾸先判断是否命中 TLS(线程局部存储-thread local storage) 快速缓存
+    if (data) {
+        fastCacheOccupied = YES;
+
+        if (data->object == object) { // 命中快速缓存 且 命中的快速缓存的object是传入的object
+            // Found a match in fast cache.
+            uintptr_t lockCount;
+
+            result = data;
+            lockCount = (uintptr_t)tls_get_direct(SYNC_COUNT_DIRECT_KEY); //
+            if (result->threadCount <= 0  ||  item->lockCount <= 0) { // threadCount当前SyncData被使用的线程数，lockCount当前线程被锁的次数
+                _objc_fatal("id2data fastcache is buggy");
+            }
+
+            switch(why) { // 根据传入的usage 枚举，对lockCount做加减。
+            case ACQUIRE: {
+                lockCount++;
+                tls_set_direct(SYNC_COUNT_DIRECT_KEY, (void*)lockCount);
+                break;
+            }
+            case RELEASE:
+                lockCount--;
+                tls_set_direct(SYNC_COUNT_DIRECT_KEY, (void*)lockCount);
+                if (lockCount == 0) { // 如果lockCount == 0，快速缓存中的lockCount为NULL，
+                    // remove from fast cache
+                    tls_set_direct(SYNC_DATA_DIRECT_KEY, NULL);
+                    // atomic because may collide with concurrent ACQUIRE 原子性因为可能并发ACQUIRE
+                    OSAtomicDecrement32Barrier(&result->threadCount); // 减少线程数量
+                }
+                break;
+            case CHECK:
+                // do nothing
+                break;
+            }
+
+            return result;
+        }
+    }
+#endif
+
+    // 2.缓存方案(二级缓存 hash map)
+    // Check per-thread cache of already-owned locks for matching object
+    SyncCache *cache = fetch_cache(NO);
+    if (cache) {
+        unsigned int i;
+        for (i = 0; i < cache->used; i++) {
+            SyncCacheItem *item = &cache->list[i];
+            if (item->data->object != object) continue;
+
+            // Found a match.
+            result = item->data;
+            if (result->threadCount <= 0  ||  item->lockCount <= 0) {
+                _objc_fatal("id2data cache is buggy");
+            }
+                
+            switch(why) {
+            case ACQUIRE:
+                item->lockCount++;
+                break;
+            case RELEASE:
+                item->lockCount--;
+                if (item->lockCount == 0) {
+                    // remove from per-thread cache
+                    cache->list[i] = cache->list[--cache->used];
+                    // atomic because may collide with concurrent ACQUIRE
+                    OSAtomicDecrement32Barrier(&result->threadCount);
+                }
+                break;
+            case CHECK:
+                // do nothing
+                break;
+            }
+
+            return result;
+        }
+    }
+
+    // Thread cache didn't find anything.
+    // Walk in-use list looking for matching object
+    // Spinlock prevents multiple threads from creating multiple 
+    // locks for the same new object.
+    // We could keep the nodes in some hash table if we find that there are
+    // more than 20 or so distinct locks active, but we don't do that now.
+    
+    // 线程缓存没有找到任何东西。
+    // 遍历使用列表查找匹配对象
+    // 自旋锁阻止多个线程创建多个线程
+    // 锁定相同的新对象。
+    // 我们可以将节点保存在某个哈希表中，如果我们发现有,超过20个不同的锁处于活动状态，但我们现在不这样做。
+    
+    lockp->lock();
+
+    // 3.两个缓存都没有命中，遍历全局表SyncDataList。为了防止多线程影响，使用了SyncList结构中的lock加锁
+    {
+        SyncData* p;
+        SyncData* firstUnused = NULL;
+        for (p = *listp; p != NULL; p = p->nextData) {
+            if ( p->object == object ) {
+                result = p;
+                // atomic because may collide with concurrent RELEASE
+                OSAtomicIncrement32Barrier(&result->threadCount);
+                goto done;
+            }
+            if ( (firstUnused == NULL) && (p->threadCount == 0) )
+                firstUnused = p;
+        }
+    
+        // no SyncData currently associated with object
+        if ( (why == RELEASE) || (why == CHECK) )
+            goto done;
+    
+        // an unused one was found, use it
+        if ( firstUnused != NULL ) { // 找到SyncData，加锁，lockCount = 1
+            result = firstUnused;
+            result->object = (objc_object *)object;
+            result->threadCount = 1;
+            goto done;
+        }
+    }
+
+    // Allocate a new SyncData and add to list.
+    // XXX allocating memory with a global lock held is bad practice,
+    // might be worth releasing the lock, allocating, and searching again.
+    // But since we never free these guys we won't be stuck in allocation very often.
+    
+    // 没找到SyncData，则生成一个SyncData
+    posix_memalign((void **)&result, alignof(SyncData), sizeof(SyncData));
+    result->object = (objc_object *)object;
+    result->threadCount = 1;
+    new (&result->mutex) recursive_mutex_t(fork_unsafe_lock);
+    result->nextData = *listp;
+    *listp = result;
+    
+ done:
+    lockp->unlock();
+    if (result) {
+        // Only new ACQUIRE should get here.
+        // All RELEASE and CHECK and recursive ACQUIRE are 
+        // handled by the per-thread caches above.
+        if (why == RELEASE) {
+            // Probably some thread is incorrectly exiting 
+            // while the object is held by another thread.
+            return nil;
+        }
+        if (why != ACQUIRE) _objc_fatal("id2data is buggy");
+        if (result->object != object) _objc_fatal("id2data is buggy");
+
+#if SUPPORT_DIRECT_THREAD_KEYS
+        if (!fastCacheOccupied) {
+            // Save in fast thread cache
+            tls_set_direct(SYNC_DATA_DIRECT_KEY, result);
+            tls_set_direct(SYNC_COUNT_DIRECT_KEY, (void*)1);
+        } else 
+#endif
+        {
+            // Save in thread cache
+            if (!cache) cache = fetch_cache(YES);
+            cache->list[cache->used].data = result;
+            cache->list[cache->used].lockCount = 1;
+            cache->used++;
+        }
+    }
+
+    return result;
+}
+```
+
+代码流程：
+根据传入的objcect作为key，从sDataList取出对应的SyncList中存储的SyncData和lock对象
+三个步骤查找：
+1. 线程局部存储中（快速缓存）
+    使用fastCacheOccupied标记，是否已经有快速缓存判断是否命中 TLS 快速缓存，对应代码SyncData *data = (SyncData*)tls_get_direct(SYNC_DATA_DIRECT_KEY);
+2. 苹果实现的SyncCache中未命中则判断是否命中⼆级缓存 SyncCache , 对应代码 SyncCache *cache = fetch_cache(NO);
+3. 遍历全局sDataList表
+    如果两个缓存都没有命中，则会遍历全局表SyncDataLists，此时为了防⽌多线程影响查询，使⽤了SyncList结构中的lock加锁（注意区分和SyncData中lock的作⽤）。查找到则说明存在⼀个SyncData 对象供其他线程在使⽤，当前线程使⽤需要设置 threadCount + 1然后存储到上⽂的缓存中；
+4. 如果以上查找都未找到，则会⽣成⼀个 SyncData 节点, 并通过 done 代码段填充到缓存中
+
+命中逻辑类似，如果有result，
+- 加锁:则将lockCount++,记录key= object对应的SyncData变量lock的加锁次数，再次存储回对应的缓存
+- 解锁:同样lockCount--,如果==0，表示当前线程中object关联的锁不再使⽤了，对应缓存中SyncData 的threadCount减1，当前线程中 object 作为 key 的加锁代码块完全释放
+
+
+### 13.1 sychronized 是如何与传⼊的对象关联上的？ 
+由sDataLists结构看出，是通过传入的object对象地址关联的。通过object对象地址，查找SyncList对应的SyncData
+
+### 13.2 是否会对传⼊的对象有强引⽤关系？
+没有。StripedMap的代码中
+static unsigned int indexForPointer(const void *p) {// 散列函数，通过对象地址计算出对应 PaddedT在数组中的下标
+    uintptr_t addr = reinterpret_cast<uintptr_t>(p);
+    return ((addr >> 4) ^ (addr >> 9)) % StripeCount;
+}
+没有强引用，只是将内存地址作为key传入，没有指针指向传入的key
+
+### 13.3 如果 synchronized 传⼊ nil 会有什么问题？
+无法找到SyncData对象，会执行BREAKPOINT_FUNCTION( void objc_sync_nil(void) );
+BREAKPOINT_FUNCTION（asm("")） 空汇编指令。
+最终结果是不执行加锁，所以这样来看synchroinzed并不是线程安全的
+
+### 13.4 当做key的对象在 synchronized 内部被释放会有什么问题？
+在objc_sync_exit()中，不做任何事情，导致锁也没被释放掉，一直处于锁定状态。并且导致后续异步线程在执行objc_sync_enter()，线程犹豫上一个锁没有被释放，一直处于等待状态
+
+### 13.5 synchronized 是否是可重⼊的,即是否可以作为递归锁使⽤？
+可以是递归锁。因为SyncData内部是recursive_mutex_t（OS_UNFAIR_RECURSIVE_LOCK_INIT）可以递归
+
+## 14.以下代码输出结果是什么
+```
+#import <Foundation/Foundation.h>
+
+int main2(char*p) {
+    __block char*wp = p;
+    dispatch_queue_t q = dispatch_queue_create("x", DISPATCH_QUEUE_CONCURRENT);
+    *wp++ = '1';
+    dispatch_async(q, ^{
+        *wp++ = '2';
+        dispatch_sync(q, ^{
+            *wp++ = '3';
+        });
+        *wp++ = '4';
+    });
+    *wp++ = '5';
+    return 0;
+}
+int main() {
+    char *p = malloc(10000*5);
+    for (int i = 0; i < 10000; ++i) {
+        main2(p + i * 5);
+    }
+    sleep(5);
+    int count[10] = {};
+    NSMutableArray *d = [NSMutableArray new];
+    for (int i = 0; i < 10000; ++i) {
+        id str = [NSString stringWithFormat:@"%.5s", p + i * 5];
+        NSInteger idx = [d indexOfObject:str];
+        if (idx != NSNotFound) {
+            count[idx] += 1;
+        } else {
+            [d addObject:str];
+            count[d.count-1] += 1;
+        }
+    }
+    for (int i = 0; i < d.count; ++i) {
+        NSLog(@"%@ => %d", d[i], count[i]);
+    }
+    return 0;
+}
+```
+
+15243->10000
+15243->9996
+12435->3
+12534->1
+
+15243->9985
+12453->1
+12543->1
+12435->13
+
+结论：queue的执行时机取决于他什么时候获取到线程资源
+
+## 15.在a线城创建一个对象, 在b线程的时候，它的count变成0了.那么它释放是在a线程还是在b线程释放的.也就是说它的那些内存回收是在a上做的还是b上的。
+
+count = 0的线程释放
+
+## 16.以下代码会输出吗？如果输出的话输出了什么?
+
+```
+self.num = 0;
+while (self.num < 5) {
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        self.num ++;
+    });
+}
+
+NSLog(@"self.num:%ld", self.num);
+```
+会输出，随机输出self.num的值。看线程的忙碌程度，如果线程不忙则输出数字小，如果线程忙则会输出比较大的值，但是一定会结束。
+
+## pod publihs流程
+
+1. 编辑正确的.podspec文件，修改需要发布的版本号
+2. 验证.podspec文件，pod lib lint xxx..podspec，检查xxx.podspec的完整性和依赖关系，源码的路径，验证全部正确后会显示pass validation
+3. 提交代码并且打tag，tag需要跟xxx.podspec里的version相同。
+4. 发布到对应的仓库中 pod repo push "私有仓库名" xxx.podspec
 
 ## pod install之后执行了哪些动作
 1.检查Podfile文件里面的依赖和版本号
@@ -1623,68 +1949,902 @@ dispatch_once死锁：
 5.生成Pod文件，创建workspace，生成header文件，生成各个库的配置
 6.执行结束后列出新增的、删除的依赖
 
-# 十、性能优化 & OOM治理
+# 十、Mach-O & app启动 & ipa优化 & 性能优化 & OOM治理
 
 ## 1. 如何做启动优化，如何监控
+启动优化
+冷启动的过程分为两个部分：
+1.main()之前：也叫pre-main()时间
+2.main()之后：从didFinishLaunch:到屏幕显示的第一帧
+
+main之前启动做的事情：系统dylib（动态链接库）和自身app可执行文件的加载
+        Load dylibs -> Rebase -> Bind -> Objc_init -> Initializers
+        
+App开始启动后，系统首先加载可执行文件（自身App的所有.o文件的集合），然后加载动态链接库dyld(dyld是一个专门用来加载动态链接库的库)。执行从dyld开始，dyld从可执行文件的依赖开始，递归加载所有的依赖动态链接库。
+动态链接库包括：iOS中用的的所有系统framework，加载OC runtime方法libobjc，系统级别的libSystem，例如libdispatch（GCG），libsystem_blocks(Block)    
+系统的动态链接库和App本身的可执行文件都有image（镜像），而每个App都以image（镜像）为单位进行加载。
+image（镜像）
+    1. executable可执行文件 比如.o文件
+    2. dylib动态链接库，framework就是动态链接库和相应资源包含在一起的文件夹结构。
+    3. bundle资源文件，只能用dlopen加载（不推荐）
+除了App本身的可执行文件，系统中所有的framework比如UIKit，Founddation等都是以动态链接库的方式集成进App中的。
+
+系统使用动态链接的好处：
+1.代码公用：很多程序都动态链接了这些lib，但是他们在内存和磁盘中只有一份。
+2.易于维护：由于被依赖的lib是程序执行时才链接的，所以这些lib很容易做更新，比如libSystem.dylib是libSystem.B.dylib的替身，如果需要升级可以直接换成libSysttem.C.dylib然后再替换替身。
+3.减少可执行文件体积：相比静态链接，动态链接在编译时不需要打进去，所以可执行文件的体积要小很多。
+
+ImageLoader
+image表示一个二进制文件（可执行文件或者so文件），里面被编译过的符号、代码等，所以ImageLoader作用是将这些文件加载进内存，且每个文件对应一个ImageLoader实例来负责加载。
+1.在程序运行时它先将动态链接的image递归加载。
+2.从可执行文件image递归加载所有符号。
+这些都发生在main()之前
+
+动态链接库加载的流程：
+1. load dylibs image 读取库镜像文件、在每个动态库的加载过程，dyld都需要
+    1.1 分析所依赖的动态库
+    1.2 找到动态库的mach-o文件
+    1.3 打开文件
+    1.4 验证文件
+    1.5 在系统核心注册文件签名
+    1.6 对动态库的每一个segment调用mmap()
+通常，一个App需要加在100到400个dylibs，其中系统库已经被优化，可以很快加载。
+
+这一步骤可以做的优化：
+    1. 减少非系统库的依赖
+    2. 合并非系统库
+    3. 使用静态资源，比如把代码加入主程序
+
+
+2. Reabase image 3. Bind image
+    由于ASLR（Address space layout radomization）的存在，可执行文件和动态链接库在虚拟内存中的加载地址每次启动都不固定，所以需要这2步来修复镜像中的资源指针，来指向正确的地址。rebase步骤先进行，需要把镜像读入内存，并以page为单位进行加密验证，保证不会被篡改，所以这一步的瓶颈在I/O。binding在其后进行，由于要查询符号表，来指向跨镜像的资源，加上再rebase阶段，镜像一杯读入和加密验证，所以这一步的瓶颈在CPU计算。
+        通过命令行可以查看相关的资源指针:
+        ```
+        xcrun dyldinfo -rebase -bind -lazy_bind myApp.App/myApp
+        ```
+    优化该阶段的关键在于减少__DATA segment中的指针数量。可以优化的点：
+    1.减少Objc类数量，减少selector方法
+    2.减少C++虚函数数量
+    3.使用swift struct（本质上是为了减少符号的数量）
+
+
+    
+4. Objc setup
+    1.注册Objc类
+    2.把Category的定义插入方法列表
+    3.保证每一个selector唯一
+    (这一步因为 load dylibs image和rebase/bind已经优化，无需做什么)
+
+5. initializer
+    上面三步属于静态调整，都在修改_DATA的segment中的内容，这一步则开始动态调整，开始在堆和栈中写入内容
+    1.Objc的+load:函数
+    2.C++的构造函数 如：attribute((constructor)) void DoSomeInitializationWork()
+    3.非基本类型的C++静态全局变量的创建（通常是类或者结构体）(non-trivial initializer)比如一个全局静态结构体的创建，如果在构造函数中有繁重的工作，那么会拖慢启动速度。
+
+
+Xcode计算pre-main时间
+Edit scheme -> Run -> Arguments 中将环境变量 DYLD_PRINT_STATISTICS 设为 1，
+
+```
+Total pre-main time: 341.32 milliseconds (100.0%)
+         dylib loading time: 154.88 milliseconds (45.3%)
+        rebase/binding time:  37.20 milliseconds (10.8%)
+            ObjC setup time:  52.62 milliseconds (15.4%)
+           initializer time:  96.50 milliseconds (28.2%)
+           slowest intializers :
+               libSystem.dylib :   4.07 milliseconds (1.1%)
+    libMainThreadChecker.dylib :  30.75 milliseconds (9.0%)
+                  AFNetworking :  19.08 milliseconds (5.5%)
+                        LDXLog :  10.06 milliseconds (2.9%)
+                        Bigger :   7.05 milliseconds (2.0%)
+```
+
+还有一个方法获取更详细的时间，只需将环境变量 DYLD_PRINT_STATISTICS_DETAILS 设为 1 就可以。
+```
+total time: 1.0 seconds (100.0%)
+  total images loaded:  243 (0 from dyld shared cache)
+  total segments mapped: 721, into 93608 pages with 6173 pages pre-fetched
+  total images loading time: 817.51 milliseconds (78.3%)
+  total load time in ObjC:  63.02 milliseconds (6.0%)
+  total debugger pause time: 683.67 milliseconds (65.5%)
+  total dtrace DOF registration time:   0.07 milliseconds (0.0%)
+  total rebase fixups:  2,131,938
+  total rebase fixups time:  37.54 milliseconds (3.5%)
+  total binding fixups: 243,422
+  total binding fixups time:  29.60 milliseconds (2.8%)
+  total weak binding fixups time:   1.75 milliseconds (0.1%)
+  total redo shared cached bindings time:  29.32 milliseconds (2.8%)
+  total bindings lazily fixed up: 0 of 0
+  total time in initializers and ObjC +load:  93.76 milliseconds (8.9%)
+                           libSystem.dylib :   2.58 milliseconds (0.2%)
+               libBacktraceRecording.dylib :   3.06 milliseconds (0.2%)
+                            CoreFoundation :   1.85 milliseconds (0.1%)
+                                Foundation :   2.61 milliseconds (0.2%)
+                libMainThreadChecker.dylib :  42.73 milliseconds (4.0%)
+                                   ModelIO :   1.93 milliseconds (0.1%)
+                              AFNetworking :  18.76 milliseconds (1.7%)
+                                    LDXLog :   9.46 milliseconds (0.9%)
+                        libswiftCore.dylib :   1.16 milliseconds (0.1%)
+                   libswiftCoreImage.dylib :   1.51 milliseconds (0.1%)
+                                    Bigger :   3.91 milliseconds (0.3%)
+                              Reachability :   1.48 milliseconds (0.1%)
+                             ReactiveCocoa :   1.56 milliseconds (0.1%)
+                                SDWebImage :   1.41 milliseconds (0.1%)
+                             SVProgressHUD :   1.23 milliseconds (0.1%)
+total symbol trie searches:    133246
+total symbol table binary searches:    0
+total images defining weak symbols:  30
+total images using weak symbols:  69
+```
+
+总结：
+    对于main()调用之间的耗时我们可以优化的点有：
+    1.较少不必要的framework，因为动态连接比较耗时
+    2.check framework应当设为optional和required，如果该framework在当前app支持的所有iOS系统版本都存在，那么久设为required，否则就设为optional，因为optional有额外的检查
+    3.合并或者删除一些OC类，关于清理项目中没用到的类，可以使用AppCode
+    4.删减一些无用的静态变量
+    5.删减没有被调用到的或者已经废弃的方法
+    6.将不必须在+load方法中做的事情延迟到+initializer中
+    7.尽量不要使用C++虚函数
+
+main()之后：main()到didFinishLauching或者到第一个ViewController的viewDidLoad渲染展示
+在main()被调用之后，App的主要工作就是初始化必要的服务，显示首页内容等。优化也是围绕如何能够快速展现首页来开展。 App通常在AppDelegate类中的- (BOOL)Application:(UIApplication *)Application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions方法中创建首页需要展示的view，然后在当前runloop的末尾，主动调用CA::Transaction::commit完成视图的渲染。
+
+而视图渲染主要涉及的三个阶段：
+1.准备阶段 主要是图片解码
+2.布局阶段 首页所有UIView的layoutsubview()
+3.绘制阶段 首页所有UIViewdrewRect
+还有数据创建和读取
+
+优化点：
+1.不实用Xib，直接使用代码加载首页视图
+2.NSUserDefault实际上是在library文件夹下产生一个Plist文件，如果文件太大的话读取到内存中可能很耗时，进行拆分
+3.每次使用NSLog打印会隐式的创建一个Calendar（日历），因此需要删减启动时各业务打的log
+4.梳理应用启动时发送的网络请求，统一在异步线程处理
+
+
 ## 2. 如何做卡顿优化，如何监控
+
+[如何做性能优化](https://zhuanlan.zhihu.com/p/96963676)
+
 1. FPS ⽤ CADisplayLinker 来计数
+CADisplayLink监控的思路是每个屏幕刷新周期，派发标记位设置任务到主线程中，如果多次超出16.7ms的刷新阙值，即可看作是发生了卡顿。
+
+>什么是CADisplayLink？
+CADisplayLink是一个能让我们以和屏幕刷新率相同的频率将内容画到屏幕上的定时器。
+我们在应用中创建一个新的 CADisplayLink 对象，把它添加到一个runloop中，并给它提供一个 target 和selector 在屏幕刷新的时候调用。
+一旦 CADisplayLink 以特定的模式注册到runloop之后，每当屏幕需要刷新的时候，runloop就会调用CADisplayLink绑定的target上的selector，这时target可以读到 CADisplayLink 的每次调用的时间戳，用来准备下一帧显示需要的数据。
+例如一个视频应用使用时间戳来计算下一帧要显示的视频数据。在UI做动画的过程中，需要通过时间戳来计算UI对象在动画的下一帧要更新的大小等等。
+在添加进runloop的时候我们应该选用高一些的优先级，来保证动画的平滑。可以设想一下，我们在动画的过程中，runloop被添加进来了一个高优先级的任务，那么，下一次的调用就会被暂停转而先去执行高优先级的任务，然后在接着执行CADisplayLink的调用，从而造成动画过程的卡顿，使动画不流畅。
+duration属性提供了每帧之间的时间，也就是屏幕每次刷新之间的的时间。我们可以使用这个时间来计算出下一帧要显示的UI的数值。但是 duration只是个大概的时间，如果CPU忙于其它计算，就没法保证以相同的频率执行屏幕的绘制操作，这样会跳过几次调用回调方法的机会。
+frameInterval属性是可读可写的NSInteger型值，标识间隔多少帧调用一次selector 方法，默认值是1，即每帧都调用一次。如果每帧都调用一次的话，对于iOS设备来说那刷新频率就是60HZ也就是每秒60次，如果将 frameInterval 设为2 那么就会两帧调用一次，也就是变成了每秒刷新30次。
+我们通过pause属性开控制CADisplayLink的运行。当我们想结束一个CADisplayLink的时候，应该调用-(void)invalidate
+从runloop中删除并删除之前绑定的 target跟selector
+>另外CADisplayLink 不能被继承。
+
+```
+#define LXD_RESPONSE_THRESHOLD 10
+dispatch_async(lxd_fluecy_monitor_queue(), ^{
+    CADisplayLink * displayLink = [CADisplayLink displayLinkWithTarget: self selector: @selector(screenRenderCall)];
+    [self.displayLink invalidate];
+    self.displayLink = displayLink;
+
+    [self.displayLink addToRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
+    CFRunLoopRunInMode(kCFRunLoopDefaultMode, CGFLOAT_MAX, NO);
+});
+
+- (void)screenRenderCall {
+    __block BOOL flag = YES;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        flag = NO;
+        dispatch_semaphore_signal(self.semphore);
+    });
+    dispatch_wait(self.semphore, 16.7 * NSEC_PER_MSEC);
+    if (flag) {
+        if (++self.timeOut < 1) { return; }
+        // TODO:FPS丢失
+    }
+    self.timeOut = 0;
+}
+```
+
 2. 监听 runloop 的 source0 事件和进⼊休眠前，然后设定⼀个阈值，超过⼏次算卡顿
+    主线程绝大部分计算或者绘制任务都是以Runloop为单位发生。单次Runloop如果时长超过16ms(1/60s),就会导致UI体验的卡顿。可以通过Runloop的生命周期来表示卡顿。Runloop每次进入事件开始和结束，来分析卡顿
+```
+- (void)setupRunloopObserver{
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        CFRunLoopRef runloop = CFRunLoopGetCurrent(); 
+        CFRunLoopObserverRef enterObserver;
+        enterObserver = CFRunLoopObserverCreate(CFAllocatorGetDefault(),
+                                               kCFRunLoopEntry | kCFRunLoopExit,
+                                               true,
+                                               -0x7FFFFFFF,
+                                               BBRunloopObserverCallBack, NULL);
+        CFRunLoopAddObserver(runloop, enterObserver, kCFRunLoopCommonModes);
+        CFRelease(enterObserver);
+    });
+}
+static void BBRunloopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopActivity activity, void *info) {
+    switch (activity) {
+        case kCFRunLoopEntry: {
+            NSLog(@"enter runloop...");
+        }
+            break;
+        case kCFRunLoopExit: {
+            NSLog(@"leave runloop...");
+        }
+            break;
+        default: break;
+    }
+}
+```
+
+kCFRunLoopExit的时间，减去kCFRunLoopEntry的时间，即为一次Runloop所耗费的时间，这样能找出大于16ms的Runloop。
+
 3. ping ⽅案，起⼀个⼦线程，while(1)每次async⼀个task到主线程进⾏标志位置位，然后休眠或者等待⼀定时间在⼦线程检查是否这个task被执⾏了。
+
+最理想的方案是让UI线程主动汇报当前耗时任务，每隔16ms让UI线程报到一次，如果16ms之后UI线程没有报到，那么一定在执行一个耗时任务（这里感觉如果说是前15ms都没做事，最后要报到的那1ms开始执行繁重任务，也会做到无法报到。所以这个方案这里可以优化）。
+    1.启动一个worker线程，每隔一段时间ping一下主线程（发送通知）
+    2.主线程如果有空，会接收到通知，并pong（发送另外一个通知）worker线程
+    3.如果worker线程没收到时间间隔内的pong回复，则主线程在执行其他任务，反之则主线程空闲
+    4.主线程繁忙的时候，暂停线程，打印主线程当前的函数调用栈。
+iOS的多线程一般使用NSOperation或者GCD，这两者都无法暂停每个正在执行的线程。如果从woker线程发送signal，UI线程会被立即停止，并进入singal的回调，再讲callstack打印，这样就可以定位卡顿的时候函数调用
+
+```
+signal(CALLSTACK_SIG, thread_singal_handler);
+```
+
+```
+//在主线程注册signal handler
+signal(CALLSTACK_SIG, thread_singal_handler);
+
+//通过NSNotification完成ping pong流程
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(detectPingFromWorkerThread) name:Notification_PMainThreadWatcher_Worker_Ping object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(detectPongFromMainThread) name:Notification_PMainThreadWatcher_Main_Pong object:nil];
+
+//如果ping超时，pthread_kill主线程。
+pthread_kill(mainThreadID, CALLSTACK_SIG);
+
+//主线程被暂停，进入signal回调，通过[NSThread callStackSymbols]获取主线程当前callstack。
+static void thread_singal_handler(int sig) {
+    NSLog(@"main thread catch signal: %d", sig);
+    if (sig != CALLSTACK_SIG) {
+        return;
+    }
+    NSArray* callStack = [NSThread callStackSymbols];
+    
+    NSLog(@"detect slow call stack on main thread! \n");
+    for (NSString* call in callStack) {
+        NSLog(@"%@\n", call);
+    }
+    return;
+}
+```
+上述方法不能调试，调试时gdb会干扰singal的处理，导致singal handler无法进，在UI线程遇到卡顿是能正常回调。
+
+
+方案        优点                    缺点                                实现复杂性
+FPS            直观                无法准确定位卡顿堆栈                        简单
+RunLoop Observer        能定位卡顿堆栈                    不能记录卡顿时间，定义卡顿的阈值不好控制    复杂
+Ping Main Thread        能定位卡顿堆栈，能记录卡顿时间        一直ping主线程，费电    中等
 
 ## 3. 如何做耗电优化，如何监控
 
+App耗电主要是3个状态
+Idle:说明App处于休眠状态，几乎不使用电量。
+Active:说明App处于前台工作状态，用电量比较高。图中第二个Active耗电远高于第一个，主要因为App实际所做的工作类型不同而导致
+Overhead：是指调用硬件来支持App功能所消耗的点了
+
+耗电的主要原因：
+1.CPU处理（processing）
+2.网络（Networking）
+3.定位（Location）
+4.图像（Graphics）
+
+省电的基本原则
+1.Identify:了解App在特定时刻需要完成的工作，如果是不必须的工作，考虑延后执行或者省略。
+2.Optimize：优化App的功能实现，尽可能以更有效率的方式完成功能
+3.Coalesce：合并
+4.Reduce：
+
+优化方式：
+网络
+    1.去除定时器，只在产生用户交互响应（下拉，点击按钮）、收到新消息时去重新加载数据。
+    2.使用NSURLSession的waitForConnectivity属性（等有网络时在执行，而不是立刻报错）
+    3.使用缓存（避免重复请求获取相同的内容）
+    4.上传照片失败，减少重复上传的次数，设定合理的超时时间，批量上传照片，使用Background Session（重试次数到达上限）
+    5.使用断点续传，否则网络不稳定时可能多次传输相同的内容。
+
+定位
+Continuous location、Quick location update、Region monitoring、Visit monitoring、Significant location change
+    1.清楚app需要的定位精确度（适合你的需求就好） 
+    2.使用其它来替代 Continuous location（因为这个比较耗电） 
+    3.不需要使用定位时，就停止 
+    4.延后定位更新
+
+图像处理
+    1.保证在UI需要变化时，进行刷新
+    2.避免blur
+    3.减少动画
+    4.减少不可见的内容
+
+优化I/O
+    1.减少写入数据，有变化时在写入，做一定时间间隔。
+    2.避免访问存储频率太高。分批修改
+    3.尽量顺序读写数据。在文件中跳转位置会消耗一些时间。
+    4.从文件读写大数据块，一次读取太多数据可能会引发一些问题。比如，读取一个32M文件的全部内容可能会在读取完成前触发内容分页。
+    5.读写大量重要数据时，考虑用dispatch_io，其提供了基于GCD的异步操作文件I/O的API。用dispatch_io系统会优化磁盘访问。
+    6.数据由随机访问的结构化内容组成，建议将其存储在数据库中，可以使用SQLite或Core Data访问。特别是需要操作的内容可能增长到超过几兆的时候。
+
+
 ## 4. 如何做⽹络优化，如何监控
+速度：
+正常的网络请求需要经过的流程：
+    1. DNS解析，请求DNS服务器，获取域名对应的IP地址
+    2. 与服务器建立连接，包括tcp三次握手，安全协议同步流程
+    3. 连接建立完成，发送和接收数据，解码数据
+优化点：
+    1. 直接使用IP地址，去除DNS解析步骤
+    2. 不要每次请求都建立连接，复用连接或一直使用同一条连接（长连接）
+    3. 压缩数据，减小传输的数据大小
+
+### DNS：
+DNS完整的解析流程很长，先会从本地系统缓存取，若没有就到最近的DNS服务器取，若没有再从主域名服务器取，每一层都有缓存，但为了域名解析的实时性，每一层缓存都有过期时间，这种DNS解析机制有几个缺点：
+    1.缓存时间设置长，域名更新不及时，设置短，大量DNS解析请求影响请求速度。
+    2.域名劫持，容易收中间人攻击，或被运营商劫持，把域名解析到第三方IP地址，据统计劫持率会达到7%
+    3.DNS解析过程不受控制，无法保证解析到最快的IP
+    4.一次请求只能解析一个域名
+为了解决这些问题，就有了 HTTPDNS，原理很简单，就是自己做域名解析的工作，通过 HTTP 请求后台去拿到域名对应的 IP 地址，直接解决上述所有问题：
+    1.域名解析与请求分离，所有请求都直接用IP地址，无需 DNS 解析，APP 定时请求 HTTPDNS 服务器更新IP地址即可。
+    2.通过签名等方式，保证 HTTPDNS 请求的安全，避免被劫持。
+    3.DNS 解析由自己控制，可以确保根据用户所在地返回就近的 IP 地址，或根据客户端测速结果使用速度最快的 IP。
+    4.一次请求可以解析多个域名。
+
+### 连接-复用连接，不用每次请求都建立连接，而是有效率的复用连接
+Keep-alive
+    HTTP协议里有个keep-alive，HTTP/1.1默认开启，一定程度上缓解了每次请求都要进行TCP三次握手建立连接的耗时。原理是请求完成后不立即释放链接，而是放入连接池中，若这时有另外一个请求要发出，请求的域名和端口是一样的，就直接拿出连接池中的连接进行发送和接收数据，少了建立连接的耗时。
+    实际上现在无论是客户端还是浏览器都默认开启了keep-alive，对同域名不再有每发一次请求就建立一次连接情况，纯短链接已经不存在，但有个问题，就是这个keep-alive的连接一次只能发送接收一个请求，在上一个请求处理完成之前，无法接受新的请求。若同时发起多个请求，就有两种情况：
+        1.若串行发送请求，可以一直复用一个连接，但速度很慢，每个请求都要等待上个请求完成再进行发送。
+        2.若并行发送这些请求，那么首次每个请求都要进行tcp三次握手建立新的连接，虽然第二次可以复用连接池里这堆连接，但若连接池里保持的连接过多，对服务端资源产生较大浪费，若限制了保持的连接数，并行请求里超出的连接仍每次要建连。
+    对这个问题，新一代协议 HTTP2 提出了多路复用去解决。
+多路复用
+    HTTP2的多路复用机制一样是复用连接，但它复用的这条连接支持同时处理多条请求，所有请求都可以并发在这条连接上进行，也就解决了上面说的并发请求需要建立多条连接带来的问题，网络上有张图可以较形象地表现这个过程：
+    [图1-1]
+    HTTP1.1的协议里，在一个连接里传送数据都是串行顺序传送的，必须等上一个请求全部处理完后，下一个请求才能进行处理，导致这些请求期间这条连接并不是满带宽传输的，即使是HTTP1.1的pipelining可以同时发送多个request，但response仍是按请求的顺序串行返回，只要其中一个请求的response稍微大一点或发生错误，就会阻塞住后面的请求。
+
+    HTTP2 这里的多路复用协议解决了这些问题，它把在连接里传输的数据都封装成一个个stream，每个stream都有标识，stream的发送和接收可以是乱序的，不依赖顺序，也就不会有阻塞的问题，接收端可以根据stream的标识去区分属于哪个请求，再进行数据拼接，得到最终数据。
+
+    多路复用这个词：多路可以认为是多个连接，多个操作，复用就是字面上的意思，复用一条连接或一个线程。HTTP2这里是连接的多路复用，网络相关的还有一个I/O的多路复用(select/epoll)，指通过事件驱动的方式让多个网络请求返回的数据在同一条线程里完成读写。
+
+    客户端来说，iOS9 以上 NSURLSession 原生支持 HTTP2，只要服务端也支持就可以直接使用，Android 的 okhttp3 以上也支持了 HTTP2，国内一些大型 APP 会自建网络层，支持 HTTP2 的多路复用，避免系统的限制以及根据自身业务需要增加一些特性，例如微信的开源网络库 mars，做到一条长连接处理微信上的大部分请求，多路复用的特性上基本跟 HTTP2 一致。
+
+ TCP对头堵塞
+     HTTP2的多路复用看起来是完美的解决方案，但还有个问题，就是队头阻塞，这是受限于TCP协议，TCP协议为了保证数据的可靠性，若传输过程中一个TCP包丢失，会等待这个包重传后，才会处理后续的包。HTTP2的多路复用让所有请求都在同一条连接进行，中间有一个包丢失，就会阻塞等待重传，所有请求也就被阻塞了。
+
+    对于这个问题不改变 TCP 协议就无法优化，但TCP协议依赖操作系统实现以及部分硬件的定制，改进缓慢，于是GOOGLE提出QUIC协议，相当于在UDP协议之上再定义一套可靠传输协议，解决TCP的一些缺陷，包括队头阻塞。具体解决原理网上资料较多，可以看看。
+
+    QUIC处于起步阶段，少有客户端接入，QUIC协议相对于HTTP2最大的优势是对TCP队头阻塞的解决，其他的像安全握手0RTT/证书压缩等优化TLS1.3已跟进，可以用于HTTP2，并不是独有特性。TCP队头阻塞在HTTP2上对性能的影响有多大，在速度上 QUIC 能带来多大提升待研究。
+
+### 数据
+数据对请求速度的影响分两方面，一是压缩率，二是解压序列化反序列化的速度。目前最流行的两种数据格式是 json 和 protobuf，json 是字符串，protobuf 是二进制，即使用各种压缩算法压缩后，protobuf 仍会比 json 小，数据量上 protobuf 有优势，序列化速度 protobuf 也有一些优势，这两者的对比就不细说了。
+
+压缩算法多种多样，也在不断演进，最新出的 Brotli 和Z-standard实现了更高的压缩率，Z-standard 可以根据业务数据样本训练出适合的字典，进一步提高压缩率，目前压缩率表现最好的算法。
+
+除了传输的 body 数据，每个请求 HTTP 协议头的数据也是不可忽视，HTTP2 里对 HTTP 协议头也进行了压缩，HTTP 头大多是重复数据，固定的字段如 method 可以用静态字典，不固定但多个请求重复的字段例如 cookie 用动态字典，可以达到非常高的压缩率，这里有详细介绍。
+
+通过 HTTPDNS，连接多路复用，更好的数据压缩算法，可以把网络请求的速度优化到较不错的程度了，接下来再看看弱网和安全上可以做的事情。
+
+### 弱网
+    1.提升连接成功率:复合连接，建立连接时，阶梯式并发连接，其中一条连通后其他连接都关闭。这个方案结合串行和并发的优势，提高弱网下的连接成功率，同时又不会增加服务器资源消耗
+    2.制定最合适的超时时间:对总读写超时(从请求到响应的超时)、首包超时、包包超时(两个数据段之间的超时)时间制定不同的计算方案，加快对超时的判断，减少等待时间，尽早重试。这里的超时时间还可以根据网络状态动态设定。
+    3.调优TCP参数，使用TCP优化算法:对服务端的TCP协议参数进行调优，以及开启各种优化算法，使得适合业务特性和移动端网络环境，包括RTO初始值，混合慢启动，TLP，F-RTO等。
+
+## 5. TODO:Mach-O的加载流程
+
+## 6. TODO:Mach-O二进制重排
+
+## 7. 静态库能不能引用动态库、动态库能不能引用静态库、静态库能不要引用静态库，动态库能不能引用动态库
+能。
+静态库就是编译到一半的中间产物，也就是链接器的输入物，所以静态库和其他源码模块基本没区别，只是提前编译好了，相当于一堆积木，静态库可以插入到项目里和其他源码生成的积木一起拼装融合成最终文件，所以引用的cpp运行时库需要一致。
+可执行程序如果链接静态库会把静态库符号打到可执行程序里面，链接动态库则不会。更深一层的问题是，如果两个库中的两个cpp中有一个同名但是实现不同的类，那么最终程序运行的时候使用的是哪个，这个就和编译的时候链接的顺序有关了，如果先链接静态库，就会把静态库中这个符号打到可执行程序里面，运行的时候就用这个，如果先依赖动态库，那么可执行程序里面只会有一个U的符号，在运行的时候动态链接器才从动态库中加载。动态库编译的时候如果依赖了静态库，则会在链接阶段把静态库符号打到动态库中。静态库编译过程只会生成.a并打包，没有链接过程，不会把依赖的其他库的符号打进去
 
 # 十一、Http & HTTPs & TCP & UDP & 证书 & 加密
 
 ## TCP的握⼿过程？为什么进⾏三次握⼿，四次挥⼿
 
+建立连接的三次握手：
+第一次握手：客户端发送SYN包（SYN= 1，seq = x） 到服务器B，进入SYN-SEND状态
+第二次握手：服务端收到SYN包，需要确认客户端的SYN，同时服务端也发送一个SNY（SYN = 1，ACK=1，seq = y，ack = x+1）包给客户端，服务端进入SYN-RECV状态
+第三次握手：客户端收到服务端的SYN+ACK包，向服务端发ACK确认包（ACK = 1，seq = x+1，ack = y+1），发送完毕客户端和服务端进入ESRABLISHED状态，完成三次握手。
+
+
+释放连接的四次挥手：
+第一次挥手：C端、S端进入ESTABLISHED状态。C端发送完报文，主动向S端发起关闭包（FIN = 1，seq = u），进入FIN-WAIT-1状态
+第二次挥手：S端收到C端请求后，通知应用程序，C端不在发送属性，S端发送确认包（ACK  = 1，seq = v，ack = u + 1），S端进入ClOSE-WAIT状态。C端收到S端的确认包后，进入FIN-WAIT-2状态，此时C到S端连接已经关闭
+第三次挥手：S端传输结束后，主动发起关闭请求FIN包（FIN = 1，ACK = 1，seq = w，ack = u + 1），进入LAST-ACK状态
+第四次挥手：C端收到S端数据后，向S端发送ACK确认包（ACK = 1，seq = u + 1，ack = w + 1），进入TIME-WAIT状态，等待2MSL之后正常关闭连接进入CLOSED状态。S端收到C端的确认包收进入CLOSED状态。
+
+为什么是三握四挥：
+服务端LISTEN状态下，收到C端SYN报文建立连接后，把ACK和SNY放在一个报文里面发送。
+关闭连接的时候，A端收到对方的FIN通知时，仅表示对面没数据发送给A端，A端可能还有数据发送给B端，需要等A端也发送完数据在发起关闭连接的报文。
+
+## 为什么TIME_WAIT状态之后需要2MSL才返回到CLOSED状态
+虽然双方都已经同意关闭，但是网络传输不可靠，无法保证对方能收到，因此对方处于LAST—ACK状态下Socket可能超时未收到ACK报文而重发FIN报文，所以需要进入TIME-WAIT状态触发重发ACK报文
 
 ## HTTPS的握⼿过程
 
+1. 客户端将TLS版本，⽀持的加密算法，ClientHello random C 发给服务端【客户端->服务端】
+2. 服务端从加密算法中pick⼀个加密算法， ServerHello random S，server 证书返回给客户端；【服务端->客户单】
+3. 客户端验证 server 证书【客户端】
+4. 客户端⽣成⼀个 48 字节的预备主密钥，其中前2个字节是 Protocol Version，后46个字节是随机数，客户端⽤证书中的公钥对预备主密钥进⾏⾮对称加密后通过 client key exchange ⼦消息发给服务端【客户端->服务端】
+5. 服务端⽤私钥解密得到预备主密钥；【服务端】
+6. 服务端和客户端都可以通过预备主密钥、ClientHello random C 和 ServerHello random S 通过PRF 函数⽣成主密钥；会话密钥由主密钥、SecurityParameters.server_random 和SecurityParameters.client_random 数通过 PRF 函数来⽣成会话密钥⾥⾯包含对称加密密钥、消
+息认证和 CBC 模式的初始化向量，对于⾮ CBC 模式的加密算法来说，就没有⽤到这个初始化向量。
+
 ## 什么是中间⼈攻击？怎么预防
+HTTP 明⽂传输，客户端和服务端进⾏通信时，中间⼈即指夹在客户端和服务端之间的第三者，对于客户端来说，中间⼈就是 服务端，对于服务端来说，中间⼈就是 客户端。中间⼈拦截客户端消息，然后再发送给服务端；服务端发发送消息给中间⼈，中间⼈再返还给客户端。
+使⽤ HTTPS，单双向认证
 
 
+## 拥塞控制是什么
+防止过多数据注入网络中、避免路由器或者链路过载。
+涉及到所有的主机、路由器、以及与降低网络传输性能有关的所有因素
+
+慢开始：窗口大小初始值比较小，随着数据包被对方接收，指数级增大
+拥塞避免：窗口大小到达阈值，窗口大小减为一半，窗口大小以线性方式增大，
+
+快速重传：接收方：每收到一个失序的分组后就立即发出复确认，使发送方及时知道有分组没有到达，而不要等待自己发送数据时才进行确认
+发送方：只要连续收到三个重复确认（总共4个相同的确认），就应当立即重传对方尚未收到的报文段，而不必继续等待重传计时器到期后再重传
+
+快速恢复：当发送方连续收到三个重复确认，说明网络出现拥塞，就执行“乘法减小”算法，把ssthresh减为拥塞峰值的一半
 
 
 ## 加密算法：对称加密算法和⾮对称加密算法区别
 
+### 不可逆加密算法：
+
+MD5：输入任意长度的信息，输出128位的信息
+1.在末尾补充一个1，再补充0直到448位的长度
+2.写入原始信息长度与2^64的模
+3.448+长度模=512，分成16组，每组32个
+4.用4个常数运算，进行64次（A=0x67452301,B=0xefcdab89,C=0x98badcfe,D=0x10325476）
+5.最后得出4个值每个值32位
+
+SHA：与MD5基本一致
+不同点：
+1.输入消息的比特长度：SHA不需要消息长度2^64模，直接填充最后64位
+2.输出MD5是32位，SHA是40位
+3.计算的常量不同
+
+### 对称加密算法：
+对称加密指的就是加密和解密使⽤同⼀个秘钥，所以叫做对称加密。对称加密只有⼀个秘钥，作为私
+钥。
+
+DES：64位的明文+64位的密钥（实际有效56位，8位是奇偶校验位）
+1.初始置换（64 位明文分位L0，R0各32位）
+2.轮函数（E扩展  、异或、S盒压缩、P盒置换）+异或 
+3.经历十六轮
+4.逆置换
+
+3DES：
+AES：
+
+### 非对称加密算法：
+⾮对称加密指的是：加密和解密使⽤不同的秘钥，⼀把作为公开的公钥，另⼀把作为私钥。公钥加密的
+信息，只有私钥才能解密。私钥加密的信息，只有公钥才能解密。 私钥只能由⼀⽅安全保管，不能外
+泄，⽽公钥则可以发给任何请求它的⼈。⾮对称加密使⽤这对密钥中的⼀个进⾏加密，⽽解密则需要另
+⼀个密钥。
+
+RSA：公钥加密、私钥解密
+1.选一对足够大的质数
+2.计算p、q乘积n
+3.计算乘积n欧拉函数
+4.选一个欧拉函数(n)互质的整数e
+5.e模反欧拉(n)元素d
 
 ## MD5、Sha1、Sha256区别
+签名算法，SHA(Security Hash Algorithm) ，貌似 MD5 更⾼效，花费时间更少，但相对较容易碰撞。
+SHA1 已经被攻破，所以安全性不⾏。
 
+## 苹果使⽤证书的⽬的是什么
+在 iOS 平台对第三⽅ APP 有绝对的控制权，⼀定要保证每⼀个安装到 iOS 上的 APP 都是经过苹果官⽅允许的，场景有如下三种
+1. AppStore 下载应⽤验证，传 App 上 AppStore 时，苹果后台⽤私钥对 APP 数据进⾏签名，iOS 系统下载这个 APP 后，⽤公钥验证这个签名，若签名正确，这个 APP 肯定是由苹果后台认证的，并且没有被修改过，也就达到了苹果的需求：保证安装的每⼀个 APP 都是经过苹果官⽅允许的。
+2. 开发 App 时可以直接把开发中的应⽤安装进⼿机进⾏调试。
+3. In-House 企业内部分发，可以直接安装企业证书签名后的 APP。
+4. AD-Hoc 相当于企业分发的限制版，限制安装设备数量，较少⽤。
 
-## 1. 苹果使⽤证书的⽬的是什么
+## TODO：AppStore安装app时的认证流程
 
-## 2. AppStore安装app时的认证流程
+## TODO：开发者怎么在debug模式下把app安装到设备呢
 
-## 3. 开发者怎么在debug模式下把app安装到设备呢
-
-# 十二、Mach-O & app启动 & ipa优化
-
-# 十三、架构
+# 十二、架构
 
 ## 1. ⼿动埋点、⾃动化埋点、可视化埋点
 
 ## 2. MVC、MVP、MVVM 设计模式
+    
+MVC:
+    M:Model
+    V:View
+    C:Controller
+优点：View，Controller可重用度高
+缺点：Controller过于臃肿
+
+MVC变种：View控制Model的显示
+优点：Controller一定瘦身，将View内部进行封装，外部不需要知道View内部具体实现
+缺点：View依赖Model
+
+MVP:
+    P:Presenter 将Controller里面的跳转，给View赋值，点击放在Presenter里面
+    
+MVVM:
+    M:Model
+    V:View(监听ViewModel赋值改变)
+    VM:ViewModel(请求数据，跳转，)
+
+
+
 ## 3. 常⻅的设计模式
+
+
+
 ## 4. 单例的弊端
+主要优点：
+1、提供了对唯一实例的受控访问。
+2、由于在系统内存中只存在一个对象，因此可以节约系统资源，对于一些需要频繁创建和销毁的对象单例模式无疑可以提高系统的性能。
+3、允许可变数目的实例。
+
+主要缺点：
+1、由于单利模式中没有抽象层，因此单例类的扩展有很大的困难。
+2、单例类的职责过重，在一定程度上违背了“单一职责原则”。
+3、滥用单例将带来一些负面问题，如为了节省资源将数据库连接池对象设计为的单例类，可能会导致共享连接池对象的程序过多而出现连接池溢出；如果实例化的对象长时间不被利用，系统会认为是垃圾而被回收，这将导致对象状态的丢失。
+
+
 ## 5. 常⻅的路由⽅案，以及优缺点对⽐
+[路由各个方案优缺点](https://github.com/halfrost/Halfrost-Field/blob/master/contents/iOS/iOSRouter/iOS_Router.md)
+
+### 1. URLRoute注册方案的优缺点
+首先URLRoute也许是借鉴前端Router和系统App内跳转的方式想出来的方法。它通过URL来请求资源。不管是H5，RN，Weex，iOS界面或者组件请求资源的方式就都统一了。URL里面也会带上参数，这样调用什么界面或者组件都可以。所以这种方式是最容易，也是最先可以想到的。
+
+URLRoute的优点很多，最大的优点就是服务器可以动态的控制页面跳转，可以统一处理页面出问题之后的错误处理，可以统一三端，iOS，Android，H5 / RN / Weex 的请求方式。
+
+但是这种方式也需要看不同公司的需求。如果公司里面已经完成了服务器端动态下发的脚手架工具，前端也完成了Native端如果出现错误了，可以随时替换相同业务界面的需求，那么这个时候可能选择URLRoute的几率会更大。
+
+但是如果公司里面H5没有做相关出现问题后能替换的界面，H5开发人员觉得这是给他们增添负担。如果公司也没有完成服务器动态下发路由规则的那套系统，那么公司可能就不会采用URLRoute的方式。因为URLRoute带来的少量动态性，公司是可以用JSPatch来做到。线上出现bug了，可以立即用JSPatch修掉，而不采用URLRoute去做。
+
+所以选择URLRoute这种方案，也要看公司的发展情况和人员分配，技术选型方面。
+
+URLRoute方案也是存在一些缺点的，首先URL的map规则是需要注册的，它们会在load方法里面写。写在load方法里面是会影响App启动速度的。
+
+其次是大量的硬编码。URL链接里面关于组件和页面的名字都是硬编码，参数也都是硬编码。而且每个URL参数字段都必须要一个文档进行维护，这个对于业务开发人员也是一个负担。而且URL短连接散落在整个App四处，维护起来实在有点麻烦，虽然蘑菇街想到了用宏统一管理这些链接，但是还是解决不了硬编码的问题。
+
+真正一个好的路由是在无形当中服务整个App的，是一个无感知的过程，从这一点来说，略有点缺失。
+
+最后一个缺点是，对于传递NSObject的参数，URL是不够友好的，它最多是传递一个字典。
+
+### 2. Protocol-Class注册方案的优缺点
+Protocol-Class方案的优点，这个方案没有硬编码。
+
+Protocol-Class方案也是存在一些缺点的，每个Protocol都要向ModuleManager进行注册。
+
+这种方案ModuleEntry是同时需要依赖ModuleManager和组件里面的页面或者组件两者的。当然ModuleEntry也是会依赖ModuleEntryProtocol的，但是这个依赖是可以去掉的，比如用Runtime的方法NSProtocolFromString，加上硬编码是可以去掉对Protocol的依赖的。但是考虑到硬编码的方式对出现bug，后期维护都是不友好的，所以对Protocol的依赖还是不要去除。
+
+最后一个缺点是组件方法的调用是分散在各处的，没有统一的入口，也就没法做组件不存在时或者出现错误时的统一处理。
+
+### 3. Target-Action方案的优缺点
+Target-Action方案的优点，充分的利用Runtime的特性，无需注册这一步。Target-Action方案只有存在组件依赖Mediator这一层依赖关系。在Mediator中维护针对Mediator的Category，每个category对应一个Target，Categroy中的方法对应Action场景。Target-Action方案也统一了所有组件间调用入口。
+
+Target-Action方案也能有一定的安全保证，它对url中进行Native前缀进行验证。
+
+Target-Action方案的缺点，Target_Action在Category中将常规参数打包成字典，在Target处再把字典拆包成常规参数，这就造成了一部分的硬编码。
+
+
+
+
 ## 6. 如果保证项⽬的稳定性
 ## 7. 设计⼀个图⽚缓存框架(LRU)
+
 ## 8. 如何设计⼀个 git diff
+1. 数据结构设计
+版本控制系统的核心数据结构。Git使用哈希值来标识文件和提交对象，并使用树状结构存储项目中的每个文件及其历史。
+Blob：Git 中的文件内容被存储为 blob（Binary Large Object）。
+Tree：表示目录结构，树对象包含对文件或子目录的引用（这些引用指向 blob 或其他 tree 对象）。
+Commit：一个提交指向一个树对象，同时保存了父提交的信息，从而构成了提交历史。
+
+2. Diff 算法：git diff的核心是一个增量算法，它比较两个文件、目录或提交之间的差异。
+行级别的差异比较：文件级别的diff通常使用最长公共子序列（LCS）算法来找到两个文件之间的差异。
+字节级别的差异比较：如果需要更精细的控制，Git也可以通过--word-diff等选项进行字节级别或词语级别的差异比较。
+
+3. Git Diff 的工作流程
+
+工作区和暂存区：比较当前修改的文件与暂存区的内容。
+工作区和某个提交：比较当前修改的文件与某个提交中的内容。
+两个不同的提交：比较两个提交之间的差异。
+
+    1. 读取索引：Git 首先会读取文件索引（即暂存区），并将当前的工作区与索引中的文件状态进行对比。
+    2. 解析文件树：在比较两个提交时，Git 需要先将提交中的文件树展开，然后对比每个文件的状态和内容。
+    3. 递归比较目录：在比较目录时，Git 需要递归遍历目录结构，识别新增、删除、或修改的文件。
+    4. 输出差异：Git 通过统一格式（unified diff）来输出对比结果，包括修改前后的内容。
+
 ## 9. 设计⼀个线程池？画出你的架构图
 ## 10. 你的app架构是什么，有什么优缺点、为什么这么做、怎么改进
 
-# 十四、其他
+
+## 11. 组件化方案区别
+
+[路由各个方案](https://github.com/halfrost/Halfrost-Field/blob/master/contents/iOS/iOSRouter/iOS_Router.md)
+
+1.基于路由的方式：拼接参数，传参比较有限
+```
+//kRouteGoodsDetails = @“//goods/goods_detail?goods_id=%d”
+NSString *urlStr = [NSString stringWithFormat:@"kRouteGoodsDetails", 123];
+UIViewController *vc = [Router handleURL:urlStr];
+if(vc) {
+   [self.navigationController pushViewController:vc animated:YES];
+}
+```
+
+2.基于反射的远程调用封装（CTMediator+Target+Action）：很多hardcode，无法参数补全。开发过程对入参不透明
+```
+//Mediator提供基于NSInvocation的远程接口调用方法的统一封装
+- (id)performTarget:(NSString *)targetName
+             action:(NSString *)actionName
+             params:(NSDictionary *)params;
+
+//Goods模块所有对外提供的方法封装在一个Category中
+@interface Mediator(Goods)
+- (NSArray*)goods_getGoodsList;
+- (NSInteger)goods_getGoodsCount;
+...
+@end
+@impletation Mediator(Goods)
+- (NSArray*)goods_getGoodsList {
+    return [self performTarget:@“GoodsModule” action:@"getGoodsList" params:nil];
+}
+- (NSInteger)goods_getGoodsCount {
+    return [self performTarget:@“GoodsModule” action:@"getGoodsCount" params:nil];
+}
+...
+@end
+```
+
+主要是- (id)performTarget:(NSString *)targetName action:(NSString *)actionName params:(NSDictionary *)params shouldCacheTarget:(BOOL)shouldCacheTarget;
+使用NSInvocation来实现
+
+3.基于协议注册(protocol):
+```
+//Goods模块提供的所有对外服务都放在GoodsModuleService中
+@protocol GoodsModuleService
+- (NSArray*)getGoodsList;
+- (NSInteger)getGoodsCount;
+...
+@end
+//Goods模块提供实现GoodsModuleService的对象, 
+//并在+load方法中注册
+@interface GoodsModule : NSObject<GoodsModuleService>
+@end
+@implementation GoodsModule
++ (void)load {
+    //注册服务
+    [ServiceManager registerService:@protocol(service_protocol) 
+                  withModule:self.class]
+}
+//提供具体实现
+- (NSArray*)getGoodsList {...}
+- (NSInteger)getGoodsCount {...}
+@end
+
+//将GoodsModuleService放在某个公共模块中，对所有业务模块可见
+//业务模块可以直接调用相关接口
+
+id<GoodsModuleService> module = [ServiceManager objByService:@protocol(GoodsModuleService)];
+NSArray *list = [module getGoodsList];
+```
+缺点就是如果修改了中间层协议，则其他模块会编译失败。
+
+4.通知广播的方式：
+基于通知的模块间通讯方案，实现思路非常简单, 直接基于系统的 NSNotificationCenter 即可。
+优势是实现简单，非常适合处理一对多的通讯场景。
+劣势是仅适用于简单通讯场景。复杂数据传输，同步调用等方式都不太方便，postObserver的时候会有问题
+模块化通讯方案中，更多的是把通知方案作为以上几种方案的补充。
+
+# 十三、其他
 
 ## 堆和栈区的区别？谁的占⽤内存空间⼤
+申请方式：
+栈区：由编译器自动分配释放，存放函数的参数值，局部变量值等；
+堆区：一般由程序员分配释放（使用new/delete或malloc/free），若程序员不释放，程序结束时可能由OS回收；
+
+操作方式：
+栈区：操作方式类似于数据结构中的栈；
+堆区：不同于数据结构中的堆，分配方式类似于链表。
+
+申请后系统的响应：
+栈区：只要栈的剩余空间大于所申请空间，系统将为程序提供内存，否则将报异常提示栈溢出；
+堆区：首先应该知道操作系统有一个记录空闲内存地址的链表，当系统收到程序的申请时，会遍历该链表，寻找第一个空间大于所申请空间的堆结点，然后将该结点从空闲结点链表中删除，并将该结点的空间分配给程序，另外，对于大多数系统，会在这块内存空间中的首地址处记录本次分配的大小，这样，代码中的delete语句才能正确的释放本内存空间。另外，由于找到的堆结点的大小不一定正好等于申请的大小，系统会自动的将多余的那部分重新放入空闲链表中。 
+
+申请大小的限制:
+栈区：在Windows下,栈是向低地址扩展的数据结构，是一块连续的内存的区域。这句话的意思是栈顶的地址和栈的最大容量是系统预先规定好的，在WINDOWS下，栈的大小是2M（也有的说是1M，总之是一个编译时就确定的常数），如果申请的空间超过栈的剩余空间时，将提示overflow。因此，能从栈获得的空间较小。
+堆区：堆是向高地址扩展的数据结构，是不连续的内存区域。这是由于系统是用链表来存储的空闲内存地址的，自然是不连续的，而链表的遍历方向是由低地址向高地址。堆的大小受限于计算机系统中有效的虚拟内存。由此可见，堆获得的空间比较灵活，也比较大。
+
+堆和栈中的存储内容：
+栈区：在函数调用时，第一个进栈的是主函数中后的下一条指令（函数调用语句的下一条可执行语句）的地址，然后是函数的各个参数，在大多数的C编译器中，参数是由右往左入栈的，然后是函数中的局部变量。注意静态变量是不入栈的。当本次函数调用结束后，局部变量先出栈，然后是参数，最后栈顶指针指向最开始存的地址，也就是主函数中的下一条指令，程序由该点继续运行。
+堆区：一般是在堆的头部用一个字节存放堆的大小。堆中的具体内容有程序员安排。
 
 ## 进程和线程的区别
 
+1、⾸先是定义
+进程：是执⾏中⼀段程序，即⼀旦程序被载⼊到内存中并准备执⾏，它就是⼀个进程。进程是表示资源分配的的基本概念，⼜是调度运⾏的基本单位，是系统中的并发执⾏的单位。
+线程：单个进程中执⾏中每个任务就是⼀个线程。线程是进程中执⾏运算的最⼩单位。
+2、⼀个线程只能属于⼀个进程，但是⼀个进程可以拥有多个线程。多线程处理就是允许⼀个进程中在同⼀时刻执⾏多个任务。
+3、线程是⼀种轻量级的进程，与进程相⽐，线程给操作系统带来侧创建、维护、和管理的负担要轻，意味着线程的代价或开销⽐较⼩。
+4、线程没有地址空间，线程包含在进程的地址空间中。线程上下⽂只包含⼀个堆栈、⼀个寄存器、⼀个优先权，线程⽂本包含在他的进程的⽂本⽚段中，进程拥有的所有资源都属于线程。所有的线程共享
+进程的内存和资源。 同⼀进程中的多个线程共享代码段(代码和常量)，数据段(全局变量和静态变量)，扩展段(堆存储)。但是每个线程拥有⾃⼰的栈段，寄存器的内容，栈段⼜叫运⾏时段，⽤来存放所有局部变量和临时变量。
+5、⽗和⼦进程使⽤进程间通信机制，同⼀进程的线程通过读取和写⼊数据到进程变量来通信。
+6、进程内的任何线程都被看做是同位体，且处于相同的级别。不管是哪个线程创建了哪⼀个线程，进程内的任何线程都可以销毁、挂起、恢复和更改其它线程的优先权。线程也要对进程施加控制，进程中任何线程都可以通过销毁主线程来销毁进程，销毁主线程将导致该进程的销毁，对主线程的修改可能影响所有的线程。
+7、⼦进程不对任何其他⼦进程施加控制，进程的线程可以对同⼀进程的其它线程施加控制。⼦进程不能对⽗进程施加控制，进程中所有线程都可以对主线程施加控制。相同点：进程和线程都有ID/寄存器组、状态和优先权、信息块，创建后都可更改⾃⼰的属性，都可与⽗进程共享资源、都不鞥直接访问其他⽆关进程或线程的资源
 
-# 十五、Swift
+## 说下什么是KeyChain
 
-# 十六、Flutter
+iOS keychain 是一个相对独立的空间，保存到keychain钥匙串中的信息不会因为卸载/重装app而丢失, 。相对于NSUserDefaults、plist文件保存等一般方式，keychain保存更为安全。所以我们会用keyChain保存一些私密信息，比如密码、证书、设备唯一码（把获取到用户设备的唯一ID 存到keychain 里面这样卸载或重装之后还可以获取到id，保证了一个设备一个ID）等等。keychain是用SQLite进行存储的。用苹果的话来说是一个专业的数据库，加密我们保存的数据，可以通过metadata（attributes）进行高效的搜索。keychain适合保存一些比较小的数据量的数据，如果要保存大的数据，可以考虑文件的形式存储在磁盘上，在keychain里面保存解密这个文件的密钥。
+
+keychain的类型：
+- kSecClassGenericPassword
+- kSecClassInternetPassword
+- kSecClassCertificate
+- kSecClassKey
+- kSecClassIdentity
+- 
+```
+NSDictionary *query = @{(__bridge id)kSecAttrAccessible : (__bridge id)kSecAttrAccessibleWhenUnlocked,
+                            (__bridge id)kSecClass : (__bridge id)kSecClassGenericPassword,
+                            (__bridge id)kSecValueData : [@"1234562" dataUsingEncoding:NSUTF8StringEncoding],
+                            (__bridge id)kSecAttrAccount : @"account name",
+                            (__bridge id)kSecAttrService : @"loginPassword",
+                            };
+   
+    CFErrorRef error = NULL;
+   
+    OSStatus status = SecItemAdd((__bridge CFDictionaryRef)query, nil); // 增
+    OSStatus status = SecItemDelete((__bridge CFDictionaryRef)query); // 删
+    OSStatus status = SecItemUpdate((__bridge CFDictionaryRef)query, (__bridge CFDictionaryRef)update); // 改
+    OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)query, &dataTypeRef);// 查
+    
+```
+
+Sharing Items
+同一个开发者账号下（teamID），各个应用之间可以共享item。keychain通过keychain-access-groups
+来进行访问权限的控制。在Xcode的Capabilities选项中打开Keychain Sharing即可。
+每个group命名开头必须是开发者账号的teamId。不同开发者账号的teamId是唯一的，所以苹果限制了只有同一个开发者账号下的应用才可以进行共享。如果有多个sharedGroup，在添加的时候如果不指定，默认是第一个group。
+
+```
+NSDictionary *query = @{(__bridge id)kSecAttrAccessible : (__bridge id)kSecAttrAccessibleWhenUnlocked,
+                            (__bridge id)kSecClass : (__bridge id)kSecClassGenericPassword,
+                            (__bridge id)kSecValueData : [@"1234562" dataUsingEncoding:NSUTF8StringEncoding],
+                            (__bridge id)kSecAttrAccount : @"account name",
+                            (__bridge id)kSecAttrAccessGroup : @"XEGH3759AB.com.developer.test",
+                            (__bridge id)kSecAttrService : @"noraml1",
+                            (__bridge id)kSecAttrSynchronizable : @YES,
+                            };
+    
+CFErrorRef error = NULL;
+
+OSStatus status = SecItemAdd((__bridge CFDictionaryRef)query, nil);
+```
+
+访问权限：
+未对应用APP的entitlement（授权）进行配置时，APP使用钥匙串存储时，会默认存储在自身BundleID的条目下。
+对APP的entitlement（授权）进行配置后，说明APP有了对某个条目的访问权限。
+kSecAttrAccessibleWhenUnlocked
+kSecAttrAccessibleAfterFirstUnlock
+kSecAttrAccessibleAlways
+kSecAttrAccessibleWhenPasscodeSetThisDeviceOnly
+kSecAttrAccessibleWhenUnlockedThisDeviceOnly
+kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
+kSecAttrAccessibleAlwaysThisDeviceOnly
+
+Cloud：
+keychain item可以备份到iCloud上，我们只需要在添加item的时候添加@{(__bridge id)kSecAttrSynchronizable : @YES,}。如果想同步到其他设备上也能使用，请避免使用DeviceOnly设置或者其他和设备相关的控制权限。
+
+Access Control：
+ACL是iOS8新增的API，iOS9之后对控制权限进行了细化。在原来的基础上加了一层本地验证，主要是配合TouchID一起使用。对于我们使用者来说，在之前的item操作是一样的，只是在添加的时候，加了一个SecAccessControlRef对象。
+
+## NSCache和NSDictionary区别
+NSCache:会根据内存的使用情况自动删除一些缓存对象，当内存不足时，它可以自动释放某些存储的对象来节省内存。它还可以设置缓存的最大存储数量和总成本。适合用来管理临时数据的缓存。
+NSDictionary:不会自动删除其内容，所有添加的对象都会保留在字典中，直到显式地删除它们。
+
+NSCache：是线程安全的，可以多个线程同时访问和修改。
+NSDictionary：不是线程安全的，多个线程同时访问和修改会引起数据错误或者崩溃。
+
+## iOS应用程序的状态机
+1. Not running:应用还没有启动，或者应用正在运行但是途中被系统停止。
+
+2. Inactive:当前应用正在前台运行，但是并不接收事件（当前或许正在执行其它代码）。一般每当应用要从一个状态切换到另一个不同的状态时，中途过渡会短暂停留在此状态。唯一在此状态停留时间比较长的情况是：当用户锁屏时，或者系统提示用户去响应某些（诸如电话来电、有未读短信等）事件的时候。
+
+3. Active:当前应用正在前台运行，并且接收事件。这是应用正在前台运行时所处的正常状态。
+
+4. Background:应用处在后台，并且还在执行代码。大多数将要进入Suspended状态的应用，会先短暂进入此状态。然而，对于请求需要额外的执行时间的应用，会在此状态保持更长一段时间。另外，如果一个应用要求启动时直接进入后台运行，这样的应用会直接从Not running状态进入Background状态，中途不会经过Inactive状态。比如没有界面的应用。注此处并不特指没有界面的应用，其实也可以是有界面的应用，只是如果要直接进入background状态的话，该应用界面不会被显示。
+
+5. Suspended:应用处在后台，并且已停止执行代码。系统自动的将应用移入此状态，且在此举之前不会对应用做任何通知。当处在此状态时，应用依然驻留内存但不执行任何程序代码。当系统发生低内存告警时，系统将会将处于Suspended状态的应用清除出内存以为正在前台运行的应用提供足够的内存。
+
+application:didFinishLaunchingWithOptions:  这是程序启动时调用的函数。可以在此方法中加入初始化相关的代码。
+
+applicationDidBecomeActive: 应用在准备进入前台运行时执行的函数。（当应用从启动到前台，或从后台转入前台都会调用此方法）
+
+applicationWillResignActive:应用当前正要从前台运行状态离开时执行的函数。
+
+applicationDidEnterBackground:此时应用处在background状态，并且没有执行任何代码，未来将被挂起进入suspended状态。
+
+applicationWillEnterForeground: 当前应用正从后台移入前台运行状态，但是当前还没有到Active状态时执行的函数。
+
+applicationWillTerminate: 当前应用即将被终止，在终止前调用的函数。如果应用当前处在suspended，此方法不会被调用。
+
+## iOS依赖注入
+依赖注入是一种设计模式，用于解除对象之间的依赖关系。通过依赖注入，一个类所依赖的对象（即依赖）由外部传递给它，而不是在类内部自己创建。这样可以降低类之间的耦合度，提高代码的可维护性和可测试性。
+
+1. 构造函数注入:通过构造函数将依赖对象传递给类。构造函数注入通常是最常用和推荐的方式，因为依赖在对象创建时就被注入，从而确保了对象的完整性。
+```
+class AuthService {
+    private let userManager: UserManagerProtocol
+
+    init(userManager: UserManagerProtocol) {
+        self.userManager = userManager
+    }
+
+    func authenticate() {
+        guard let user = userManager.currentUser else {
+            print("No user to authenticate")
+            return
+        }
+        print("Authenticating user: \(user.name)")
+    }
+}
+```
+2. 属性注入:通过设置类的属性将依赖对象传递给类。属性注入允许在对象创建之后再注入依赖，适用于那些在对象创建时不需要立即使用依赖的情况。
+```
+class AuthService {
+    var userManager: UserManagerProtocol?
+
+    func authenticate() {
+        guard let userManager = userManager, let user = userManager.currentUser else {
+            print("No user to authenticate")
+            return
+        }
+        print("Authenticating user: \(user.name)")
+    }
+}
+
+// 使用时
+let authService = AuthService()
+authService.userManager = UserManager.shared
+authService.authenticate()
+```
+3. 方法注入:通过方法参数将依赖对象传递给类。方法注入适用于那些只在特定方法调用时才需要依赖的情况。
+```
+class AuthService {
+    func authenticate(userManager: UserManagerProtocol) {
+        guard let user = userManager.currentUser else {
+            print("No user to authenticate")
+            return
+        }
+        print("Authenticating user: \(user.name)")
+    }
+}
+
+// 使用时
+let authService = AuthService()
+authService.authenticate(userManager: UserManager.shared)
+
+```
+
+## 用户关闭了iOS与开发者共享崩溃数据，第三方SDK还能捕获到crash吗。
+
+能捕获，大部分三方crash都是kscrash库作为基础的，kscrash库收集闪退日志是通过Mach内核层专门处理异常的task处理后通过port发送消息，转换为signal抛出，自己注册port来监听并且接收所有抛出的异常。所以跟开关共享崩溃数据没关系
+
+# 十四、Swift
+
+# 十五、Flutter
 1. Flutter 的渲染机制是怎样的？
 
     •    Flutter 如何将 Dart 代码转换为原生视图？
